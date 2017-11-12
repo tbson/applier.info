@@ -1,0 +1,25 @@
+{
+	"plugins": [
+		"syntax-dynamic-import",
+		"transform-decorators-legacy",
+		[
+			"transform-runtime", {
+				"polyfill": false,
+				"regenerator": true
+			}
+		],
+		["import", { libraryName: "antd", style: "css" }]
+	],
+	"presets": [
+		"env",
+		"react"
+	],
+	"env": {
+		"start": {
+			"presets": [
+				"react-hmre"
+			]
+		}
+	}
+}
+
