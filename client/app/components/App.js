@@ -14,7 +14,7 @@ class App extends Component {
 		super(props);
 		this.state = {
 			collapsed: false,
-			navLink: '/'
+			navLink: props.location.pathname
 		}
 		this.toggle = this.toggle.bind(this);
 	}
@@ -44,8 +44,7 @@ class App extends Component {
 						theme="light"
 						mode="inline"
 						selectable={false}
-						selectedKeys={[this.state.navLink]}
-						defaultSelectedKeys={[this.state.navLink]}>
+						selectedKeys={[this.state.navLink]}>
 						<Menu.Item key="/">
 							<Link to="/">
 								<Icon type="user" />
