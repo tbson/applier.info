@@ -19,6 +19,7 @@
     "babel-preset-env": "1.6.1",
     "babel-preset-react": "6.24.1",
     "babel-preset-react-hmre": "1.1.1",
+    "babel-preset-stage-0": "^6.24.1",
     "css-loader": "0.28.7",
     "file-loader": "1.1.5",
     "less": "2.7.3",
@@ -34,12 +35,13 @@
   },
   "dependencies": {
     "antd": "2.13.9",
+    "history": "^4.7.2",
     "jquery": "2.2.4",
     "react": "16.1.0",
     "react-dom": "16.1.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "react-router-redux": "^4.0.8",
+    "react-router-redux": "next",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0"
   }
