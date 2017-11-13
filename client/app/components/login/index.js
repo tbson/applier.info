@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Form, Layout, Icon, Input, Button, Checkbox } from 'antd';
+import { Layout, Row, Col, Card } from 'antd';
 
 import MainForm from './forms';
 const { Header, Sider, Content } = Layout;
-const FormItem = Form.Item;
 
 @connect(state => ({}), dispatch => ({}))
 class Login extends React.Component {
@@ -14,7 +13,7 @@ class Login extends React.Component {
         this.state = {};
     }
 
-    handleSubmit(err, values) {
+    onSubmit(err, values) {
         if (!err) {
             console.log('Received values of form: ', values);
         }
@@ -22,9 +21,18 @@ class Login extends React.Component {
 
     render() {
         return (
-            <MainForm onSubmit={this.handleSubmit}/>
+            <Row>
+                <Col span={8} offset={8} style={styles.layoutWrapper}>
+                    <Card title="Login" bordered={true} style={{ width: '100%' }}>
+                        <MainForm onSubmit={this.onSubmit}/>
+                    </Card>
+                </Col>
+            </Row>
         )
     }
+}
+
+const styles = {
 }
 
 export default withRouter(Login);

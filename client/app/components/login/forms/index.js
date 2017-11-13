@@ -53,8 +53,8 @@ class LoginForm extends React.Component {
                             <Checkbox>Remember me</Checkbox>
                         )
                     }
-                    <a className="login-form-forgot" href="">Forgot password</a>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <a style={styles.loginFormForgot} href="">Forgot password</a>
+                    <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
                         Log in
                     </Button>
                     <span>
@@ -63,6 +63,15 @@ class LoginForm extends React.Component {
                 </FormItem>
             </Form>
         );
+    }
+}
+
+const styles = {
+    loginFormForgot: {
+        float: 'right'
+    },
+    loginFormButton: {
+        width: '100%'
     }
 }
 
