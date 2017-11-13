@@ -1,2 +1,3 @@
 import { createBrowserHistory } from 'history';
-export default createBrowserHistory({ basename: '/admin' });
+import { URL_PREFIX_STRIP } from 'app/constants';
+export default createBrowserHistory({ basename: URL_PREFIX_STRIP });

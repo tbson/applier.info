@@ -2,6 +2,7 @@ export const APP_TITLE = 'Applier';
 export const APP_NAMESPACE = 'applier';
 export const APP = window.location.href.split('://')[1].split('/')[1];
 export const URL_PREFIX = APP?'/' + APP + '/':'/';
+export const URL_PREFIX_STRIP = APP?'/' + APP:'/';
 export const LOCAL_STORAGE_PREFIX = APP_NAMESPACE + '_' + APP;
 
 export const API_PREFIX = '/api/v1/';
