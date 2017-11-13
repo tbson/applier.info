@@ -6,17 +6,18 @@ import {
 import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { LocaleProvider } from 'antd';
-import createHistory from 'history/createBrowserHistory';
+// import createHistory from 'history/createBrowserHistory';
 import enUS from 'antd/lib/locale-provider/en_US';
 import constants from './constants';
 import store from './store';
+import History from 'helpers/History';
 import App from './components/App';
 
-const history = createHistory({ basename: '/admin' });
+// const history = createHistory({ basename: '/admin' });
 
 ReactDOM.render(
 	<Provider store={store}>
-		<ConnectedRouter history={history}>
+		<ConnectedRouter history={History}>
 			<LocaleProvider locale={enUS}>
 				<App />
 			</LocaleProvider>

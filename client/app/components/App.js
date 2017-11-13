@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter, Route, Link } from 'react-router-dom';
 import { Button } from 'antd';
 import NavWrapper from 'utils/components/NavWrapper';
+import Tools from 'helpers/Tools';
 import 'utils/styles/main.css';
 
 
@@ -23,7 +24,10 @@ const Home = ({history}) => (
 	<NavWrapper>
 		<div>
 			<h2>Home</h2>
+			{/*
 			<Button type="primary" onClick = {() => {history.push('/about/test')}}>Click me</Button>
+			*/}
+			<Button type="primary" onClick = {() => {Tools.navigateTo('/about', ['test'])}}>Click me</Button>
 		</div>
 	</NavWrapper>
 )
