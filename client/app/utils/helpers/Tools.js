@@ -1,6 +1,12 @@
 import React from 'react';
 import 'whatwg-fetch';
+import Fingerprint2 from 'fingerprintjs2';
+import forEach from 'lodash/forEach';
+import camelCase from 'lodash/camelCase';
+import snakeCase from 'lodash/snakeCase';
+import isArray from 'lodash/isArray';
 import History from './History';
+import store from 'app/store';
 
 import {
 	LOCAL_STORAGE_PREFIX,
@@ -24,7 +30,7 @@ export default class Tools {
 		return PROTOCOL + DOMAIN + API_PREFIX;
 	}
 
-	static navigateTo(url, params){
+	static navigateTo(url='/', params=[]){
 		return History.push([url, ...params].join('/'));
 	}
 
@@ -63,5 +69,218 @@ export default class Tools {
 
 	static getToken(){
 		return this.getStorage('authData')?this.getStorage('authData').token:null;
+	}
+
+	static getApiBaseUrl(){
+		return PROTOCOL + DOMAIN + API_PREFIX;
+	}
+
+	static getApiUrls(rawApiUrls){
+	    let result = {};
+	    const API_BASE_URL = this.getApiBaseUrl();
+	    forEach(rawApiUrls, (apiUrl, index) => {
+    		forEach(apiUrl.endpoints, (url, key) => {
+    			result[index === 0 ? camelCase(key) : camelCase(apiUrl.controller+'-'+key)] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
+    		});
+	    });
+	    return result;
+	}
+
+	static toggleGlobalLoading(spinning=true){
+		const action = {
+			type: 'TOGGLE_SPINNER',
+			spinning
+		}
+		store.dispatch(action);
+	}
+
+	static async getFingerPrint(){
+		const result = await new Promise(function(resolve, reject){
+			new Fingerprint2().get((newFingerprint) => {
+				fingerprint = newFingerprint;
+				resolve(newFingerprint);
+			});
+		});
+		return result;
+	}
+
+	static paramsProcessing(params){
+		try{
+			let requireFormData = false;
+			forEach(params, (value, key) => {
+				if(key !== 'id'){
+					if(value && typeof value === 'object'){
+						try{
+							value.item(0);
+							requireFormData = true;
+						}catch(error){
+							// Nothing change
+						}
+					}
+				}
+			});
+			if(!requireFormData){
+				return {
+					data: JSON.stringify(params),
+					contentType: "application/json"
+				}
+			}
+
+			let formData = new FormData();
+			forEach(params, (value, key) => {
+				if(value && typeof value === 'object'){
+					if(value.length){
+						try{
+							formData.set(key, value.item(0));
+						}catch(error){
+							formData.set(key, JSON.stringify(value));
+						}
+					}
+				}else{
+					formData.set(key, value);
+				}
+			});
+			return {
+				data: formData,
+				contentType: null
+			}
+		}catch(error){
+			console.error(error);
+		}
+	}
+
+	static urlDataEncode(obj) {
+		let str = [];
+		for(let p in obj){
+			if (has(obj, p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+			}
+		}
+		return str.join("&");
+	}
+
+	static urlDataDecode(str){
+		// str = abc=def&ghi=aaa&ubuntu=debian
+		let result = {};
+		let arr = str.split('&');
+		if(!str){
+			return result;
+		}
+		forEach(arr, (value) => {
+			let arrValue = value.split('=');
+			if(arrValue.length===2){
+				result[arrValue[0]] = arrValue[1];
+			}
+		});
+		return result;
+	}
+
+	static errorMessageProcessing(input){
+		if(typeof input === 'string' || isArray(input)){
+			// If message is STRING or ARRAY
+			return input;
+		}else if(typeof input === 'object'){
+			// If detail key exist with string style
+			if(typeof input.detail === 'string'){
+				return input.detail;
+			}
+			if(typeof input.non_field_errors !== 'undefined'){
+				return input.non_field_errors;
+			}
+			return null
+		}
+		return null;
+	}
+
+	static popMessage(messages, type='success'){
+		messages = this.errorMessageProcessing(messages);
+		if(!messages) return;
+
+		if(type === 'success'){
+			toastr.success('Success', messages);
+		}else{
+			const options = {
+				component: (<ErrorToastr messages={messages}/>)
+			}
+			toastr.error('Error', '', options);
+		}
+	}
+
+	static async apiCall(url, method, params={}, popMessage=true, usingLoading=true){
+		try{
+			if(usingLoading){
+				this.toggleGlobalLoading();
+			}
+			let requestConfig = {
+				method: method,
+				headers: {
+					"Content-Type": "application/json",
+            		// "Authorization": "Bearer " + this.getToken(),
+            		"Authorization": "JWT " + this.getToken(),
+					"fingerprint": await this.getFingerPrint()
+				},
+				credentials: "same-origin"
+			};
+			if(['POST', 'PUT'].indexOf(method) !== -1){
+				// Have payload
+				params = this.paramsProcessing(params);
+				requestConfig.body = params.data;
+				if(!params.contentType){
+					delete requestConfig.headers['Content-Type'];
+				}
+			}else{
+				// No payload but url encode
+				if(url.indexOf('?') === -1){
+					url += '?' + this.urlDataEncode(params);
+				}
+			}
+			let response = await fetch(url, requestConfig);
+			let data = {};
+			try{
+				data = await response.json();
+			}catch(error){
+				// console.error(error);
+			}
+			if(usingLoading){
+				this.toggleGlobalLoading(false);
+			}
+			if(isArray(data)){
+				data = {
+					count: data.length,
+					items: data,
+					links: {
+						next: null,
+						previous: null
+					},
+					page_size: data.length,
+					pages: 1
+				}
+			}
+			let result = {
+				status: response.status,
+				success: [200, 201, 204].indexOf(response.status) === -1 ? false : true,
+				data
+			};
+			if([200, 201, 204].indexOf(result.status) === -1){
+				this.popMessage(result.data, 'error');
+			}
+			/*
+			if(result.status === 200){
+				if(popMessage){
+					this.popMessage(result.message, result.success?'success':'error');
+				}
+			}else{
+				this.popMessage(result.message, result.success?'success':'error');
+			}
+			*/
+			return result;
+		}catch(error){
+			if(usingLoading){
+				this.toggleGlobalLoading(false);
+			}
+			// this.popMessage(error, 'error');
+			console.error(error);
+			return error;
+		}
 	}
 }

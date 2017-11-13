@@ -1,4 +1,11 @@
 export default function commonReducer(state = {}, action){
 	// Noting to mutate
-	return state;
+	switch(action.type){
+		case 'TOGGLE_SPINNER':
+			return {
+				...state, spinning: action.spinning
+			};
+		default:
+			return state;
+	}
 }

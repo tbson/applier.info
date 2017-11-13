@@ -24,7 +24,7 @@ class LoginForm extends React.Component {
             <Form onSubmit={this.onSubmit} className="login-form">
                 <FormItem>
                     {
-                        getFieldDecorator('userName', {
+                        getFieldDecorator('username', {
                             rules: [{ required: true, message: 'Please input your username!' }],
                         })(
                             <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />

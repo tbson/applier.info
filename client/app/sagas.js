@@ -1,5 +1,5 @@
 import {all, select, take } from 'redux-saga/effects';
-// import authSaga from 'src/js/components/login/saga';
+import authSaga from 'components/auth/saga';
 
 
 function* watchAndLog() {
@@ -13,6 +13,6 @@ function* watchAndLog() {
 export default function* rootSaga() {
 	yield all([
 		watchAndLog(),
-		// authSaga(),
+		authSaga(),
 	]);
 }

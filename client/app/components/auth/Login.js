@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Layout, Row, Col, Card } from 'antd';
-
-import MainForm from './forms';
+import { actions } from './_data';
+import FormLogin from './forms/FormLogin';
+import store from 'app/store';
 const { Header, Sider, Content } = Layout;
 
 @connect(state => ({}), dispatch => ({}))
@@ -16,6 +17,7 @@ class Login extends React.Component {
     onSubmit(err, values) {
         if (!err) {
             console.log('Received values of form: ', values);
+            store.dispatch({type: actions.LOGIN, payload: {...values}});
         }
     }
 
@@ -24,7 +26,7 @@ class Login extends React.Component {
             <Row>
                 <Col span={8} offset={8} style={styles.layoutWrapper}>
                     <Card title="Login" bordered={true} style={{ width: '100%' }}>
-                        <MainForm onSubmit={this.onSubmit}/>
+                        <FormLogin onSubmit={this.onSubmit}/>
                     </Card>
                 </Col>
             </Row>

@@ -17,7 +17,19 @@ const middlewares = [
 // Create an object for the default data
 const defaultState = {
 	commonReducer: {
-	}
+		spinning: false
+	},
+	authReducer: {
+		login: {
+			email: null,
+			password: null
+		}, profile: {
+			email: null,
+			first_name: null,
+			last_name: null,
+			role_id: null
+		}
+	},
 };
 
 const store = createStore(rootReducer, defaultState, applyMiddleware(...middlewares));
