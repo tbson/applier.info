@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Route, Link } from 'react-router-dom';
+import { withRouter, Switch, Route, Link } from 'react-router-dom';
 import { Button } from 'antd';
 import NavWrapper from 'utils/components/NavWrapper';
+import PrivateRoute from 'utils/components/PrivateRoute';
 import Tools from 'helpers/Tools';
+import Login from 'components/login';
 import 'utils/styles/main.css';
 
 
@@ -11,11 +13,12 @@ import 'utils/styles/main.css';
 class App extends Component {
 	render() {
 		return (
-			<div>
+			<Switch>
 				<Route exact path="/" component={Home}/>
 				<Route path="/about/:id" component={About}/>
-				<Route path="/hello/" component={Home}/>
-			</div>
+				<Route path="/login" component={Login}/>
+				<PrivateRoute path="/hello" component={Home}/>
+			</Switch>
 		);
 	}
 }
