@@ -23,7 +23,8 @@ const rawApiUrls = [
 ];
 
 export const actions = {
-    LOGIN: 'auth/login'
+    LOGIN: 'auth/login',
+    RESET_FORM: 'auth/resetForm'
 };
 
 export const apiUrls = Tools.getApiUrls(rawApiUrls);

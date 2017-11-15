@@ -20,6 +20,9 @@ const defaultState = {
 		spinning: false
 	},
 	authReducer: {
+		resetForm: {
+			FormLogin: 0
+		},
 		login: {
 			email: null,
 			password: null

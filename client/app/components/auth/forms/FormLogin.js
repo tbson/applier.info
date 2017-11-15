@@ -1,21 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { put } from 'redux-saga/effects'
 import { withRouter } from 'react-router-dom';
 import { Form, Layout, Icon, Input, Button, Checkbox } from 'antd';
+import { actions } from '../_data';
+import store from 'app/store';
 
 const { Header, Sider, Content } = Layout;
 const FormItem = Form.Item;
 
-class LoginForm extends React.Component {
+@connect(state => ({
+    reset: state.authReducer.resetForm.FormLogin
+}), dispatch => ({}))
+class FormLogin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.reset && this.props.reset !== nextProps.reset){
+            this.props.form.resetFields();
+        }
+    }
+
     onSubmit(e){
         e.preventDefault();
-        this.props.form.validateFields(this.props.onSubmit);
+        this.props.form.validateFields((err, values) => {
+            if(!err){
+                store.dispatch({type: actions.LOGIN, payload: {...values}});
+            }
+        });
     }
 
     render() {
@@ -43,21 +59,11 @@ class LoginForm extends React.Component {
                 </FormItem>
 
                 <FormItem>
-                    {
-                        getFieldDecorator('remember', {
-                            valuePropName: 'checked',
-                            initialValue: true,
-                        })(
-                            <Checkbox>Remember me</Checkbox>
-                        )
-                    }
-                    <a style={styles.loginFormForgot} href="">Forgot password</a>
                     <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
                         Log in
                     </Button>
-                    <span>
-                        Or <a href="">register now!</a>
-                    </span>
+                    <a href="">Register now!</a>
+                    <a style={styles.loginFormForgot} href="">Forgot password</a>
                 </FormItem>
             </Form>
         );
@@ -73,4 +79,4 @@ const styles = {
     }
 }
 
-export default Form.create()(LoginForm);
+export default Form.create()(FormLogin);

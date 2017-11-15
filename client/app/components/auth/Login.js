@@ -14,19 +14,12 @@ class Login extends React.Component {
         this.state = {};
     }
 
-    onSubmit(err, values) {
-        if (!err) {
-            console.log('Received values of form: ', values);
-            store.dispatch({type: actions.LOGIN, payload: {...values}});
-        }
-    }
-
     render() {
         return (
             <Row>
                 <Col span={8} offset={8} style={styles.layoutWrapper}>
                     <Card title="Login" bordered={true} style={{ width: '100%' }}>
-                        <FormLogin onSubmit={this.onSubmit}/>
+                        <FormLogin/>
                     </Card>
                 </Col>
             </Row>

@@ -5,6 +5,7 @@ import forEach from 'lodash/forEach';
 import camelCase from 'lodash/camelCase';
 import snakeCase from 'lodash/snakeCase';
 import isArray from 'lodash/isArray';
+import { notification } from 'antd';
 import History from './History';
 import store from 'app/store';
 
@@ -192,17 +193,29 @@ export default class Tools {
 		return null;
 	}
 
-	static popMessage(messages, type='success'){
-		messages = this.errorMessageProcessing(messages);
+	static errorToast = (description, title='') => {
+		notification['error']({
+			message: title,
+			description: description,
+		});
+	};
+
+	static successToast = (description, title='') => {
+		notification['success']({
+			message: title,
+			description: description,
+		});
+	};
+
+	static popMessage(description, title='', type='success'){
+		const messages = this.errorMessageProcessing(description);
+		console.log(messages);
 		if(!messages) return;
 
 		if(type === 'success'){
-			toastr.success('Success', messages);
+			this.successToast(messages, title?title:'Success!');
 		}else{
-			const options = {
-				component: (<ErrorToastr messages={messages}/>)
-			}
-			toastr.error('Error', '', options);
+			this.errorToast(messages, title?title:'Error!');
 		}
 	}
 
@@ -239,7 +252,7 @@ export default class Tools {
 			try{
 				data = await response.json();
 			}catch(error){
-				// console.error(error);
+				console.error(error);
 			}
 			if(usingLoading){
 				this.toggleGlobalLoading(false);
@@ -262,23 +275,13 @@ export default class Tools {
 				data
 			};
 			if([200, 201, 204].indexOf(result.status) === -1){
-				this.popMessage(result.data, 'error');
+				this.popMessage(result.data, '', 'error');
 			}
-			/*
-			if(result.status === 200){
-				if(popMessage){
-					this.popMessage(result.message, result.success?'success':'error');
-				}
-			}else{
-				this.popMessage(result.message, result.success?'success':'error');
-			}
-			*/
 			return result;
 		}catch(error){
 			if(usingLoading){
 				this.toggleGlobalLoading(false);
 			}
-			// this.popMessage(error, 'error');
 			console.error(error);
 			return error;
 		}
