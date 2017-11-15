@@ -17,7 +17,10 @@ class Login extends React.Component {
     render() {
         return (
             <Row>
-                <Col span={8} offset={8} style={styles.layoutWrapper}>
+                <Col
+                    md={{span: 8, offset: 8}}
+                    sm={{span: 16, offset: 4}}
+                    style={styles.layoutWrapper}>
                     <Card title="Login" bordered={true} style={{ width: '100%' }}>
                         <FormLogin/>
                     </Card>
