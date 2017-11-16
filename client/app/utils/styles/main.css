@@ -10,6 +10,10 @@
 	line-height: 2.3;
 }
 
+.pointer{
+	cursor: pointer;
+}
+
 @media only screen and (max-width: 992px) {
 	#main-title{
 		padding-left: 42px;

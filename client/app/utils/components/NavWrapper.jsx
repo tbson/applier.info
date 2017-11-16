@@ -5,6 +5,7 @@ import { Layout, Menu, Icon, Row, Col, Button } from 'antd';
 import store from 'app/store';
 import 'utils/styles/main.css';
 import logo from 'utils/images/logo.png';
+import Tools from 'helpers/Tools';
 const { Header, Sider, Content } = Layout;
 
 
@@ -76,10 +77,14 @@ class App extends Component {
 							<Col span={6}>
 								<div style={{textAlign: 'right', paddingRight: 12, lineHeight: 3.5}}>
 									<span>
-										Son Tran
+										{Tools.getStorage('authData').fullname}
 									</span>
 									&nbsp;&nbsp;
-									<Icon type="logout" style={{fontWeight: 'bold'}}/>
+									<Icon
+										className="pointer"
+										onClick={()=>store.dispatch({type: 'auth/logout'})}
+										type="logout"
+										style={{fontWeight: 'bold'}}/>
 								</div>
 							</Col>
 						</Row>

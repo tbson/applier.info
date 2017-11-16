@@ -4,10 +4,13 @@ import {apiUrls, actions} from './_data';
 import store from 'app/store';
 import Tools from 'helpers/Tools';
 
+
 /* >>> BEGIN LOGIN SAGA >>> */
 function* login(){
-	const {payload: {username, password}}  = yield take(actions.LOGIN);
-	yield call(_login, username, password);
+	while(true){
+		const {payload: {username, password}}  = yield take(actions.LOGIN);
+		yield call(_login, username, password);
+	}
 }
 
 function* _login(username, password){
@@ -27,11 +30,29 @@ function* _login(username, password){
 		console.error(error);
 	}
 }
-
 /* <<< END LOGIN SAGA <<< */
+
+/* >>> BEGIN LOGOUT SAGA >>> */
+function* logout(){
+	while(true){
+		yield take(actions.LOGOUT);
+		yield call(_logout);
+	}
+}
+
+function* _logout(username, password){
+	try{
+		Tools.removeStorage('authData');
+		Tools.navigateTo('/login');
+	}catch(error){
+		console.error(error);
+	}
+}
+/* <<< END LOGOUT SAGA <<< */
 
 export default function* authSaga() {
 	yield all([
-		login()
+		login(),
+		logout(),
 	]);
 }

@@ -6,24 +6,14 @@ const rawApiUrls = [
         controller: APP,
         endpoints: {
             profile: 'profile',
-            tokenAuth: 'token-auth'
-            /*
-            obj: 'GET',
-            tokenAuth: 'POST',
-            logout: 'POST',
-            profile: 'GET',
-            updateProfile: 'POST',
-            resetPassword: 'POST',
-            resetPasswordConfirm: 'GET',
-            changePassword: 'POST',
-            changePasswordConfirm: 'GET'
-            */
+            tokenAuth: 'token-auth',
         }
     }
 ];
 
 export const actions = {
     LOGIN: 'auth/login',
+    LOGOUT: 'auth/logout',
     RESET_FORM: 'auth/resetForm'
 };
 
