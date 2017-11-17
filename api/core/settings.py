@@ -160,3 +160,21 @@ MEDIA_ROOT = BASE_DIR + '/public/media/'
 STATIC_URL = BASE_URL + 'public/static/'
 STATIC_IMG_URL = BASE_URL + 'public/static/images/'
 MEDIA_URL = BASE_URL + 'public/media/'
+
+# User defined constants
+
+ALLOW_CHARS = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ0123456789'
+PAGE_SIZE = 25
+MAX_UPLOAD_SIZE = 3145728
+MAX_IMAGE_SIZE = 1680
+GOLDEN_RATIO = 1.618
+
+ERROR_CODES = {
+    'OK': 200,
+    'BAD_REQUEST': 400,
+    'UNAUTHORIZED': 401,
+    'FORBIDDEN': 403,
+    'NOT_FOUND': 404,
+    'METHOD_NOT_ALLOWED': 405,
+    'INTERNAL_SERVER_ERROR': 500,
+}

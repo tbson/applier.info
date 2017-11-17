@@ -12,6 +12,11 @@ export default function authReducer(state = {}, action){
 				...state,
 				resetForm: {...state.resetForm, ...data}
 			};
+		case actions.TOGGLE_MAIN_MODAL:
+			return {
+				...state,
+				mainModalVisible: action.payload
+			};
 		case prefix + 'toggleModal':
 			if(!modalId) return state;
 			let newState = {};

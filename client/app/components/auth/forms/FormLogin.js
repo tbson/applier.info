@@ -62,8 +62,10 @@ class FormLogin extends React.Component {
                     <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
                         Log in
                     </Button>
-                    <a href="">Register now!</a>
-                    <a style={styles.loginFormForgot} href="">Forgot password</a>
+                    <a
+                        style={styles.loginFormForgot}
+                        onClick={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: true})}>
+                        Forgot password</a>
                 </FormItem>
             </Form>
         );

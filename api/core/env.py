@@ -1,8 +1,10 @@
 APP_NAME = 'DCMS'
 PROTOCOL = 'http'
 DOMAIN = 'dcms.dev'
-
 ALLOWED_HOSTS = [DOMAIN, '127.0.0.1']
+TIME_ZONE = 'Asia/Saigon'
+EMAIL_ENABLE = True
+ENV = 'LOCAL'  # 'LOCAL, PROD'
 
 DATABASES = {
 	'default': {
@@ -18,24 +20,6 @@ DATABASES = {
 	},
 }
 
-TIME_ZONE = 'Asia/Saigon'
-
-ALLOW_CHARS = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ0123456789'
-PAGE_SIZE = 25
-MAX_UPLOAD_SIZE = 3145728
-MAX_IMAGE_SIZE = 1680
-GOLDEN_RATIO = 1.618
-
-ERROR_CODES = {
-	'OK': 200,
-	'BAD_REQUEST': 400,
-	'UNAUTHORIZED': 401,
-	'FORBIDDEN': 403,
-	'NOT_FOUND': 404,
-	'METHOD_NOT_ALLOWED': 405,
-	'INTERNAL_SERVER_ERROR': 500,
-}
-
 FIRST_USER_USERNAME = 'admin'
 FIRST_USER_PASSWORD = 'admin'
 TEST_ADMIN = {
@@ -45,3 +29,10 @@ TEST_ADMIN = {
 	'first_name': 'Son',
 	'last_name': 'Tran'
 }
+
+EMAIL_FROM = '"Xivila Info"<info@xivila.com>'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # 587 - 465 for SSL
+EMAIL_HOST_USER = 'info@xivila.com'
+EMAIL_HOST_PASSWORD = 'Xivila!@#456'
+EMAIL_USE_TLS = True

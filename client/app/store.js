@@ -20,6 +20,7 @@ const defaultState = {
 		spinning: false
 	},
 	authReducer: {
+		mainModalVisible: false,
 		resetForm: {
 			FormLogin: 0
 		},
