@@ -50,9 +50,39 @@ function* _logout(username, password){
 }
 /* <<< END LOGOUT SAGA <<< */
 
+/* >>> BEGIN RESET PASSWORD SAGA >>> */
+function* resetPassword(){
+	while(true){
+		yield take(actions.RESET_PASSWORD);
+		yield call(_resetPassword);
+	}
+}
+
+function* _resetPassword(username, password){
+	const params = {
+		username,
+		password
+	};
+	try{
+		const result = yield call(Tools.apiCall.bind(Tools), apiUrls.resetPassword, 'POST', params);
+		console.log(result);
+		if(result.success){
+			/*
+			yield put({type: actions.RESET_FORM, payload: formId})
+			Tools.setStorage('authData', result.data.user);
+			Tools.navigateTo();
+			*/
+		}
+	}catch(error){
+		console.error(error);
+	}
+}
+/* <<< END RESET PASSWORD SAGA <<< */
+
 export default function* authSaga() {
 	yield all([
 		login(),
 		logout(),
+		resetPassword(),
 	]);
 }

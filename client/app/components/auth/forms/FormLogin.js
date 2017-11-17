@@ -60,12 +60,8 @@ class FormLogin extends React.Component {
 
                 <FormItem>
                     <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
-                        Log in
+                        {this.props.submitTitle}
                     </Button>
-                    <a
-                        style={styles.loginFormForgot}
-                        onClick={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: true})}>
-                        Forgot password</a>
                 </FormItem>
             </Form>
         );
@@ -73,9 +69,6 @@ class FormLogin extends React.Component {
 }
 
 const styles = {
-    loginFormForgot: {
-        float: 'right'
-    },
     loginFormButton: {
         width: '100%'
     }

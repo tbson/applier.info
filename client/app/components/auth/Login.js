@@ -14,11 +14,6 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.renderMainModal = this.renderMainModal.bind(this);
-    }
-
-    renderMainModal(){
-
     }
 
     render() {
@@ -29,7 +24,14 @@ class Login extends React.Component {
                     sm={{span: 16, offset: 4}}
                     style={styles.layoutWrapper}>
                     <Card title="Login" bordered={true} style={{ width: '100%' }}>
-                        <FormLogin/>
+                        <FormLogin submitTitle="Login"/>
+                        <div>
+                            <a
+                                className="float-right"
+                                onClick={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: true})}>
+                                Reset password
+                            </a>
+                        </div>
                         <MainModal visible={this.props.mainModalVisible}/>
                     </Card>
                 </Col>
@@ -41,12 +43,11 @@ class Login extends React.Component {
 const MainModal = ({visible}) => {
     return (
         <Modal
-            title="Forgot password"
+            title="Reset password"
             onCancel={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: false})}
+            footer={null}
             visible={visible}>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+            <FormLogin submitTitle="Reset password"/>
         </Modal>
     );
 }

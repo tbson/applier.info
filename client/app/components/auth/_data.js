@@ -7,6 +7,7 @@ const rawApiUrls = [
         endpoints: {
             profile: 'profile',
             tokenAuth: 'token-auth',
+            resetPassword: 'reset-password',
         }
     }
 ];
@@ -16,6 +17,7 @@ export const actions = {
     LOGOUT: 'auth/logout',
     RESET_FORM: 'auth/resetForm',
     TOGGLE_MAIN_MODAL: 'auth/toggleMainModal',
+    RESET_PASSWORD: 'auth/resetPassword',
 };
 
 export const apiUrls = Tools.getApiUrls(rawApiUrls);

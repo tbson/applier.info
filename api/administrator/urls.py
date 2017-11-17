@@ -11,6 +11,7 @@ from .views import (
 	CreateView,
 	UpdateView,
 	DeleteView,
+	ResetPasswordView,
 )
 
 urlpatterns = [
@@ -23,5 +24,6 @@ urlpatterns = [
 	url(r'^profile/$', ProfileView.as_view(), name='profile'),
 	url(r'^(?P<pk>\d+)/$', DetailView.as_view(), name='detail'),
 	url(r'^(?P<pk>\d+)/edit/$', UpdateView.as_view(), name='edit'),
-	url(r'^(?P<pk>\d+(,\d+)*)/delete/$', DeleteView.as_view(), name='delete')
+	url(r'^(?P<pk>\d+(,\d+)*)/delete/$', DeleteView.as_view(), name='delete'),
+	url(r'^reset-password/$', ResetPasswordView.as_view(), name='resetPassword'),
 ]
