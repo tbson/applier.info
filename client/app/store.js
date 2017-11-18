@@ -1,3 +1,4 @@
+// @flow
 import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { routerMiddleware } from 'react-router-redux';
@@ -13,28 +14,6 @@ const middlewares = [
 	routeMiddleware
 ];
 
-// Create an object for the default data
-const defaultState = {
-	commonReducer: {
-		spinning: false
-	},
-	authReducer: {
-		mainModalVisible: false,
-		resetForm: {
-			FormLogin: 0
-		},
-		login: {
-			email: null,
-			password: null
-		}, profile: {
-			email: null,
-			first_name: null,
-			last_name: null,
-			role_id: null
-		}
-	},
-};
-
-const store = createStore(rootReducer, defaultState, applyMiddleware(...middlewares));
+const store = createStore(rootReducer, applyMiddleware(...middlewares));
 sagaMiddleware.run(rootSaga);
 export default store;

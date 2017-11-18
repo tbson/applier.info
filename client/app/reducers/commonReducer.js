@@ -1,9 +1,17 @@
-export default function commonReducer(state = {}, action){
-	// Noting to mutate
+// @flow
+type CommonReducerType = {
+	spinning: boolean
+};
+
+export const commonReducerDefault: CommonReducerType = {
+	spinning: false
+}
+
+export default function commonReducer(state: CommonReducerType = commonReducerDefault, action: {type: string, payload: any}): CommonReducerType{
 	switch(action.type){
 		case 'TOGGLE_SPINNER':
 			return {
-				...state, spinning: action.spinning
+				...state, spinning: action.payload.spinning
 			};
 		default:
 			return state;

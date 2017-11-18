@@ -1,7 +1,51 @@
+// @flow
 import Tools from 'helpers/Tools';
 import { actions } from './_data';
 
-export default function authReducer(state = {}, action){
+
+type ResetFormType = {
+	FormLogin: number
+};
+
+type LoginType = {
+	email: string,
+	password: string
+};
+
+type ProfileType = {
+	email: string,
+	first_name: string,
+	last_name: string,
+	role_id: string
+};
+
+export type AuthReducerType = {
+	mainModalVisible: boolean,
+	resetForm: ResetFormType,
+	login: LoginType,
+	profile: ProfileType
+};
+
+
+export const authReducerDefault: AuthReducerType = {
+	mainModalVisible: false,
+	resetForm: {
+		FormLogin: 0
+	},
+	login: {
+		email: '',
+		password: ''
+	},
+	profile: {
+		email: '',
+		first_name: '',
+		last_name: '',
+		role_id: ''
+	}
+};
+
+
+export default function authReducer(state: AuthReducerType = authReducerDefault, action: {type: string, payload: any}): AuthReducerType {
 	const prefix = 'auth' + '/';
 	const {data, pages, index, dataLoaded, modalId, open} = (action.payload ? action.payload : {});
 	switch(action.type){

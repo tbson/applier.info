@@ -112,7 +112,9 @@ export default class Tools {
 	static toggleGlobalLoading(spinning: boolean = true): void {
 		const action = {
 			type: 'TOGGLE_SPINNER',
-			spinning
+			payload: {
+				spinning
+			}
 		}
 		store.dispatch(action);
 	}
