@@ -4,7 +4,7 @@
 .DS_Store
 tmp
 api/.coverage
-# api/core/env.py
+api/core/env.py
 api/public/static/rest_framework_swagger/
 api/public/static/rest_framework/
 api/public/static/admin/
