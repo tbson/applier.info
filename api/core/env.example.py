@@ -30,7 +30,7 @@ TEST_ADMIN = {
 	'last_name': 'App'
 }
 
-EMAIL_FROM = '"Applier App"<applier@gmail.com>'
+DEFAULT_FROM_EMAIL = '"Applier App"<applier@gmail.com>'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # 587 - 465 for SSL
 EMAIL_HOST_USER = 'applier@gmail.com'

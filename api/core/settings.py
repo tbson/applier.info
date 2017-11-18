@@ -12,14 +12,14 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import datetime
-from core import env
+from .env import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-APP_NAME = env.APP_NAME
-PROTOCOL = env.PROTOCOL
-DOMAIN = env.DOMAIN
+# APP_NAME = env.APP_NAME
+# PROTOCOL = env.PROTOCOL
+# DOMAIN = env.DOMAIN
 BASE_URL = PROTOCOL + '://' + DOMAIN + '/'
 BASE_URL_TRIM = PROTOCOL + '://' + DOMAIN
 
@@ -34,7 +34,7 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = env.ALLOWED_HOSTS
+# ALLOWED_HOSTS = env.ALLOWED_HOSTS
 
 
 # Application definition
@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = env.DATABASES
+# DATABASES = env.DATABASES
 
 
 # Password validation
@@ -123,6 +123,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'django.contrib.auth.models.AnonymousUser'
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'rest_framework.filters.SearchFilter',
@@ -142,7 +143,7 @@ JWT_AUTH = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = env.TIME_ZONE
+# TIME_ZONE = env.TIME_ZONE
 
 USE_I18N = True
 

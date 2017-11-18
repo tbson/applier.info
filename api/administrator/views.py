@@ -6,6 +6,7 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView,
 	RetrieveDestroyAPIView,
 )
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,6 +18,7 @@ from .serializers import (
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.helpers.res_tools import getToken
+from utils.helpers.tools import Tools
 
 
 class ListView(ListAPIView):
@@ -82,6 +84,11 @@ class DeleteView(RetrieveDestroyAPIView):
 
 
 class ResetPasswordView(APIView):
-
+	authentication_classes = ()
+	permission_classes = (AllowAny,)
 	def post(self, request, format=None):
-		return Response('hello');
+		subject = 'test email'
+		body = 'test message'
+		to = 'tbson87@gmail.com'
+		Tools.sendEmail(subject, body, to)
+		return Response(request.data);
