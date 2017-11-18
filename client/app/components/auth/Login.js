@@ -20,6 +20,14 @@ class Login extends React.Component<Props, States> {
         this.state = {};
     }
 
+    onSubmitLogin(values: Object): void{
+        store.dispatch({type: actions.LOGIN, payload: {...values}});
+    }
+
+    onSubmitResetPassword(values: Object): void{
+        store.dispatch({type: actions.RESET_PASSWORD, payload: {...values}});
+    }
+
     render() {
         return (
             <Row>
@@ -28,7 +36,9 @@ class Login extends React.Component<Props, States> {
                     sm={{span: 16, offset: 4}}
                     style={styles.layoutWrapper}>
                     <Card title="Login" bordered={true} style={{ width: '100%' }}>
-                        <FormLogin submitTitle="Login"/>
+                        <FormLogin
+                            submitTitle="Login"
+                            onSubmit={this.onSubmitLogin}/>
                         <div>
                             <a
                                 className="float-right"
@@ -36,7 +46,7 @@ class Login extends React.Component<Props, States> {
                                 Reset password
                             </a>
                         </div>
-                        <MainModal visible={this.props.mainModalVisible}/>
+                        <MainModal visible={this.props.mainModalVisible} onSubmit={this.onSubmitResetPassword}/>
                     </Card>
                 </Col>
             </Row>
@@ -45,7 +55,8 @@ class Login extends React.Component<Props, States> {
 }
 
 type MainModalProps = {
-    visible: boolean
+    visible: boolean,
+    onSubmit: Function
 };
 const MainModal = (props: MainModalProps) => {
     return (
@@ -54,7 +65,9 @@ const MainModal = (props: MainModalProps) => {
             onCancel={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: false})}
             footer={null}
             visible={props.visible}>
-            <FormLogin submitTitle="Reset password"/>
+            <FormLogin
+                submitTitle="Reset password"
+                onSubmit={props.onSubmit}/>
         </Modal>
     );
 }

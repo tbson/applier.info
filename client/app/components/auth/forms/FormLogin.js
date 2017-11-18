@@ -10,7 +10,12 @@ import store from 'app/store';
 const { Header, Sider, Content } = Layout;
 const FormItem = Form.Item;
 
-type Props = Object;
+type Props = {
+    submitTitle: string,
+    reducer: string,
+    onSubmit: Function,
+    form: any
+};
 type States = Object;
 
 
@@ -32,8 +37,8 @@ class FormLogin extends React.Component<Props, States> {
     onSubmit(e: SyntheticEvent<>): void {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if(!err){
-                store.dispatch({type: actions.LOGIN, payload: {...values}});
+            if(!err) {
+                this.props.onSubmit(values);
             }
         });
     }
@@ -72,14 +77,18 @@ class FormLogin extends React.Component<Props, States> {
     }
 }
 
+const FormLoginConnected = connect((state, props) => ({
+    reset: state[props.reducer].resetForm.FormLogin
+}), dispatch => ({}))(FormLogin);
+
+FormLoginConnected.defaultProps = {
+    reducer: 'authReducer'
+};
+
 const styles = {
     loginFormButton: {
         width: '100%'
     }
 }
 
-export default Form.create()(
-    connect(state => ({
-        reset: state.authReducer.resetForm.FormLogin
-    }), dispatch => ({}))(FormLogin)
-);
+export default Form.create()(FormLoginConnected);
