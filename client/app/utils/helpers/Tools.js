@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import 'whatwg-fetch';
 import Fingerprint2 from 'fingerprintjs2';
@@ -5,6 +6,7 @@ import forEach from 'lodash/forEach';
 import camelCase from 'lodash/camelCase';
 import snakeCase from 'lodash/snakeCase';
 import isArray from 'lodash/isArray';
+import has from 'lodash/has';
 import { notification } from 'antd';
 import History from './History';
 import store from 'app/store';
@@ -21,41 +23,57 @@ import {
 let fingerprint = null;
 
 export default class Tools {
-	static checkDevMode(){
+	static checkDevMode(): boolean {
 		const domainArr = window.location.host.split('.');
 		const suffix = domainArr[domainArr.length - 1];
 		return ['dev'].indexOf(suffix) === -1 ? false : true;
 	}
 
-	static getApiBaseUrl(){
+	static getApiBaseUrl(): string {
 		return PROTOCOL + DOMAIN + API_PREFIX;
 	}
 
-	static navigateTo(url='/', params=[]){
+	static navigateTo(url='/', params=[]) {
 		return History.push([url, ...params].join('/'));
 	}
 
-	static parseJson(input){
-		try{
+	static parseJson(input: any): string {
+		try {
 			return JSON.parse(input);
-		}catch(error){
+		} catch(error) {
 			return String(input);
 		}
 	}
 
-	static getStorage(key, defaultValue=null){
-		let value = this.parseJson(localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key));
-		if(!value){
-			value = defaultValue;
+	static getStorageObj(key: string): Object {
+		try{
+			let value = this.parseJson(localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key));
+			if(value && typeof value === 'object'){
+				return value;
+			}
+			return {};
+		}catch(error){
+			return {};
 		}
-		return value;
 	}
 
-	static setStorage(key, value){
+	static getStorageStr(key: string): string{
+		try{
+			let value = localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key);
+			if(!value){
+				return '';
+			}
+			return String(value);
+		}catch(error){
+			return '';
+		}
+	}
+
+	static setStorage(key: string, value: any): void{
 		try{
 			let newValue = value;
 			if(key === 'authData'){
-				newValue = {...this.getStorage(key), ...value};
+				newValue = {...this.getStorageObj(key), ...value};
 			}
 			newValue = JSON.stringify(newValue);
 			localStorage.setItem(LOCAL_STORAGE_PREFIX + '_' + key, newValue);
@@ -64,19 +82,20 @@ export default class Tools {
 		}
 	}
 
-	static removeStorage(key){
+	static removeStorage(key: string): void{
 		localStorage.removeItem(LOCAL_STORAGE_PREFIX + '_' + key);
 	}
 
-	static getToken(){
-		return this.getStorage('authData')?this.getStorage('authData').token:null;
+	static getToken(): string {
+		const token = this.getStorageObj('authData').token;
+		return token?token:'';
 	}
 
-	static getApiBaseUrl(){
+	static getApiBaseUrl(): String{
 		return PROTOCOL + DOMAIN + API_PREFIX;
 	}
 
-	static getApiUrls(rawApiUrls){
+	static getApiUrls(rawApiUrls: Object): Object{
 	    let result = {};
 	    const API_BASE_URL = this.getApiBaseUrl();
 	    forEach(rawApiUrls, (apiUrl, index) => {
@@ -87,7 +106,7 @@ export default class Tools {
 	    return result;
 	}
 
-	static toggleGlobalLoading(spinning=true){
+	static toggleGlobalLoading(spinning: boolean = true): void {
 		const action = {
 			type: 'TOGGLE_SPINNER',
 			spinning
@@ -95,7 +114,7 @@ export default class Tools {
 		store.dispatch(action);
 	}
 
-	static async getFingerPrint(){
+	static async getFingerPrint(): Promise<string>{
 		const result = await new Promise(function(resolve, reject){
 			new Fingerprint2().get((newFingerprint) => {
 				fingerprint = newFingerprint;
@@ -105,7 +124,7 @@ export default class Tools {
 		return result;
 	}
 
-	static paramsProcessing(params){
+	static paramsProcessing(params: Object): Object{
 		try{
 			let requireFormData = false;
 			forEach(params, (value, key) => {
@@ -147,10 +166,11 @@ export default class Tools {
 			}
 		}catch(error){
 			console.error(error);
+			return {};
 		}
 	}
 
-	static urlDataEncode(obj) {
+	static urlDataEncode(obj: Object): string {
 		let str = [];
 		for(let p in obj){
 			if (has(obj, p)) {
@@ -160,7 +180,7 @@ export default class Tools {
 		return str.join("&");
 	}
 
-	static urlDataDecode(str){
+	static urlDataDecode(str: string): Object {
 		// str = abc=def&ghi=aaa&ubuntu=debian
 		let result = {};
 		let arr = str.split('&');
@@ -176,38 +196,42 @@ export default class Tools {
 		return result;
 	}
 
-	static errorMessageProcessing(input){
-		if(typeof input === 'string' || isArray(input)){
-			// If message is STRING or ARRAY
-			return input;
+	static errorMessageProcessing(input: string | Object): string {
+		if(typeof input === 'string'){
+			// If message is STRING
+			return String(input);
+		}else if(isArray(input)){
+			// If message is ARRAY
+			return String(input.join('<br/>'));
 		}else if(typeof input === 'object'){
 			// If detail key exist with string style
 			if(typeof input.detail === 'string'){
 				return input.detail;
 			}
 			if(typeof input.non_field_errors !== 'undefined'){
-				return input.non_field_errors;
+				return String(input.non_field_errors);
 			}
-			return null
+			return '';
+		}else{
+			return '';
 		}
-		return null;
 	}
 
-	static errorToast = (description, title='') => {
+	static errorToast = (description: string, title: string=''): void => {
 		notification['error']({
 			message: title,
 			description: description,
 		});
 	};
 
-	static successToast = (description, title='') => {
+	static successToast = (description: string, title: string=''):void => {
 		notification['success']({
 			message: title,
 			description: description,
 		});
 	};
 
-	static popMessage(description, title='', type='success'){
+	static popMessage(description: string | Object, title: string='', type: string='success'): void {
 		const messages = this.errorMessageProcessing(description);
 		console.log(messages);
 		if(!messages) return;
@@ -219,12 +243,17 @@ export default class Tools {
 		}
 	}
 
-	static async apiCall(url, method, params={}, popMessage=true, usingLoading=true){
+	static async apiCall(
+		url: string,
+		method: string,
+		params: Object = {},
+		popMessage: bool = true,
+		usingLoading: bool = true): Promise<{status: number, success: boolean, data: Object}> {
 		try{
 			if(usingLoading){
 				this.toggleGlobalLoading();
 			}
-			let requestConfig = {
+			let requestConfig: Object = {
 				method: method,
 				headers: {
 					"Content-Type": "application/json",
@@ -279,11 +308,15 @@ export default class Tools {
 			}
 			return result;
 		}catch(error){
+			console.error(error);
 			if(usingLoading){
 				this.toggleGlobalLoading(false);
 			}
-			console.error(error);
-			return error;
+			return {
+				status: 400,
+				success: false,
+				data: error
+			}
 		}
 	}
 }
