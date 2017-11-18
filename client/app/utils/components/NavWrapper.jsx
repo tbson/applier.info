@@ -77,7 +77,7 @@ class App extends Component {
 							<Col span={6}>
 								<div style={{textAlign: 'right', paddingRight: 12, lineHeight: 3.5}}>
 									<span>
-										{Tools.getStorage('authData')?Tools.getStorageObj('authData').fullname:''}
+										{Tools.getStorageObj('authData').fullname?Tools.getStorageObj('authData').fullname:''}
 									</span>
 									&nbsp;&nbsp;
 									<Icon
