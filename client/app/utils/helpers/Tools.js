@@ -8,7 +8,7 @@ import snakeCase from 'lodash/snakeCase';
 import isArray from 'lodash/isArray';
 import has from 'lodash/has';
 import { notification } from 'antd';
-import History from './History';
+import { createBrowserHistory } from 'history';
 import store from 'app/store';
 
 import {
@@ -17,10 +17,13 @@ import {
 	API_PREFIX,
 	PROTOCOL,
 	DOMAIN,
-	FIELD_TYPE
+	FIELD_TYPE,
+	URL_PREFIX_STRIP
 } from 'app/constants';
 
 let fingerprint = null;
+
+export const History = createBrowserHistory({ basename: URL_PREFIX_STRIP });
 
 export default class Tools {
 	static checkDevMode(): boolean {
