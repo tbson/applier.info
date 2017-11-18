@@ -53,8 +53,8 @@ function* _logout(username, password){
 /* >>> BEGIN RESET PASSWORD SAGA >>> */
 function* resetPassword(){
 	while(true){
-		yield take(actions.RESET_PASSWORD);
-		yield call(_resetPassword);
+		const {payload: {username, password}}  = yield take(actions.RESET_PASSWORD);
+		yield call(_resetPassword, username, password);
 	}
 }
 
