@@ -2,8 +2,9 @@
 *.pyo
 *.bak
 .DS_Store
-api/.coverage
 tmp
+api/.coverage
+# api/core/env.py
 api/public/static/rest_framework_swagger/
 api/public/static/rest_framework/
 api/public/static/admin/
