@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// @flow
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Layout, Row, Col, Card, Modal } from 'antd';
@@ -7,10 +8,13 @@ import FormLogin from './forms/FormLogin';
 import store from 'app/store';
 const { Header, Sider, Content } = Layout;
 
-@connect(state => ({
-    mainModalVisible: state.authReducer.mainModalVisible
-}), dispatch => ({}))
-class Login extends React.Component {
+type Props = {
+    mainModalVisible: boolean
+};
+
+type States = Object;
+
+class Login extends React.Component<Props, States> {
     constructor(props) {
         super(props);
         this.state = {};
@@ -40,13 +44,16 @@ class Login extends React.Component {
     }
 }
 
-const MainModal = ({visible}) => {
+type MainModalProps = {
+    visible: boolean
+};
+const MainModal = (props: MainModalProps) => {
     return (
         <Modal
             title="Reset password"
             onCancel={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: false})}
             footer={null}
-            visible={visible}>
+            visible={props.visible}>
             <FormLogin submitTitle="Reset password"/>
         </Modal>
     );
@@ -55,4 +62,6 @@ const MainModal = ({visible}) => {
 const styles = {
 }
 
-export default withRouter(Login);
+export default withRouter(connect(state => ({
+    mainModalVisible: state.authReducer.mainModalVisible
+}), dispatch => ({}))(Login));

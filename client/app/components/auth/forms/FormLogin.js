@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// @flow
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { put } from 'redux-saga/effects'
 import { withRouter } from 'react-router-dom';
@@ -9,23 +10,26 @@ import store from 'app/store';
 const { Header, Sider, Content } = Layout;
 const FormItem = Form.Item;
 
-@connect(state => ({
-    reset: state.authReducer.resetForm.FormLogin
-}), dispatch => ({}))
-class FormLogin extends React.Component {
+type Props = Object;
+type States = Object;
+
+
+class FormLogin extends React.Component<Props, States> {
+    onSubmit: Function;
+
     constructor(props) {
         super(props);
         this.state = {};
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps: Object): void{
         if(nextProps.reset && this.props.reset !== nextProps.reset){
             this.props.form.resetFields();
         }
     }
 
-    onSubmit(e){
+    onSubmit(e: SyntheticEvent<>): void {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if(!err){
@@ -74,4 +78,8 @@ const styles = {
     }
 }
 
-export default Form.create()(FormLogin);
+export default Form.create()(
+    connect(state => ({
+        reset: state.authReducer.resetForm.FormLogin
+    }), dispatch => ({}))(FormLogin)
+);

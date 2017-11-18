@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// @flow
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Route, Link } from 'react-router-dom';
 import { Layout, Menu, Icon, Row, Col, Button } from 'antd';
@@ -8,9 +9,13 @@ import logo from 'utils/images/logo.png';
 import Tools from 'helpers/Tools';
 const { Header, Sider, Content } = Layout;
 
+type Props = Object;
 
-@connect(state => ({}), dispatch => ({}))
-class App extends Component {
+type State = {
+	navLink: string,
+};
+
+class App extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -19,9 +24,7 @@ class App extends Component {
 	}
 
 	componentDidMount(){
-		// this.props.history.listen((location, action) => {
 		this.setState({navLink: this.props.location.pathname});
-		// });
 	}
 
 	render() {
@@ -126,4 +129,4 @@ const styles = {
 	}
 }
 
-export default withRouter(App);
+export default withRouter(connect(state => ({}), dispatch => ({}))(App));

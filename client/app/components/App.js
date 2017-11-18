@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// @flow
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Switch, Route, Link } from 'react-router-dom';
 import { Button, Spin } from 'antd';
@@ -8,9 +9,11 @@ import Tools from 'helpers/Tools';
 import Login from 'components/auth/Login';
 import 'utils/styles/main.css';
 
+type Props = {
+	spinning: boolean
+};
 
-@connect(state => ({spinning: state.commonReducer.spinning}), dispatch => ({}))
-class App extends Component {
+class App extends React.Component<Props> {
 	render() {
 		return (
 			<Spin size="large" spinning={this.props.spinning}>
@@ -40,4 +43,6 @@ const About = ({history, match}) => (
 	</div>
 )
 
-export default withRouter(App);
+export default withRouter(connect(state => ({
+	spinning: state.commonReducer.spinning
+}), dispatch => ({}))(App));
