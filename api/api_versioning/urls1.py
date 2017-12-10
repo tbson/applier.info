@@ -1,21 +1,24 @@
-from django.conf.urls import include, url
+import os
+from django.urls import path, include
 
 
+app_name = os.getcwd().split(os.sep)[-1]
 urlpatterns = [
-    url(
-        r'^config/',
+    path(
+        'config/',
         include('config.urls', namespace='config'),
     ),
-    url(
-        r'^admin/',
+    path(
+        'admin/',
         include('administrator.urls', namespace='administrator'),
     ),
-    url(
-        r'^permission/',
+    path(
+        'permission/',
         include('c_permission.urls', namespace='c_permission'),
     ),
-    url(
-        r'^group/',
+    path(
+        'group/',
         include('c_group.urls', namespace='c_group'),
     ),
 ]
+

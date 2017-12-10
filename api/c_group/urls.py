@@ -1,4 +1,5 @@
-from django.conf.urls import url
+import os
+from django.urls import path
 from .views import (
 	ListView,
 	DetailView,
@@ -7,10 +8,12 @@ from .views import (
 	DeleteView,
 )
 
+
+app_name = os.getcwd().split(os.sep)[-1]
 urlpatterns = [
-	url(r'^$', ListView.as_view(), name='list'),
-	url(r'^create/$', CreateView.as_view(), name='create'),
-	url(r'^(?P<pk>\d+)/$', DetailView.as_view(), name='detail'),
-	url(r'^(?P<pk>\d+)/edit/$', UpdateView.as_view(), name='edit'),
-	url(r'^(?P<pk>\d+(,\d+)*)/delete/$', DeleteView.as_view(), name='delete')
+	path('', ListView.as_view(), name='list'),
+	path('create/', CreateView.as_view(), name='create'),
+	path('<int:pk>/', DetailView.as_view(), name='detail'),
+	path('<int:pk>/edit/', UpdateView.as_view(), name='edit'),
+	path('<int:pk>/delete/', DeleteView.as_view(), name='delete')
 ]

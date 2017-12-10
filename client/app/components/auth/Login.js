@@ -42,11 +42,13 @@ class Login extends React.Component<Props, States> {
                         <div>
                             <a
                                 className="float-right"
-                                onClick={()=>store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: true})}>
+                                onClick={() => store.dispatch({type: actions.TOGGLE_MAIN_MODAL, payload: true})}>
                                 Reset password
                             </a>
                         </div>
-                        <MainModal visible={this.props.mainModalVisible} onSubmit={this.onSubmitResetPassword}/>
+                        <MainModal
+                            visible={this.props.mainModalVisible}
+                            onSubmit={this.onSubmitResetPassword}/>
                     </Card>
                 </Col>
             </Row>

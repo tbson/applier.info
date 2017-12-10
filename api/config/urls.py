@@ -1,4 +1,5 @@
-from django.conf.urls import url
+import os
+from django.urls import path
 from .views import (
 	ListView,
 	CreateView,
@@ -7,10 +8,12 @@ from .views import (
 	DeleteView,
 )
 
+
+app_name = os.getcwd().split(os.sep)[-1]
 urlpatterns = [
-	url(r'^$', ListView.as_view(), name='list'),  # GET
-	url(r'^create/$', CreateView.as_view(), name='create'),  # POST
-	url(r'^(?P<pk>\d+)/$', DetailView.as_view(), name='detail'),  # GET
-	url(r'^(?P<pk>\d+)/edit/$', UpdateView.as_view(), name='edit'),  # PUT
-	url(r'^(?P<pk>\d+(,\d+)*)/delete/$', DeleteView.as_view(), name='delete'),  # DELETE
+	path('', ListView.as_view(), name='list'),  # GET
+	path('create/', CreateView.as_view(), name='create'),  # POST
+    path('<int:pk>/', DetailView.as_view(), name='detail'),  # GET
+    path('<int:pk>/edit/', UpdateView.as_view(), name='edit'),  # PUT
+    path('<str:pk>/delete/', DeleteView.as_view(), name='delete'),  # DELETE
 ]
