@@ -2,12 +2,6 @@
 import React from 'react';
 import 'whatwg-fetch';
 import Fingerprint2 from 'fingerprintjs2';
-import forEach from 'lodash/forEach';
-import camelCase from 'lodash/camelCase';
-import snakeCase from 'lodash/snakeCase';
-import isArray from 'lodash/isArray';
-import has from 'lodash/has';
-import { notification } from 'antd';
 import { createBrowserHistory } from 'history';
 import store from 'app/store';
 
@@ -30,6 +24,16 @@ export default class Tools {
 		const domainArr = window.location.host.split('.');
 		const suffix = domainArr[domainArr.length - 1];
 		return ['dev'].indexOf(suffix) === -1 ? false : true;
+  }
+
+  static toggleGlobalLoading(spinning: boolean = true): void {
+		const action = {
+			type: 'TOGGLE_SPINNER',
+			payload: {
+				spinning
+			}
+		}
+		store.dispatch(action);
 	}
 
 	static getApiBaseUrl(): string {
@@ -96,27 +100,20 @@ export default class Tools {
 
 	static getApiBaseUrl(): String{
 		return PROTOCOL + DOMAIN + API_PREFIX;
-	}
+  }
 
-	static getApiUrls(rawApiUrls: Object): Object{
+  static getApiUrls(rawApiUrls: Object): Object{
+    return null;
 	    let result = {};
 	    const API_BASE_URL = this.getApiBaseUrl();
 	    forEach(rawApiUrls, (apiUrl, index) => {
     		forEach(apiUrl.endpoints, (url, key) => {
-    			result[index === 0 ? camelCase(key) : camelCase(apiUrl.controller+'-'+key)] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
+                result[
+                    index === 0 ? camelCase(key) : camelCase(apiUrl.controller+'-'+key)
+                ] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
     		});
 	    });
 	    return result;
-	}
-
-	static toggleGlobalLoading(spinning: boolean = true): void {
-		const action = {
-			type: 'TOGGLE_SPINNER',
-			payload: {
-				spinning
-			}
-		}
-		store.dispatch(action);
 	}
 
 	static async getFingerPrint(): Promise<string>{
@@ -129,6 +126,7 @@ export default class Tools {
 		return result;
 	}
 
+  /*
 	static paramsProcessing(params: Object): Object{
 		try{
 			let requireFormData = false;
@@ -220,21 +218,7 @@ export default class Tools {
 		}else{
 			return '';
 		}
-	}
-
-	static errorToast = (description: string, title: string=''): void => {
-		notification['error']({
-			message: title,
-			description: description,
-		});
-	};
-
-	static successToast = (description: string, title: string=''):void => {
-		notification['success']({
-			message: title,
-			description: description,
-		});
-	};
+    }
 
 	static popMessage(description: string | Object, title: string='', type: string='success'): void {
 		const messages = this.errorMessageProcessing(description);
@@ -323,5 +307,6 @@ export default class Tools {
 				data: error
 			}
 		}
-	}
+  }
+  */
 }

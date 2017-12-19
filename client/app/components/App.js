@@ -1,38 +1,56 @@
 // @flow
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter, Switch, Route, Link } from 'react-router-dom';
-import { Button, Spin } from 'antd';
+import * as React from 'react'
+import { connect } from 'react-redux'
+import { withRouter, Switch, Route} from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'open-iconic/font/css/open-iconic-bootstrap.min.css'
+
+import 'utils/styles/main.css';
+import Spinner from 'utils/components/Spinner';
+import Tools from 'helpers/Tools';
 import NavWrapper from 'utils/components/NavWrapper';
 import PrivateRoute from 'utils/components/PrivateRoute';
-import Tools from 'helpers/Tools';
 import Login from 'components/auth/Login';
-import 'utils/styles/main.css';
+import Profile from 'components/auth/Profile';
+
 
 type Props = {
 	spinning: boolean
 };
 
 class App extends React.Component<Props> {
-	render() {
+  render() {
 		return (
-			<Spin size="large" spinning={this.props.spinning}>
-				<Switch>
-					<Route exact path="/" component={Home}/>
-					<Route path="/about/:id" component={About}/>
-					<Route path="/login" component={Login}/>
-					<PrivateRoute path="/hello" component={Home}/>
-				</Switch>
-			</Spin>
+      <Switch>
+        <Route exact path="/" component={Profile}/>
+        <Route path="/home" component={Home}/>
+        <Route path="/about/:id" component={About}/>
+        <Route path="/login" component={Login}/>
+        {/*<PrivateRoute path="/hello" component={Home}/>*/}
+      </Switch>
 		);
-	}
+  }
+  /*
+	render() {
+    return (
+      <NavWrapper>
+        <Spinner/>
+        <div>Content</div>
+      </NavWrapper>
+		);
+  }
+  */
 }
 
 const Home = ({history}) => (
 	<NavWrapper>
-		<div>
+    <div>
 			<h2>Home</h2>
-			<Button type="primary" onClick = {() => {Tools.navigateTo('/about', ['test'])}}>Click me</Button>
+      <button
+        onClick = {() => {Tools.navigateTo('/about', ['test'])}}
+        class="pure-button pure-button-primary">
+        Click me
+      </button>
 		</div>
 	</NavWrapper>
 )

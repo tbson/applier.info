@@ -16,7 +16,7 @@ export const actions = {
     LOGIN: 'auth/login',
     LOGOUT: 'auth/logout',
     RESET_FORM: 'auth/resetForm',
-    TOGGLE_MAIN_MODAL: 'auth/toggleMainModal',
+    TOGGLE_RESET_PASSWORD_MODAL: 'auth/toggleResetPasswordModal',
     RESET_PASSWORD: 'auth/resetPassword',
 };
 

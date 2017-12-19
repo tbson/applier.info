@@ -36,3 +36,4 @@ export const USER_ROLES = [
 ];
 
 __webpack_public_path__ = APP?'/' + APP + '/':'/';
+

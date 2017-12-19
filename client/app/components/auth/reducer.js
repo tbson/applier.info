@@ -45,7 +45,9 @@ export const authReducerDefault: AuthReducerType = {
 };
 
 
-export default function authReducer(state: AuthReducerType = authReducerDefault, action: {type: string, payload: any}): AuthReducerType {
+export default function authReducer(
+    state: AuthReducerType = authReducerDefault,
+    action: {type: string, payload: any}): AuthReducerType {
 	const prefix = 'auth' + '/';
 	const {data, pages, index, dataLoaded, modalId, open} = (action.payload ? action.payload : {});
 	switch(action.type){
@@ -56,7 +58,7 @@ export default function authReducer(state: AuthReducerType = authReducerDefault,
 				...state,
 				resetForm: {...state.resetForm, ...data}
 			};
-		case actions.TOGGLE_MAIN_MODAL:
+		case actions.TOGGLE_RESET_PASSWORD_MODAL:
 			return {
 				...state,
 				mainModalVisible: action.payload

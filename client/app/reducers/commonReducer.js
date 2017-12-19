@@ -7,7 +7,9 @@ export const commonReducerDefault: CommonReducerType = {
 	spinning: false
 }
 
-export default function commonReducer(state: CommonReducerType = commonReducerDefault, action: {type: string, payload: any}): CommonReducerType{
+export default function commonReducer(
+  state: CommonReducerType = commonReducerDefault,
+  action: {type: string, payload: any}): CommonReducerType{
 	switch(action.type){
 		case 'TOGGLE_SPINNER':
 			return {
