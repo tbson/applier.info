@@ -9,7 +9,7 @@ const PATHS = {
   build: path.join(__dirname, 'build'),
   test: path.join(__dirname, 'tests')
 }
-
+// test comment
 process.env.BABEL_ENV = TARGET
 
 const common = {
