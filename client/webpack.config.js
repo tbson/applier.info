@@ -9,7 +9,7 @@ const PATHS = {
   build: path.join(__dirname, 'build'),
   test: path.join(__dirname, 'tests')
 }
-// test comment
+
 process.env.BABEL_ENV = TARGET
 
 const common = {
@@ -81,8 +81,8 @@ if(TARGET === 'start' || !TARGET) {
     watchOptions: {
       ignored: /node_modules/
     },
-    devtool: 'source-map',
-    // devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-source-map',
+    // devtool: 'eval'
     devServer: {
       disableHostCheck: true,
       contentBase: PATHS.build,

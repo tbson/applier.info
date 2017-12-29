@@ -12,45 +12,39 @@ import NavWrapper from 'utils/components/NavWrapper';
 import PrivateRoute from 'utils/components/PrivateRoute';
 import Login from 'components/auth/Login';
 import Profile from 'components/auth/Profile';
+import ResetPassword from 'components/auth/ResetPassword';
 
 
 type Props = {
-	spinning: boolean
 };
 
 class App extends React.Component<Props> {
-  render() {
-		return (
-      <Switch>
-        <Route exact path="/" component={Profile}/>
-        <Route path="/home" component={Home}/>
-        <Route path="/about/:id" component={About}/>
-        <Route path="/login" component={Login}/>
-        {/*<PrivateRoute path="/hello" component={Home}/>*/}
-      </Switch>
-		);
-  }
-  /*
-	render() {
-    return (
-      <NavWrapper>
-        <Spinner/>
-        <div>Content</div>
-      </NavWrapper>
-		);
-  }
-  */
+    render() {
+        return (
+            <div>
+                <Spinner/>
+                <Switch>
+                    <Route exact path="/" component={Profile}/>
+                    <Route path="/home" component={Home}/>
+                    <Route path="/about/:id" component={About}/>
+                    <Route path="/login" component={Login}/>
+                    <Route path="/reset-password/:token" component={ResetPassword}/>
+                    {/*<PrivateRoute path="/hello" component={Home}/>*/}
+                </Switch>
+            </div>
+        );
+    }
 }
 
 const Home = ({history}) => (
 	<NavWrapper>
-    <div>
-			<h2>Home</h2>
-      <button
-        onClick = {() => {Tools.navigateTo('/about', ['test'])}}
-        class="pure-button pure-button-primary">
-        Click me
-      </button>
+        <div>
+		    <h2>Home</h2>
+            <button
+                onClick = {() => {Tools.navigateTo('/about', ['test'])}}
+                class="pure-button pure-button-primary">
+                Click me
+            </button>
 		</div>
 	</NavWrapper>
 )
@@ -62,5 +56,4 @@ const About = ({history, match}) => (
 )
 
 export default withRouter(connect(state => ({
-	spinning: state.commonReducer.spinning
 }), dispatch => ({}))(App));

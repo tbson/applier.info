@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import 'whatwg-fetch';
 import Fingerprint2 from 'fingerprintjs2';
 import { createBrowserHistory } from 'history';
 import store from 'app/store';
@@ -16,17 +15,48 @@ import {
 } from 'app/constants';
 
 let fingerprint = null;
-
 export const History = createBrowserHistory({ basename: URL_PREFIX_STRIP });
 
+
+type rawApiUrlsType = [{
+    controller: string,
+    endpoints: {}
+}];
+
 export default class Tools {
-	static checkDevMode(): boolean {
+	static checkDevMode():boolean {
 		const domainArr = window.location.host.split('.');
 		const suffix = domainArr[domainArr.length - 1];
 		return ['dev'].indexOf(suffix) === -1 ? false : true;
-  }
+    }
 
-  static toggleGlobalLoading(spinning: boolean = true): void {
+    static snakeCase (str: string): string {
+        var upperChars = str.match(/([A-Z])/g);
+        if (! upperChars) {
+            return str;
+        }
+
+        var str = str.toString();
+        for (var i = 0, n = upperChars.length; i < n; i++) {
+            str = str.replace(new RegExp(upperChars[i]), '_' + upperChars[i].toLowerCase());
+        }
+
+        if (str.slice(0, 1) === '_') {
+            str = str.slice(1);
+        }
+
+        return str;
+    };
+
+    static camelCase(s: string): string {
+        return s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();});
+    }
+
+    static cap(str: string): string {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    static toggleGlobalLoading(spinning: boolean = true): void {
 		const action = {
 			type: 'TOGGLE_SPINNER',
 			payload: {
@@ -34,13 +64,22 @@ export default class Tools {
 			}
 		}
 		store.dispatch(action);
-	}
+    }
+
+    static formDataToObj (formTarget: HTMLFormElement) {
+        const formData = new FormData(formTarget);
+        let data = {};
+        for (let pair of formData.entries()){
+            data[pair[0]] = pair[1];
+        }
+        return data;
+    }
 
 	static getApiBaseUrl(): string {
 		return PROTOCOL + DOMAIN + API_PREFIX;
 	}
 
-	static navigateTo(url='/', params=[]) {
+    static navigateTo(url:string = '/', params:Array<mixed> = []) {
 		return History.push([url, ...params].join('/'));
 	}
 
@@ -100,19 +139,21 @@ export default class Tools {
 
 	static getApiBaseUrl(): String{
 		return PROTOCOL + DOMAIN + API_PREFIX;
-  }
+    }
 
-  static getApiUrls(rawApiUrls: Object): Object{
-    return null;
+    static getApiUrls(rawApiUrls: Object): Object{
 	    let result = {};
-	    const API_BASE_URL = this.getApiBaseUrl();
-	    forEach(rawApiUrls, (apiUrl, index) => {
-    		forEach(apiUrl.endpoints, (url, key) => {
+        const API_BASE_URL = this.getApiBaseUrl();
+        Object.entries(rawApiUrls).forEach(([index, apiUrl]) => {
+            // $FlowFixMe: Still have no idea why it happen 
+            Object.entries(apiUrl.endpoints).forEach(([key, url]) => {
                 result[
-                    index === 0 ? camelCase(key) : camelCase(apiUrl.controller+'-'+key)
-                ] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
+                    // $FlowFixMe: Still have no idea why it happen 
+                    parseInt(index) === 0 ? key : this.camelCase(apiUrl.controller) + this.cap(key)
+                // $FlowFixMe: Still have no idea why it happen 
+                ] = API_BASE_URL + this.snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
     		});
-	    });
+        });
 	    return result;
 	}
 
@@ -126,47 +167,24 @@ export default class Tools {
 		return result;
 	}
 
-  /*
-	static paramsProcessing(params: Object): Object{
+	static paramsProcessing(data: Object = {}, fileList: ?{[string]: FileList} = null): Object{
 		try{
-			let requireFormData = false;
-			forEach(params, (value, key) => {
-				if(key !== 'id'){
-					if(value && typeof value === 'object'){
-						try{
-							value.item(0);
-							requireFormData = true;
-						}catch(error){
-							// Nothing change
-						}
-					}
-				}
-			});
-			if(!requireFormData){
-				return {
-					data: JSON.stringify(params),
+            if (fileList) {
+                let formData = new FormData();
+                Object.entries(fileList).forEach(([key, value]) => {
+                    // $FlowFixMe: Still have no idea why it happen 
+                    formData.set(key, value);
+                });
+                return {
+                    data: formData,
+                    contentType: null
+                }
+            } else {
+                return {
+					data: JSON.stringify(data),
 					contentType: "application/json"
 				}
-			}
-
-			let formData = new FormData();
-			forEach(params, (value, key) => {
-				if(value && typeof value === 'object'){
-					if(value.length){
-						try{
-							formData.set(key, value.item(0));
-						}catch(error){
-							formData.set(key, JSON.stringify(value));
-						}
-					}
-				}else{
-					formData.set(key, value);
-				}
-			});
-			return {
-				data: formData,
-				contentType: null
-			}
+            }	
 		}catch(error){
 			console.error(error);
 			return {};
@@ -176,9 +194,9 @@ export default class Tools {
 	static urlDataEncode(obj: Object): string {
 		let str = [];
 		for(let p in obj){
-			if (has(obj, p)) {
-				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-			}
+            // if (has(obj, p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            // }
 		}
 		return str.join("&");
 	}
@@ -190,9 +208,9 @@ export default class Tools {
 		if(!str){
 			return result;
 		}
-		forEach(arr, (value) => {
+		arr.forEach((value, key) => {
 			let arrValue = value.split('=');
-			if(arrValue.length===2){
+			if(arrValue.length === 2){
 				result[arrValue[0]] = arrValue[1];
 			}
 		});
@@ -203,7 +221,7 @@ export default class Tools {
 		if(typeof input === 'string'){
 			// If message is STRING
 			return String(input);
-		}else if(isArray(input)){
+		}else if(Array.isArray(input)){
 			// If message is ARRAY
 			return String(input.join('<br/>'));
 		}else if(typeof input === 'object'){
@@ -220,7 +238,9 @@ export default class Tools {
 		}
     }
 
-	static popMessage(description: string | Object, title: string='', type: string='success'): void {
+    static popMessage(description: string | Object, title: string='', type: string='success'): void {
+        return;
+        /*
 		const messages = this.errorMessageProcessing(description);
 		console.log(messages);
 		if(!messages) return;
@@ -229,7 +249,8 @@ export default class Tools {
 			this.successToast(messages, title?title:'Success!');
 		}else{
 			this.errorToast(messages, title?title:'Error!');
-		}
+        }
+        */
 	}
 
 	static async apiCall(
@@ -237,9 +258,10 @@ export default class Tools {
 		method: string,
 		params: Object = {},
 		popMessage: bool = true,
-		usingLoading: bool = true): Promise<{status: number, success: boolean, data: Object}> {
+        usingLoading: bool = true
+    ): Promise<{status: number, success: boolean, data: Object}> {
 		try{
-			if(usingLoading){
+            if(usingLoading){
 				this.toggleGlobalLoading();
 			}
 			let requestConfig: Object = {
@@ -275,7 +297,7 @@ export default class Tools {
 			if(usingLoading){
 				this.toggleGlobalLoading(false);
 			}
-			if(isArray(data)){
+			if(Array.isArray(data)){
 				data = {
 					count: data.length,
 					items: data,
@@ -308,5 +330,4 @@ export default class Tools {
 			}
 		}
   }
-  */
 }

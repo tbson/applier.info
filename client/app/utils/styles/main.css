@@ -18,6 +18,14 @@
 	float: right;
 }
 
+.input-group-addon {
+    width: 41px;
+}
+
+.link {
+    color: #0C65FF;
+}
+
 .button-success,
 .button-error,
 .button-warning,

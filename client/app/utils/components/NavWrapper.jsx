@@ -3,6 +3,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Route, Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom';
+import Tools from 'helpers/Tools';
 import './NavWrapper.css'
 
 type Props = Object;
@@ -10,94 +11,99 @@ type Props = Object;
 type State = Object;
 
 class App extends React.Component<Props, State> {
-  toggleAll: Function;
-  mediaQueryChanged: Function;
+    toggleAll: Function;
+    mediaQueryChanged: Function;
 
-	constructor(props) {
-		super(props);
-    this.state = {
-      toggled: true
+    constructor(props) {
+        super(props);
+        this.state = {
+            toggled: true
+        }
+        this.toggleAll = this.toggleAll.bind(this);
+        this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
     }
-    this.toggleAll = this.toggleAll.bind(this);
-    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
-  }
 
-  componentDidMount () {
-    const mql = window.matchMedia(`(min-width: 800px)`);
-    mql.addListener(this.mediaQueryChanged);
-    this.setState({mql: mql});
+    componentDidMount () {
+        const mql = window.matchMedia(`(min-width: 800px)`);
+        mql.addListener(this.mediaQueryChanged);
+        this.setState({mql: mql});
 
-    this.setState({
-      toggled: window.innerWidth >= 800 ? true : false
-    });
-  }
+        this.setState({
+            toggled: window.innerWidth >= 800 ? true : false
+        });
+    }
 
-  componentWillUnmount() {
-		this.state.mql.removeListener(this.mediaQueryChanged);
-	}
+    componentWillUnmount() {
+        this.state.mql.removeListener(this.mediaQueryChanged);
+    }
 
-  mediaQueryChanged () {
-    console.log("media change");
-    this.setState({
-      toggled: !this.state.toggled
-    });
-  }
+    mediaQueryChanged () {
+        console.log("media change");
+        this.setState({
+            toggled: !this.state.toggled
+        });
+    }
 
-  toggleAll (e) {
-    this.setState({
-      toggled: !this.state.toggled
-    });
-  }
+    toggleAll (e) {
+        this.setState({
+            toggled: !this.state.toggled
+        });
+    }
 
-  render() {
-    return (
-      <div id="wrapper" className={this.state.toggled?'toggled':''}>
-        <div id="sidebar-wrapper">
-          <ul className="sidebar-nav">
-            <li className="sidebar-brand">
-                APPLIER
-            </li>
-            <li>
-              <a href="#" className="active">
-                <span className="oi oi-person"></span>&nbsp;&nbsp;
-                <span>
-                  Profile
-                </span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span className="oi oi-cog"></span>&nbsp;&nbsp;
-                <span>
-                  Config
-                </span>
-              </a>
-            </li>
-          </ul>
-        </div>
+    logout () {
+        Tools.removeStorage('authData');
+        Tools.navigateTo('login');
+    }
 
-        <div id="page-content-wrapper">
-          <div id="main-heading">
-            <span
-              id="nav-toggler"
-              onClick={() => this.toggleAll()}>
-              &#9776;</span>
-            <span>Tran Bac Son</span>
-            &nbsp;&nbsp;
-            <span className="oi oi-account-logout pointer"></span>
-          </div>
-          <div className="container-fluid">
-            {this.props.children}
-            {/*
-            <h1>Simple Sidebar</h1>
-            <p>Hello</p>
-            <a href="#menu-toggle" className="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
-            */}
-          </div>
-        </div>
-      </div>
+    render() {
+        return (
+            <div id="wrapper" className={this.state.toggled?'toggled':''}>
+                <div id="sidebar-wrapper">
+                    <ul className="sidebar-nav">
+                        <li className="sidebar-brand">
+                            APPLIER
+                        </li>
+
+                        <li>
+                            <a href="#" className="active">
+                                <span className="oi oi-person"></span>&nbsp;&nbsp;
+                                <span>
+                                    Profile
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#">
+                                <span className="oi oi-cog"></span>&nbsp;&nbsp;
+                                <span>
+                                    Config
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="page-content-wrapper">
+                    <div id="main-heading">
+                        <span
+                            id="nav-toggler"
+                            onClick={() => this.toggleAll()}>
+                            &#9776;</span>
+                        <span>Tran Bac Son</span>
+                        &nbsp;&nbsp;
+                        <span 
+                            className="oi oi-account-logout pointer"
+                            onClick={() => this.logout()}></span>
+                    </div>
+
+                    <div className="container-fluid">
+                        {this.props.children}
+                    </div>
+                </div>
+            </div>
     )
-	}
+    }
 }
 
 export default withRouter(connect(state => ({}), dispatch => ({}))(App));

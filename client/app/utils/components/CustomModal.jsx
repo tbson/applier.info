@@ -67,16 +67,16 @@ class CustomModal extends React.Component {
 		return(
 			<Modal
 				style={customStyles}
-				isOpen={this.props.open}
-        contentLabel="Modal"
-        ariaHideApp={false}>
+                isOpen={this.props.open}
+                contentLabel="Modal"
+                ariaHideApp={false}>
 				<span
 					style={closeButtonStyle}
 					className="fa fa-times non-printable"
 					onClick={() => this.props.close()}>
 				</span>
-        <h4 className="non-printable" style={headingStyle}>{ this.props.title }</h4>
-        { this.props.children }
+                <h4 className="non-printable" style={headingStyle}>{ this.props.title }</h4>
+                { this.props.children }
 			</Modal>
 		);
 	}

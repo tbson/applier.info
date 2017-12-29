@@ -14,7 +14,6 @@ class Spinner extends React.Component<Props, State> {
   }
 
   render () {
-    console.log(this.props.spinning);
     if (!this.props.spinning) return null;
     return (
       <div className={styles.loaderBg}>
