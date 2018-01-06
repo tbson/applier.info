@@ -39,7 +39,7 @@ class DetailView(RetrieveAPIView):
     queryset = Administrator.objects.all()
     serializer_class = AdministratorBaseSerializer
 
-
+"""
 class ProfileView(RetrieveAPIView):
     permissions = ['_custom_view_profile_administrator']
     permission_classes = [CustomPermission]
@@ -52,7 +52,7 @@ class ProfileView(RetrieveAPIView):
         token = getToken(self.request.META)
         print(token)
         return self.request.user.administrator
-
+"""
 
 class CreateView(CreateAPIView):
     permissions = ['_custom_create_administrator']
@@ -85,6 +85,28 @@ class DeleteView(RetrieveDestroyAPIView):
         object = self.get_object(pk)
         object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProfileView(APIView):
+    # authentication_classes = ()
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, format=None):
+        serializer = AdministratorBaseSerializer(self.get_object().administrator)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        params = self.request.data
+        administrator = self.get_object().administrator
+        serializer = AdministratorUpdateSerializer(administrator, data=params, partial=True)
+        if serializer.is_valid() is True:
+            serializer.save();
+            return Response(serializer.data)
+        else:
+            raise ValidationError(serializer.errors)
 
 
 class ResetPasswordView(APIView):

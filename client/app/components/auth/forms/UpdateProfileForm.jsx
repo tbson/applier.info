@@ -11,13 +11,16 @@ type Props = {
     children?: React.Node,
     formId: string,
     submitTitle: string,
-    defaultValue: Object
+    defaultValue: Object,
+    errorMessage: Object
 };
 type States = {};
 
 
 class UpdateProfileForm extends React.Component<Props, States> {
     resetForm: Function;
+    setClassName: Function;
+    setErrorMessage: Function;
 
     static defaultProps = {
         submitTitle: 'Submit',
@@ -26,13 +29,16 @@ class UpdateProfileForm extends React.Component<Props, States> {
             email: null,
             first_name: null,
             last_name: null
-        }
+        },
+        errorMessage: {}
     };
 
     constructor(props) {
         super(props);
         this.state = {};
         this.resetForm = this.resetForm.bind(this);
+        this.setClassName = this.setClassName.bind(this);
+        this.setErrorMessage = this.setErrorMessage.bind(this);
     }
 
     resetForm () {
@@ -40,7 +46,15 @@ class UpdateProfileForm extends React.Component<Props, States> {
         window.document.querySelector('#' + this.props.formId + ' [name=username]').focus();
     }
 
-    render() {
+    setClassName (name) {
+        return this.props.errorMessage[name] ? "form-control is-invalid" : "form-control";
+    }
+
+    setErrorMessage (name) {
+        return this.props.errorMessage[name];
+    }
+
+    render () {
         return (
             <form 
                 id={this.props.formId} 
@@ -52,10 +66,13 @@ class UpdateProfileForm extends React.Component<Props, States> {
                         id="username" 
                         name="username" 
                         type="text" 
-                        className="form-control" 
+                        className={this.setClassName('username')}
                         required
                         autoFocus
                         placeholder="Username..."/>
+                        <div className="invalid-feedback">
+                            {this.setErrorMessage('username')}
+                        </div>
                 </div>
 
                 <div className="form-group">
@@ -65,36 +82,45 @@ class UpdateProfileForm extends React.Component<Props, States> {
                         id="email" 
                         name="email" 
                         type="email" 
-                        className="form-control" 
+                        className={this.setClassName('email')}
                         required
                         placeholder="Email..."/>
+                        <div className="invalid-feedback">
+                            {this.setErrorMessage('email')}
+                        </div>
                 </div> 
 
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label htmlFor="username">Firstname</label>
+                            <label htmlFor="first_name">Firstname</label>
                             <input 
                                 defaultValue={this.props.defaultValue.first_name}
                                 id="first_name" 
                                 name="first_name" 
                                 type="text" 
-                                className="form-control" 
+                                className={this.setClassName('first_name')}
                                 required
                                 placeholder="Firstname..."/>
+                            <div className="invalid-feedback">
+                                {this.setErrorMessage('first_name')}
+                            </div>
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label htmlFor="username">Lastname</label>
+                            <label htmlFor="last_name">Lastname</label>
                             <input 
                                 defaultValue={this.props.defaultValue.last_name}
                                 id="last_name" 
                                 name="last_name" 
                                 type="text" 
-                                className="form-control" 
+                                className={this.setClassName('last_name')}
                                 required
                                 placeholder="Lastname..."/>
+                            <div className="invalid-feedback">
+                                {this.setErrorMessage('last_name')}
+                            </div>
                         </div>
                     </div>
                 </div> 

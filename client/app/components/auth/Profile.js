@@ -13,7 +13,10 @@ import ChangePasswordForm from './forms/ChangePasswordForm';
 
 type Props = Object;
 type States = {
+    authData: Object,
     profileModal: bool,
+    profileDefaultValue: Object,
+    profileErrorMessage: Object,
     changePasswordModal: bool,
     changePasswordError: string
 };
@@ -30,7 +33,10 @@ class Profile extends React.Component<Props, States> {
     constructor(props) {
         super(props);
         this.state = {
+            authData: Tools.getStorageObj('authData'),
             profileModal: false,
+            profileDefaultValue: {},
+            profileErrorMessage: {},
             changePasswordModal: false,
             changePasswordError: ''
         };
@@ -44,8 +50,25 @@ class Profile extends React.Component<Props, States> {
     async handleUpdateProfile (event) {
         event.preventDefault();
         const data = Tools.formDataToObj(event.target);
+
+        const result = await Tools.apiCall(apiUrls.profile, 'POST', data);
+        if (result.success) {
+            Tools.setStorage('authData', result.data);
+            this.setState({authData: Tools.getStorageObj('authData')});
+            this.toggleModal('profileModal');
+        } else {
+            console.log(result);
+            this.setState({profileErrorMessage: result.data});
+            /*
+            this.setState({
+                changePasswordError: Tools.errorMessageProcessing(result.data)
+            });
+            */
+        }
+        /*
         this.toggleModal('profileModal');
         console.log(data);
+        */
     }
 
     async handleChangePassword (event) {
@@ -66,9 +89,18 @@ class Profile extends React.Component<Props, States> {
         let state = {};
         state[modalId] = !this.state[modalId]
         switch (modalId) {
+            case 'profileModal':
+                if (state[modalId]) {
+                    Tools.apiCall(apiUrls.profile, 'GET').then(result => {
+                        state.profileDefaultValue = result.data;
+                        this.setState(state);
+                    });
+                    return;
+                }
+                break;
             case 'changePasswordModal':
                 state.changePasswordError = '';
-            break;
+                break;
         }
         this.setState(state);
     }
@@ -85,8 +117,8 @@ class Profile extends React.Component<Props, States> {
         )
     }
 
-    renderProfileModal () {
-        const authData = Tools.getStorageObj('authData');
+    renderProfileModal (defaultValue, errorMessage) {
+        // const authData = Tools.getStorageObj('authData');
         const modalId = 'profileModal';
         return (
             <CustomModal
@@ -97,7 +129,8 @@ class Profile extends React.Component<Props, States> {
                 <div>
                     <UpdateProfileForm
                         formId="updateProfileForm"
-                        defaultValue={authData}
+                        defaultValue={defaultValue}
+                        errorMessage={errorMessage}
                         submitTitle="Update profile"
                         handleSubmit={this.handleUpdateProfile}>
                         <button
@@ -142,7 +175,7 @@ class Profile extends React.Component<Props, States> {
     }
 
     render() {
-        const authData = Tools.getStorageObj('authData');
+        const authData = this.state.authData;
         return (
             <NavWrapper>
                 <div>
@@ -162,7 +195,7 @@ class Profile extends React.Component<Props, States> {
                         Change password
                     </button>
                 </div>
-                {this.renderProfileModal()}
+                {this.renderProfileModal(this.state.profileDefaultValue, this.state.profileErrorMessage)}
                 {this.renderChangePasswordModal()}
             </NavWrapper>
         )

@@ -14,6 +14,7 @@ from .views import (
 	DeleteView,
 	ResetPasswordView,
 	ChangePasswordView,
+	ProfileView,
 )
 
 
@@ -25,6 +26,7 @@ urlpatterns = [
 
 	path('', ListView.as_view(), name='list'),
 	path('create/', CreateView.as_view(), name='create'),
+	# path('profile/', ProfileView.as_view(), name='profile'),
 	path('profile/', ProfileView.as_view(), name='profile'),
     path('<int:pk>/', DetailView.as_view(), name='detail'),
 	path('<int:pk>/edit/', UpdateView.as_view(), name='edit'),
