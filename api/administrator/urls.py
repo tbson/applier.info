@@ -13,6 +13,7 @@ from .views import (
 	UpdateView,
 	DeleteView,
 	ResetPasswordView,
+	ChangePasswordView,
 )
 
 
@@ -29,4 +30,5 @@ urlpatterns = [
 	path('<int:pk>/edit/', UpdateView.as_view(), name='edit'),
 	path('<str:pk>/delete/', DeleteView.as_view(), name='delete'),
 	path('reset-password/', ResetPasswordView.as_view(), name='resetPassword'),
+	path('change-password/', ChangePasswordView.as_view(), name='changePassword'),
 ]

@@ -6,9 +6,10 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
     RetrieveDestroyAPIView,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework import status
 from .models import Administrator
 from .serializers import (
@@ -17,7 +18,7 @@ from .serializers import (
     AdministratorUpdateSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
 from django.conf import settings
 from utils.helpers.res_tools import getToken
@@ -116,7 +117,7 @@ class ResetPasswordView(APIView):
         item.reset_password_created = None
         user.save()
         item.save()
-        return Response(user.email)
+        return Response()
 
     # Reset password
     def post(self, request, format=None):
@@ -130,12 +131,36 @@ class ResetPasswordView(APIView):
         item.reset_password_tmp = make_password(params["password"])
         item.reset_password_created = timezone.now()
         item.save()
-        
+
         url = settings.BASE_URL + "admin/reset-password/" + str(token)
         subject = "Rest set password for %s %s" % (user.first_name, user.last_name)
         body = "Reset password confirm link: %s" % (url)
         to = user.email
-        
-        Tools.sendEmail(subject, body, to)
-        return Response(user.email)
 
+        Tools.sendEmail(subject, body, to)
+        return Response()
+
+class ChangePasswordView(APIView):
+    # authentication_classes = ()
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def post(self, request, format=None):
+        params = self.request.data
+
+        # Compare old vs new password
+        if params["password"] != params["oldPassword"]:
+            raise ValidationError({"detail": "Password not matched"})
+
+        user = self.get_object()
+
+        # Check correct old password
+        if check_password(params["oldPassword"], user.password) is False:
+            raise ValidationError({"detail": "Incorrect old password"})
+
+        user.password = make_password(params["password"])
+        user.save()
+
+        return Response()

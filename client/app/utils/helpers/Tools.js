@@ -228,9 +228,10 @@ export default class Tools {
 			// If detail key exist with string style
 			if(typeof input.detail === 'string'){
 				return input.detail;
-			}
-			if(typeof input.non_field_errors !== 'undefined'){
-				return String(input.non_field_errors);
+            }
+			// If detail key exist with list style
+            if(Array.isArray(input.detail)){
+				return String(input.detail.join('<br/>'));
 			}
 			return '';
 		}else{
