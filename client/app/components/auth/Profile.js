@@ -47,6 +47,12 @@ class Profile extends React.Component<Props, States> {
         this.handleChangePassword = this.handleChangePassword.bind(this);
     }
 
+    componentDidMount () {
+        Tools.apiCall(apiUrls.profile, 'GET').then(result => {
+            console.log(result);
+        });
+    }
+
     async handleUpdateProfile (event) {
         event.preventDefault();
         const data = Tools.formDataToObj(event.target);
@@ -59,16 +65,7 @@ class Profile extends React.Component<Props, States> {
         } else {
             console.log(result);
             this.setState({profileErrorMessage: result.data});
-            /*
-            this.setState({
-                changePasswordError: Tools.errorMessageProcessing(result.data)
-            });
-            */
         }
-        /*
-        this.toggleModal('profileModal');
-        console.log(data);
-        */
     }
 
     async handleChangePassword (event) {
