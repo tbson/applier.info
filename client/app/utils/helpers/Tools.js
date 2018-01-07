@@ -91,6 +91,10 @@ export default class Tools {
         }
     }
 
+    static emptyObj(obj: Object): bool {
+        return (Object.keys(obj).length === 0 && obj.constructor === Object);
+    }
+
     static getStorageObj(key: string): Object {
         try{
             let value = this.parseJson(localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key));

@@ -13,6 +13,7 @@ import PrivateRoute from 'utils/components/PrivateRoute';
 import Login from 'components/auth/Login';
 import Profile from 'components/auth/Profile';
 import ResetPassword from 'components/auth/ResetPassword';
+import Config from 'components/config/Config';
 
 
 type Props = {
@@ -29,6 +30,7 @@ class App extends React.Component<Props> {
                     <Route path="/about/:id" component={About}/>
                     <Route path="/login" component={Login}/>
                     <Route path="/reset-password/:token" component={ResetPassword}/>
+                    <Route path="/config" component={Config}/>
                     {/*<PrivateRoute path="/hello" component={Home}/>*/}
                 </Switch>
             </div>

@@ -4,23 +4,23 @@ input:invalid {
 }
 */
 .pointer{
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .right{
-	text-align: right;
+    text-align: right;
 }
 
 .center{
-	text-align: center;
+    text-align: center;
 }
 
 .left{
-	text-align: left;
+    text-align: left;
 }
 
 .float-right{
-	float: right;
+    float: right;
 }
 
 .input-group-addon {
@@ -52,4 +52,19 @@ input:invalid {
 }
 .button-secondary {
     background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.row25 {
+    min-width: 25px;
+    width: 25px;
+}
+
+.row50 {
+    min-width: 50px;
+    width: 50px;
+}
+
+.row80 {
+    min-width: 80px;
+    width: 80px;
 }
