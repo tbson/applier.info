@@ -6,6 +6,7 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
     RetrieveDestroyAPIView,
 )
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -88,7 +89,7 @@ class DeleteView(RetrieveDestroyAPIView):
 
 
 class ProfileView(APIView):
-    # authentication_classes = ()
+    authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
@@ -163,7 +164,7 @@ class ResetPasswordView(APIView):
         return Response()
 
 class ChangePasswordView(APIView):
-    # authentication_classes = ()
+    authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
