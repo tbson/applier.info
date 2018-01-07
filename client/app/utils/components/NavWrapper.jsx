@@ -65,21 +65,21 @@ class App extends React.Component<Props, State> {
                         </li>
 
                         <li>
-                            <a href="#" className="active">
+                            <NavLink exact to="/">
                                 <span className="oi oi-person"></span>&nbsp;&nbsp;
                                 <span>
                                     Profile
                                 </span>
-                            </a>
+                            </NavLink>
                         </li>
 
                         <li>
-                            <a href="#">
+                            <NavLink exact to="/config">
                                 <span className="oi oi-cog"></span>&nbsp;&nbsp;
                                 <span>
                                     Config
                                 </span>
-                            </a>
+                            </NavLink>
                         </li>
                     </ul>
                 </div>
