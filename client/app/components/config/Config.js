@@ -18,6 +18,7 @@ type States = {
 class Config extends React.Component<Props, States> {
     list: Function;
     setInitData: Function;
+    renderRows: Function;
 
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ class Config extends React.Component<Props, States> {
         };
         this.list = this.list.bind(this);
         this.setInitData = this.setInitData.bind(this);
+        this.renderRows = this.renderRows.bind(this);
     }
 
     componentDidMount () {
@@ -33,10 +35,10 @@ class Config extends React.Component<Props, States> {
     }
 
     setInitData (initData: Object) {
-        this.props.configAction(
-            'newList', {
-                list: [...initData.data.items], pages: initData.data._meta.last_page}
-        );
+        store.dispatch({type: 'config/list', payload: {
+            data: [...initData.items], 
+            pages: initData.pages
+        }});
 		this.setState({dataLoaded: true});
     }
 
@@ -49,10 +51,42 @@ class Config extends React.Component<Props, States> {
             params = {...params, ...outerParams};
         }
 
-        const result = Tools.apiCall(apiUrls.crud, 'GET');
+        const result = await Tools.apiCall(apiUrls.crud, 'GET');
         if(result.success){
-            this.setInitData(result);
+            this.setInitData(result.data);
         }
+    }
+
+    renderRows () {
+        const listItem = this.props.configReducer.list;
+        return listItem.map((item, key) => (
+            <tr key={key}>
+                <th className="row25">
+                    <input
+                        type="checkbox"
+                        checked={item.checked}
+                        onChange={ event => (
+                            store.dispatch({
+                                type: 'config/edit', 
+                                payload: {
+                                    data: {checked: event.target.checked},
+                                    index: key
+                                }
+                            })
+                        )}/>
+                </th>
+                <td>
+                    {item.uid}
+                </td>
+                <td>
+                    {item.value}
+                </td>
+                <td className="center">
+                    <span className="oi oi-pencil text-info pointer"></span>&nbsp;&nbsp;&nbsp;
+                    <span className="oi oi-x text-danger pointer"></span>
+                </td>
+            </tr>
+        ));
     }
 
     render() {
@@ -62,11 +96,16 @@ class Config extends React.Component<Props, States> {
                     <thead className="thead-light">
                         <tr>
                             <th className="row25">
-                                <span className="oi oi-check text-info pointer"></span>
+                                <span 
+                                    className="oi oi-check text-info pointer"
+                                    onClick={() => (
+                                        store.dispatch({
+                                            type: 'config/toggleCheckAll'
+                                        })
+                                    )}></span>
                             </th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Key</th>
+                            <th scope="col">Value</th>
                             <th scope="col" style={{padding: 8}} className="row80">
                                 <button className="btn btn-primary btn-sm btn-block">
                                     <span className="oi oi-plus"></span>&nbsp;
@@ -77,18 +116,7 @@ class Config extends React.Component<Props, States> {
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <th className="row25">
-                                <input type="checkbox"/>
-                            </th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td className="center">
-                                <span className="oi oi-pencil text-info pointer"></span>&nbsp;&nbsp;&nbsp;
-                                <span className="oi oi-x text-danger pointer"></span>
-                            </td>
-                        </tr>
+                        {this.renderRows()}
                     </tbody>
                     <tfoot>
                         <tr>
@@ -107,4 +135,5 @@ const styles = {
 }
 
 export default withRouter(connect(state => ({
+    configReducer: state.configReducer
 }), dispatch => ({}))(Config));
