@@ -7,27 +7,42 @@ import { actions, apiUrls } from './_data';
 import store from 'app/store';
 import Tools from 'helpers/Tools';
 import NavWrapper from 'utils/components/NavWrapper';
+import ConfigForm from './forms/ConfigForm';
 
 
 type Props = Object;
 type States = {
-    dataLoaded: bool
+    dataLoaded: bool,
+    mainModal: bool,
+    id: ?number
 };
 
 
 class Config extends React.Component<Props, States> {
+    toggleModal: Function;
     list: Function;
     setInitData: Function;
     renderRows: Function;
+    renderMainModal: Function;
+    handleChange: Function;
+    handleAdd: Function;
+    handleEdit: Function;
 
     constructor(props) {
         super(props);
         this.state = {
-            dataLoaded: false
+            dataLoaded: false,
+            mainModal: false,
+            id: null
         };
+        this.toggleModal = this.toggleModal.bind(this);
         this.list = this.list.bind(this);
         this.setInitData = this.setInitData.bind(this);
         this.renderRows = this.renderRows.bind(this);
+        this.renderMainModal = this.renderMainModal.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     componentDidMount () {
@@ -57,6 +72,113 @@ class Config extends React.Component<Props, States> {
         }
     }
 
+    async handleAdd (data: Object) {
+        const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', data);
+        if (result.success) {
+            result.data.checked = false;
+            store.dispatch({
+                type: 'config/add',
+                payload: {
+                    data: result.data
+                }
+            });
+            this.toggleModal('mainModal');
+        } else {
+            store.dispatch({
+                type: 'config/err',
+                payload: {data: result.data}
+            });
+        }
+    }
+
+    async handleEdit (id: number, data: Object) {
+        const result = await Tools.apiCall(apiUrls.crud + id.toString() + '/edit/', 'PUT', data);
+        if (result.success) {
+            store.dispatch({
+                type: 'config/edit',
+                payload: {
+                    id,
+                    data: result.data
+                }
+            });
+            this.toggleModal('mainModal');
+        } else {
+            store.dispatch({
+                type: 'config/err',
+                payload: {data: result.data}
+            });
+        }
+    }
+
+    async handleChange (event) {
+        event.preventDefault();
+        const data = Tools.formDataToObj(event.target);
+        if (!this.state.id) {
+            this.handleAdd(data);
+        } else {
+            this.handleEdit(this.state.id, data);
+        }
+    }
+
+    toggleModal (modalId: string, id: ?number = null) {
+        let state = {id};
+        state[modalId] = !this.state[modalId]
+        switch (modalId) {
+            case 'mainModal':
+                if (id) {
+                    Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
+                        if (result.success) {
+                            store.dispatch({
+                                type: 'config/obj',
+                                payload: {data: result.data}
+                            });
+                        }
+                        this.setState(state);
+                    });
+                    return;
+                } else {
+                    store.dispatch({
+                        type: 'config/obj',
+                        payload: {data: {}}
+                    });
+                    store.dispatch({
+                        type: 'config/err',
+                        payload: {data: {}}
+                    });
+                }
+                break;
+        }
+        this.setState(state);
+    }
+
+    renderMainModal (defaultValue: Object = {}, errorMessage: Object = {}) {
+        const modalId = 'mainModal';
+        return (
+            <CustomModal
+                open={this.state[modalId]}
+                close={() => this.toggleModal(modalId)}
+                title="Update profile"
+                size="md">
+                <div>
+                    <ConfigForm
+                        formId="updateProfileForm"
+                        defaultValue={defaultValue}
+                        errorMessage={errorMessage}
+                        submitTitle="Update profile"
+                        handleSubmit={this.handleChange}>
+                        <button
+                            type="button"
+                            onClick={() => this.toggleModal(modalId)}
+                            className="btn btn-warning">
+                            <span className="oi oi-x"></span>&nbsp;
+                            Cancel
+                        </button>
+                    </ConfigForm>
+                </div>
+            </CustomModal>
+        );
+    }
+
     renderRows () {
         const listItem = this.props.configReducer.list;
         return listItem.map((item, key) => (
@@ -82,7 +204,10 @@ class Config extends React.Component<Props, States> {
                     {item.value}
                 </td>
                 <td className="center">
-                    <span className="oi oi-pencil text-info pointer"></span>&nbsp;&nbsp;&nbsp;
+                    <span 
+                        className="oi oi-pencil text-info pointer"
+                        onClick={() => this.toggleModal('mainModal', item.id)}></span>
+                    &nbsp;&nbsp;&nbsp;
                     <span className="oi oi-x text-danger pointer"></span>
                 </td>
             </tr>
@@ -107,7 +232,9 @@ class Config extends React.Component<Props, States> {
                             <th scope="col">Key</th>
                             <th scope="col">Value</th>
                             <th scope="col" style={{padding: 8}} className="row80">
-                                <button className="btn btn-primary btn-sm btn-block">
+                                <button 
+                                    className="btn btn-primary btn-sm btn-block"
+                                    onClick={() => this.toggleModal('mainModal')}>
                                     <span className="oi oi-plus"></span>&nbsp;
                                     Add
                                 </button>
@@ -126,6 +253,7 @@ class Config extends React.Component<Props, States> {
                         </tr>
                     </tfoot>
                 </table>
+                {this.renderMainModal(this.props.configReducer.obj, this.props.configReducer.err)}
             </NavWrapper>
         )
     }

@@ -2,6 +2,7 @@
 type ConfigReducerType = {
     pages: number,
     obj: Object,
+    err: Object,
     list: Array<Object>,
 };
 
@@ -9,6 +10,7 @@ type ConfigReducerType = {
 const configReducerDefault: ConfigReducerType = {
     pages: 0,
     obj: {},
+    err: {},
     list: []
 };
 
@@ -16,12 +18,17 @@ export default function configReducer(
     state: ConfigReducerType = configReducerDefault,
     action: {type: string, payload: any}): ConfigReducerType{
     const prefix = 'config' + '/';
-    const {data, pages, index} = (action.payload ? action.payload : {});
+    const {data, pages, id} = (action.payload ? action.payload : {});
     switch(action.type){
         case prefix + 'obj':
             return {
                 ...state,
-                obj: {...state.obj, ...data}
+                obj: {...data}
+            };
+        case prefix + 'err':
+            return {
+                ...state,
+                err: {...data}
             };
         case prefix + 'list':
             // Update checked to false
@@ -40,6 +47,7 @@ export default function configReducer(
                 list: [{...data}, ...state.list]
             };
         case prefix + 'edit':
+            const index = state.list.findIndex(item => item.id===id);
             return {
                 ...state,
                 list: [
