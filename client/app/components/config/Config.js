@@ -27,6 +27,7 @@ class Config extends React.Component<Props, States> {
     handleChange: Function;
     handleAdd: Function;
     handleEdit: Function;
+    handleRemove: Function;
 
     constructor(props) {
         super(props);
@@ -43,6 +44,7 @@ class Config extends React.Component<Props, States> {
         this.handleChange = this.handleChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     componentDidMount () {
@@ -54,7 +56,7 @@ class Config extends React.Component<Props, States> {
             data: [...initData.items], 
             pages: initData.pages
         }});
-		this.setState({dataLoaded: true});
+        this.setState({dataLoaded: true});
     }
 
     async list (outerParams:Object = {}, page:number = 1) {
@@ -117,6 +119,28 @@ class Config extends React.Component<Props, States> {
             this.handleAdd(data);
         } else {
             this.handleEdit(this.state.id, data);
+        }
+    }
+
+    async handleRemove (id: string) {
+        const listId = id.split(',');
+        if (!listId.length) return;
+        let message = '';
+        if (listId.length === 1) {
+            message = 'Do you want to remove this item?';
+        } else {
+            message = 'Do you want to remove selected items?';
+        }
+        const decide = confirm(message);
+        if (!decide) return;
+        const result = await Tools.apiCall(apiUrls.crud + id + '/delete/', 'DELETE');
+        if (result.success) {
+            store.dispatch({
+                type: 'config/remove',
+                payload: {id}
+            });
+        } else {
+            this.list();
         }
     }
 
@@ -187,15 +211,15 @@ class Config extends React.Component<Props, States> {
                     <input
                         type="checkbox"
                         checked={item.checked}
-                        onChange={ event => (
+                        onChange={ event => {
                             store.dispatch({
                                 type: 'config/edit', 
                                 payload: {
                                     data: {checked: event.target.checked},
-                                    index: key
+                                    id: item.id
                                 }
                             })
-                        )}/>
+                        }}/>
                 </th>
                 <td>
                     {item.uid}
@@ -208,7 +232,9 @@ class Config extends React.Component<Props, States> {
                         className="oi oi-pencil text-info pointer"
                         onClick={() => this.toggleModal('mainModal', item.id)}></span>
                     &nbsp;&nbsp;&nbsp;
-                    <span className="oi oi-x text-danger pointer"></span>
+                    <span 
+                        className="oi oi-x text-danger pointer"
+                        onClick={() => this.handleRemove(String(item.id))}></span>
                 </td>
             </tr>
         ));
@@ -248,7 +274,11 @@ class Config extends React.Component<Props, States> {
                     <tfoot>
                         <tr>
                             <th className="row25" colSpan="99">
-                                <span className="oi oi-x text-danger pointer"></span>
+                                <span 
+                                    className="oi oi-x text-danger pointer"
+                                    onClick={
+                                        () => this.handleRemove(Tools.getCheckedId(this.props.configReducer.list))
+                                    }></span>
                             </th>
                         </tr>
                     </tfoot>

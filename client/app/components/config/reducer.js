@@ -47,6 +47,7 @@ export default function configReducer(
                 list: [{...data}, ...state.list]
             };
         case prefix + 'edit':
+            console.log(id);
             const index = state.list.findIndex(item => item.id===id);
             return {
                 ...state,
@@ -55,6 +56,13 @@ export default function configReducer(
                     {...state.list.slice(index, index + 1)[0], ...data},
                     ...state.list.slice(index + 1)
                 ]
+            };
+        case prefix + 'remove':
+            const listId = id.split(',').map(item => parseInt(item));
+            const newList1 = state.list.filter(item => listId.indexOf(item.id) === -1);
+            return {
+                ...state,
+                list: newList1
             };
         case prefix + 'toggleCheckAll':
             var newList = [];
@@ -78,22 +86,6 @@ export default function configReducer(
                 // Nothing checked -> check all
                 return result(true);
             }
-        /*
-        case prefix + 'checkAll':
-            return {
-                ...state,
-                list: state.list.map(value => {
-                    return {...value, checked: true};
-                })
-            };
-        case prefix + 'uncheckAll':
-            return {
-                ...state,
-                list: state.list.map(value => {
-                    return {...value, checked: false};
-                })
-            };
-        */
         default:
             return state;
     }

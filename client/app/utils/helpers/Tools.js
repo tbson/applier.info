@@ -344,5 +344,10 @@ export default class Tools {
                 data: error
             }
         }
-  }
+    }
+
+    static getCheckedId(listItem: Array<Object>): string {
+        const result = listItem.filter(item => !!item.checked).map(item => item.id);
+        return result.join(',');
+    }
 }
