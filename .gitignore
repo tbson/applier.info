@@ -3,6 +3,8 @@
 *.bak
 .DS_Store
 tmp
+api/docker-compose.yml
+api/dbdata/
 api/.coverage
 api/core/env.py
 api/public/static/rest_framework_swagger/
@@ -13,4 +15,5 @@ api/public/media/
 api/public/clients/
 client/node_modules/
 client/build/
+client/docker-compose.yml
 vclien

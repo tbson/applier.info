@@ -1,0 +1,23 @@
+version: '2'
+
+networks:
+    proxy:
+        external:
+            name: common_proxy
+
+services:
+    applier_client:
+        container_name: applier_client
+        build:
+            context: ./
+            dockerfile: client.dockerfile
+        command: bash -c "yarn start"
+        working_dir: /code
+        ports:
+            - "4004:4004"
+        volumes:
+            - .:/code:cached
+            - /code/node_modules
+        networks:
+            - proxy
+

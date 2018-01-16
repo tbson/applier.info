@@ -89,12 +89,12 @@ if(TARGET === 'start' || !TARGET) {
             historyApiFallback: true,
             hot: true,
             stats: 'errors-only',
-            host: 'dcms.test',
+            host: '0.0.0.0',
             port: 4004,
             https: {
-                key: fs.readFileSync("/Users/tranbacson/Software/dev-priv-key/dcms.dev.key"),
-                cert: fs.readFileSync("/Users/tranbacson/Software/dev-priv-key/dcms.dev.crt"),
-                ca: fs.readFileSync("/Users/tranbacson/Software/dev-priv-key/myCA.pem")
+                cert: fs.readFileSync("/code/ssl/cer.crt"),
+                key: fs.readFileSync("/code/ssl/rsa.key"),
+                ca: fs.readFileSync("/code/ssl/localca.pem")
             }
         },
         plugins: [

@@ -1,0 +1,36 @@
+version: '2'
+
+networks:
+    proxy:
+        external:
+            name: common_proxy
+
+services:
+    applier_db:
+        container_name: applier_db
+        image: "postgres:10.1"
+        environment:
+            - POSTGRES_USER=docker
+            - POSTGRES_PASSWORD=docker
+            - POSTGRES_DB=docker
+        ports:
+            - "5433:5432"
+        volumes:
+            - ./dbdata:/var/lib/postgresql/data/:cached
+        networks:
+            - proxy
+
+    applier_api:
+        container_name: applier_api
+        build:
+            context: ./
+            dockerfile: api.dockerfile
+        command: bash -c "./utils/wait-for-it.sh db:5432 -- python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8001"
+        volumes:
+            - .:/code:cached
+        ports:
+            - "8001:8001"
+        depends_on:
+            - "applier_db"
+        networks:
+            - proxy

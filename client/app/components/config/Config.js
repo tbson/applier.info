@@ -181,7 +181,7 @@ class Config extends React.Component<Props, States> {
             <CustomModal
                 open={this.state[modalId]}
                 close={() => this.toggleModal(modalId)}
-                title="Update profile"
+                title="Update config"
                 size="md">
                 <div>
                     <ConfigForm
