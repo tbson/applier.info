@@ -47,7 +47,6 @@ export default function configReducer(
                 list: [{...data}, ...state.list]
             };
         case prefix + 'edit':
-            console.log(id);
             const index = state.list.findIndex(item => item.id===id);
             return {
                 ...state,

@@ -8,7 +8,9 @@ import CustomModal from 'utils/components/CustomModal';
 import { apiUrls } from './_data';
 import Tools from 'helpers/Tools';
 import store from 'app/store';
-import LoginForm from './forms/LoginForm'
+import LoginForm from './forms/LoginForm';
+import ResetPasswordModal from './forms/ResetPasswordModal';
+
 
 type Props = {
     loginFail: boolean
@@ -20,7 +22,6 @@ class Login extends React.Component<Props, States> {
     handleSubmit: Function;
     handleSubmitResetPassword: Function;
     toggleModal: Function;
-    renderModal: Function;
     renderErrorMessage: Function;
 
     static defaultProps = {
@@ -35,7 +36,6 @@ class Login extends React.Component<Props, States> {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSubmitResetPassword = this.handleSubmitResetPassword.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
-        this.renderModal = this.renderModal.bind(this);
         this.renderErrorMessage = this.renderErrorMessage.bind(this);
     }
 
@@ -79,32 +79,6 @@ class Login extends React.Component<Props, States> {
         )
     }
 
-    renderModal () {
-        const authData = Tools.getStorageObj('authData');
-        return (
-            <CustomModal
-                open={this.state.modal}
-                close={this.toggleModal}
-                title="Reset password"
-                size="md">
-                <div>
-                    <LoginForm
-                        formId="resetPasswordForm"
-                        submitTitle="Reset password"
-                        handleSubmit={this.handleSubmitResetPassword}>
-                        <button
-                            type="button"
-                            onClick={this.toggleModal}
-                            className="btn btn-warning">
-                            <span className="oi oi-x"></span>&nbsp;
-                            Cancel
-                        </button>
-                    </LoginForm>
-                </div>
-            </CustomModal>
-        );
-    }
-
     componentDidMount () {
         const authData = Tools.getStorageObj('authData');
         if (authData.email) {
@@ -135,8 +109,11 @@ class Login extends React.Component<Props, States> {
 
                     </div>
                 </div>
-                {this.renderModal()}
-            </div> 
+                <ResetPasswordModal 
+                    open={this.state.modal}
+                    handleClose={() => this.setState({modal: false})}
+                    handleSubmit={this.handleSubmitResetPassword}/>
+            </div>
         );
     }
 }
