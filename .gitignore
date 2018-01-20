@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *.bak
+tags
 .DS_Store
 tmp
 api/docker-compose.yml
