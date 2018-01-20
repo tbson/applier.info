@@ -25,7 +25,7 @@ services:
         build:
             context: ./
             dockerfile: api.dockerfile
-        command: bash -c "./utils/wait-for-it.sh db:5432 -- python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8001"
+        command: bash -c "./utils/wait-for-it.sh db:5432 -- python manage.py makemigrations && python manage.py migrate && python manage.py runsslserver 0.0.0.0:8001 --certificate /code/ssl/cer.crt --key /code/ssl/rsa.key"
         volumes:
             - .:/code:cached
         ports:
