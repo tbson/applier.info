@@ -11,9 +11,9 @@ class Administrator(models.Model):
             )
     fingerprint = models.CharField(max_length=250, blank=True)
 
-    change_password_token = models.CharField(max_length=250, blank=True)
-    change_password_tmp = models.CharField(max_length=250, blank=True)
-    change_password_created = models.DateTimeField(null=True, blank=True)
+    reset_password_token = models.CharField(max_length=250, blank=True)
+    reset_password_tmp = models.CharField(max_length=250, blank=True)
+    reset_password_created = models.DateTimeField(null=True, blank=True)
 
     signup_token = models.CharField(max_length=250, blank=True)
     signup_token_created = models.DateTimeField(null=True, blank=True)

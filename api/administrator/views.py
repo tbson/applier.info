@@ -40,20 +40,6 @@ class DetailView(RetrieveAPIView):
     queryset = Administrator.objects.all()
     serializer_class = AdministratorBaseSerializer
 
-"""
-class ProfileView(RetrieveAPIView):
-    permissions = ['_custom_view_profile_administrator']
-    permission_classes = [CustomPermission]
-    queryset = Administrator.objects.all()
-    serializer_class = AdministratorBaseSerializer
-    lookup_field = 'pk'
-
-    def get_object(self):
-        # return Administrator.objects.get(user_id=self.request.user.id)
-        token = getToken(self.request.META)
-        print(token)
-        return self.request.user.administrator
-"""
 
 class CreateView(CreateAPIView):
     permissions = ['_custom_create_administrator']
@@ -89,8 +75,7 @@ class DeleteView(RetrieveDestroyAPIView):
 
 
 class ProfileView(APIView):
-    authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
@@ -111,8 +96,7 @@ class ProfileView(APIView):
 
 
 class ResetPasswordView(APIView):
-    authentication_classes = ()
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny,]
 
     def get_object(self, queryStr, type="username"):
         try:
@@ -161,21 +145,16 @@ class ResetPasswordView(APIView):
         to = user.email
 
         Tools.sendEmail(subject, body, to)
-        return Response()
+        return Response({"url": url})
 
 class ChangePasswordView(APIView):
-    authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
 
     def post(self, request, format=None):
         params = self.request.data
-
-        # Compare old vs new password
-        if params["password"] != params["oldPassword"]:
-            raise ValidationError({"detail": "Password not matched"})
 
         user = self.get_object()
 
