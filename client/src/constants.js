@@ -1,3 +1,6 @@
+import { createBrowserHistory } from 'history';
+
+
 export const APP_TITLE = 'Applier';
 export const APP_NAMESPACE = 'applier';
 export const APP = window.location.href !== 'about:blank'?window.location.href.split('://')[1].split('/')[1]:'blank';
@@ -34,6 +37,9 @@ export const ADMIN_ROLES = [
 export const USER_ROLES = [
     'khach-hang'
 ];
+
+
+export const History = createBrowserHistory(URL_PREFIX_STRIP==='blank'?{}:{ basename: URL_PREFIX_STRIP });
 
 try {
     __webpack_public_path__ = APP?'/' + APP + '/':'/';

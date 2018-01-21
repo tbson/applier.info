@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import Fingerprint2 from 'fingerprintjs2';
-import { createBrowserHistory } from 'history';
-// import store from 'src/store';
+import store from 'src/store';
+
 
 import {
     LOCAL_STORAGE_PREFIX,
@@ -11,10 +11,10 @@ import {
     PROTOCOL,
     DOMAIN,
     FIELD_TYPE,
-    URL_PREFIX_STRIP
+    URL_PREFIX_STRIP,
+    History
 } from 'src/constants';
 let fingerprint = null;
-export const History = createBrowserHistory(URL_PREFIX_STRIP==='blank'?{}:{ basename: URL_PREFIX_STRIP });
 
 
 type rawApiUrlsType = [{
@@ -54,18 +54,6 @@ export default class Tools {
     static cap(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
-
-    /*
-    static toggleGlobalLoading(spinning: boolean = true): void {
-        const action = {
-            type: 'TOGGLE_SPINNER',
-            payload: {
-                spinning
-            }
-        }
-        store.dispatch(action);
-    }
-    */
 
     static formDataToObj (formTarget: HTMLFormElement) {
         const formData = new FormData(formTarget);
@@ -147,7 +135,6 @@ export default class Tools {
     }
 
     static getApiUrls(rawApiUrls: Object): Object{
-        console.log(rawApiUrls);
         let result = {};
         const API_BASE_URL = this.getApiBaseUrl();
         Object.entries(rawApiUrls).forEach(([index, apiUrl]) => {
@@ -263,6 +250,16 @@ export default class Tools {
             this.errorToast(messages, title?title:'Error!');
         }
         */
+    }
+
+    static toggleGlobalLoading(spinning: boolean = true): void {
+        const action = {
+            type: 'TOGGLE_SPINNER',
+            payload: {
+                spinning
+            }
+        }
+        store.dispatch(action);
     }
 
     static async apiCall(

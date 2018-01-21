@@ -49,7 +49,7 @@ class Profile extends React.Component<Props, States> {
 
     componentDidMount () {
         Tools.apiCall(apiUrls.profile, 'GET').then(result => {
-            console.log(result);
+            // console.log(result);
         });
     }
 

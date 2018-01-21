@@ -1,6 +1,6 @@
 import Tools from 'src/utils/helpers/Tools';
 import {FIELD_TYPE, APP} from 'src/constants';
-console.log(Tools);
+
 const rawApiUrls = [
     {
         controller: APP,

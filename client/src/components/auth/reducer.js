@@ -1,8 +1,4 @@
 // @flow
-import Tools from 'src/utils/helpers/Tools';
-import { actions } from './_data';
-
-
 type ResetFormType = {
     FormLogin: number
 };
@@ -51,14 +47,14 @@ export default function authReducer(
     const prefix = 'auth' + '/';
     const {data, pages, index, dataLoaded, modalId, open} = (action.payload ? action.payload : {});
     switch(action.type){
-        case actions.RESET_FORM:
+        case prefix + 'resetForm':
             let data = {};
             data[action.payload] = state.resetForm[action.payload] + 1;
             return {
                 ...state,
                 resetForm: {...state.resetForm, ...data}
             };
-        case actions.TOGGLE_RESET_PASSWORD_MODAL:
+        case prefix + 'toggleResetPasswordModal':
             return {
                 ...state,
                 mainModalVisible: action.payload
