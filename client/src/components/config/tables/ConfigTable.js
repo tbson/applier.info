@@ -139,7 +139,7 @@ class ConfigTable extends React.Component<Props, States> {
     async handleSubmit (event) {
         event.preventDefault();
         let error: ?Object = null;
-        const params = Tools.formDataToObj(event.target);
+        const params = Tools.formDataToObj(new FormData(event.target));
 
         if (!this.state.id) {
             error = await this.handleAdd(params);

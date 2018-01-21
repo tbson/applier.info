@@ -55,7 +55,7 @@ class Profile extends React.Component<Props, States> {
 
     async handleUpdateProfile (event) {
         event.preventDefault();
-        const data = Tools.formDataToObj(event.target);
+        const data = Tools.formDataToObj(new FormData(event.target));
 
         const result = await Tools.apiCall(apiUrls.profile, 'POST', data);
         if (result.success) {
@@ -70,7 +70,7 @@ class Profile extends React.Component<Props, States> {
 
     async handleChangePassword (event) {
         event.preventDefault();
-        const data = Tools.formDataToObj(event.target);
+        const data = Tools.formDataToObj(new FormData(event.target));
 
         const result = await Tools.apiCall(apiUrls.changePassword, 'POST', data);
         if (result.success) {

@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 import Fingerprint2 from 'fingerprintjs2';
+import snakeCase from 'lodash/snakeCase';
+import camelCase from 'lodash/camelCase';
 import store from 'src/store';
 
 
@@ -29,37 +31,14 @@ export default class Tools {
         return ['dev'].indexOf(suffix) === -1 ? false : true;
     }
 
-    static snakeCase (str: string): string {
-        var upperChars = str.match(/([A-Z])/g);
-        if (! upperChars) {
-            return str;
-        }
-
-        var str = str.toString();
-        for (var i = 0, n = upperChars.length; i < n; i++) {
-            str = str.replace(new RegExp(upperChars[i]), '_' + upperChars[i].toLowerCase());
-        }
-
-        if (str.slice(0, 1) === '_') {
-            str = str.slice(1);
-        }
-
-        return str;
-    };
-
-    static camelCase(s: string): string {
-        return s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();});
-    }
-
     static cap(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    static formDataToObj (formTarget: HTMLFormElement) {
-        const formData = new FormData(formTarget);
+    static formDataToObj (formData: FormData) {
         let data = {};
         for (let pair of formData.entries()){
-            data[pair[0]] = pair[1];
+            data[pair[0]] = pair[1] === 'null' ? null : pair[1];
         }
         return data;
     }
@@ -144,7 +123,7 @@ export default class Tools {
                     // $FlowFixMe: Still have no idea why it happen
                     parseInt(index) === 0 ? key : this.camelCase(apiUrl.controller) + this.cap(key)
                 // $FlowFixMe: Still have no idea why it happen
-                ] = API_BASE_URL + this.snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
+                ] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
             });
         });
         return result;

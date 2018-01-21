@@ -15,9 +15,9 @@
       "."
     ],
     "transform": {
-        "^.+\\.js?$": "babel-jest",
-        "^.+\\.jsx?$": "babel-jest"
-    } 
+      "^.+\\.js?$": "babel-jest",
+      "^.+\\.jsx?$": "babel-jest"
+    }
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -66,6 +66,7 @@
     "fingerprintjs2": "^1.5.1",
     "history": "^4.7.2",
     "ip": "^1.1.5",
+    "lodash": "^4.17.4",
     "open-iconic": "^1.1.1",
     "react": "16.2.0",
     "react-dom": "16.2.0",

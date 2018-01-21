@@ -41,7 +41,7 @@ class Login extends React.Component<Props, States> {
 
     async handleSubmit (event) {
         event.preventDefault();
-        const data = Tools.formDataToObj(event.target);
+        const data = Tools.formDataToObj(new FormData(event.target));
         const result = await Tools.apiCall(apiUrls.tokenAuth, 'POST', data);
         if (result.success) {
             Tools.setStorage('authData', result.data.user);
@@ -56,7 +56,7 @@ class Login extends React.Component<Props, States> {
 
     async handleSubmitResetPassword (event) {
         event.preventDefault();
-        const data = Tools.formDataToObj(event.target);
+        const data = Tools.formDataToObj(new FormData(event.target));
         const result = await Tools.apiCall(apiUrls.resetPassword, 'POST', data);
         console.log(result);
     }
