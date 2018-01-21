@@ -6,7 +6,7 @@ const TARGET = process.env.npm_lifecycle_event
 const path = require('path')
 const fs = require('fs')
 const PATHS = {
-  app: path.join(__dirname, 'app'),
+  app: path.join(__dirname, 'src'),
   build: path.join(__dirname, 'build'),
   test: path.join(__dirname, 'tests')
 }
@@ -24,6 +24,8 @@ const common = {
             path.resolve(__dirname),
             'node_modules'
         ],
+        /*
+        ,
         alias: {
             app: 'app',
             libs: 'app/libs/',
@@ -32,6 +34,7 @@ const common = {
             images: 'app/images/',
             helpers: 'app/utils/helpers'
         },
+        */
         extensions: ['.js', '.jsx']
     },
     output: {
@@ -102,6 +105,11 @@ if(TARGET === 'start' || !TARGET) {
         ]
     })
 }
+
+/*
+if(TARGET === 'test' || TARGET === 'tdd') {
+}
+*/
 
 if (['build'].indexOf(TARGET) !== -1) {
     module.exports = merge(common, {
