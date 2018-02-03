@@ -1,7 +1,10 @@
 // @flow
 import React from 'react';
+// $FlowFixMe: do not complain about importing node_modules
 import Fingerprint2 from 'fingerprintjs2';
-import snakeCase from 'lodash/snakeCase';
+// $FlowFixMe: do not complain about importing node_modules
+import kebabCase from 'lodash/kebabCase';
+// $FlowFixMe: do not complain about importing node_modules
 import camelCase from 'lodash/camelCase';
 import store from 'src/store';
 
@@ -43,10 +46,6 @@ export default class Tools {
         return data;
     }
 
-    static getApiBaseUrl(): string {
-        return PROTOCOL + DOMAIN + API_PREFIX;
-    }
-
     static navigateTo(url:string = '/', params:Array<mixed> = []) {
         return History.push([url, ...params].join('/'));
     }
@@ -63,6 +62,19 @@ export default class Tools {
         return (Object.keys(obj).length === 0 && obj.constructor === Object);
     }
 
+    static setStorage(key: string, value: any): void{
+        try{
+            let newValue = value;
+            if(key === 'authData'){
+                newValue = {...this.getStorageObj(key), ...value};
+            }
+            newValue = JSON.stringify(newValue);
+            localStorage.setItem(LOCAL_STORAGE_PREFIX + '_' + key, newValue);
+        }catch(error){
+            console.error(error);
+        }
+    }
+
     static getStorageObj(key: string): Object {
         try{
             let value = this.parseJson(localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key));
@@ -77,26 +89,13 @@ export default class Tools {
 
     static getStorageStr(key: string): string{
         try{
-            let value = localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key);
-            if(!value){
+            let value = this.parseJson(localStorage.getItem(LOCAL_STORAGE_PREFIX + '_' + key));
+            if(!value || typeof value === 'object'){
                 return '';
             }
             return String(value);
         }catch(error){
             return '';
-        }
-    }
-
-    static setStorage(key: string, value: any): void{
-        try{
-            let newValue = value;
-            if(key === 'authData'){
-                newValue = {...this.getStorageObj(key), ...value};
-            }
-            newValue = JSON.stringify(newValue);
-            localStorage.setItem(LOCAL_STORAGE_PREFIX + '_' + key, newValue);
-        }catch(error){
-            console.error(error);
         }
     }
 
@@ -106,7 +105,7 @@ export default class Tools {
 
     static getToken(): string {
         const token = this.getStorageObj('authData').token;
-        return token?token:'';
+        return token ? token : '';
     }
 
     static getApiBaseUrl(): String{
@@ -119,34 +118,38 @@ export default class Tools {
         Object.entries(rawApiUrls).forEach(([index, apiUrl]) => {
             // $FlowFixMe: Still have no idea why it happen
             Object.entries(apiUrl.endpoints).forEach(([key, url]) => {
+                url = kebabCase(url);
                 result[
                     // $FlowFixMe: Still have no idea why it happen
-                    parseInt(index) === 0 ? key : this.camelCase(apiUrl.controller) + this.cap(key)
+                    parseInt(index) === 0 ? key : camelCase(apiUrl.controller) + this.cap(key)
                 // $FlowFixMe: Still have no idea why it happen
-                ] = API_BASE_URL + snakeCase(apiUrl.controller).replace(/_/g, '-') + '/' + url + (url?'/':'');
+                ] = API_BASE_URL + kebabCase(apiUrl.controller) + '/' + url + (url?'/':'');
             });
         });
         return result;
     }
 
-    static async getFingerPrint(): Promise<string>{
-        const result = await new Promise(function(resolve, reject){
-            new Fingerprint2().get((newFingerprint) => {
-                fingerprint = newFingerprint;
-                resolve(newFingerprint);
+    static async getFingerPrint(): Promise<string> {
+        const result = await new Promise(function (resolve, reject) {
+            new Fingerprint2().get((fingerprint) => {
+                resolve(fingerprint);
             });
         });
         return result;
     }
 
-    static paramsProcessing(data: Object = {}, fileList: ?{[string]: FileList} = null): Object{
-        try{
+    static paramsProcessing(data: Object = {}, fileList: ?{[string]: FileList} = null): Object {
+        try {
             if (fileList) {
                 let formData = new FormData();
-                Object.entries(fileList).forEach(([key, value]) => {
+                Object.entries(data).forEach(([key, value]) => {
                     // $FlowFixMe: Still have no idea why it happen
                     formData.set(key, value);
                 });
+                Object.entries(fileList).forEach(([key, value]) => {
+                    // $FlowFixMe: Still have no idea why it happen
+                    formData.set(key, value);
+                }); 
                 return {
                     data: formData,
                     contentType: null
@@ -157,7 +160,7 @@ export default class Tools {
                     contentType: "application/json"
                 }
             }
-        }catch(error){
+        } catch (error) {
             console.error(error);
             return {};
         }
@@ -166,9 +169,11 @@ export default class Tools {
     static urlDataEncode(obj: Object): string {
         let str = [];
         for(let p in obj){
-            // if (has(obj, p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-            // }
+            var value = obj[p];
+            if (value === null) {
+                value = '';
+            }
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(value));
         }
         return str.join("&");
     }
