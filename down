@@ -1,3 +1,4 @@
 docker-compose -f ../../docker/nginx/docker-compose.yml down
 docker-compose -f api/docker-compose.yml down
 docker-compose -f client/docker-compose.yml down
+rm ~/Code/docker/nginx/conf.d/applier.conf
