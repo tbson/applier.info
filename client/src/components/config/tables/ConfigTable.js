@@ -1,6 +1,8 @@
 // @flow
 import * as React from 'react';
+// $FlowFixMe: do not complain about importing node_modules
 import { connect } from 'react-redux';
+// $FlowFixMe: do not complain about importing node_modules
 import { withRouter } from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import { actions, apiUrls } from '../_data';
@@ -158,7 +160,7 @@ class ConfigTable extends React.Component<Props, States> {
 
     async handleRemove (id: string) {
         const listId = id.split(',');
-        if (!listId.length) return;
+        if (!id || !listId.length) return;
         let message = '';
         if (listId.length === 1) {
             message = 'Do you want to remove this item?';
