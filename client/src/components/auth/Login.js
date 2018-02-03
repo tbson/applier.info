@@ -1,6 +1,8 @@
 // @flow
 import * as React from 'react';
+// $FlowFixMe: do not complain about importing node_modules
 import { connect } from 'react-redux';
+// $FlowFixMe: do not complain about importing node_modules
 import { withRouter } from 'react-router-dom';
 import { actions } from './_data';
 import CustomModal from 'src/utils/components/CustomModal';
@@ -51,14 +53,12 @@ class Login extends React.Component<Props, States> {
                 loginFail: true
             });
         }
-        console.log(result);
     }
 
     async handleSubmitResetPassword (event) {
         event.preventDefault();
         const data = Tools.formDataToObj(new FormData(event.target));
         const result = await Tools.apiCall(apiUrls.resetPassword, 'POST', data);
-        console.log(result);
     }
 
     toggleModal () {

@@ -277,3 +277,60 @@ test('getCheckedId', () => {
     eput = '1,2,3';
     expect(output).toEqual(eput);
 });
+
+test('errorMessageProcessing', () => {
+    let input = ''; 
+    let output = Tools.errorMessageProcessing(input);
+    let eput = '';
+    expect(output).toEqual(eput);
+
+    input = 'hello'; 
+    output = Tools.errorMessageProcessing(input);
+    eput = 'hello';
+    expect(output).toEqual(eput);
+
+    input = ['hello', 'world']; 
+    output = Tools.errorMessageProcessing(input);
+    eput = 'hello<br/>world';
+    expect(output).toEqual(eput);
+
+    input = {detail: 'hello'}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = 'hello';
+    expect(output).toEqual(eput);
+
+    input = {detail: ['hello', 'world']}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = 'hello<br/>world';
+    expect(output).toEqual(eput);
+
+    input = {detail: 2}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+
+    input = {detail: {}}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+
+    input = {detail: []}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+
+    input = 2; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+
+    input = {}; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+
+    input = []; 
+    output = Tools.errorMessageProcessing(input);
+    eput = '';
+    expect(output).toEqual(eput);
+});

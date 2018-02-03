@@ -5,6 +5,8 @@ import Fingerprint2 from 'fingerprintjs2';
 // $FlowFixMe: do not complain about importing node_modules
 import kebabCase from 'lodash/kebabCase';
 // $FlowFixMe: do not complain about importing node_modules
+import { toast } from 'react-toastify';
+// $FlowFixMe: do not complain about importing node_modules
 import camelCase from 'lodash/camelCase';
 import store from 'src/store';
 
@@ -221,19 +223,15 @@ export default class Tools {
         this.navigateTo('login');
     }
 
-    static popMessage(description: string | Object, title: string='', type: string='success'): void {
-        return;
-        /*
+    static popMessage(description: string | Object, type: string='success'): void {
         const messages = this.errorMessageProcessing(description);
-        console.log(messages);
         if(!messages) return;
 
         if(type === 'success'){
-            this.successToast(messages, title?title:'Success!');
+            toast.success(messages?messages:'Success!');
         }else{
-            this.errorToast(messages, title?title:'Error!');
+            toast.error(messages?messages:'Error!');
         }
-        */
     }
 
     static toggleGlobalLoading(spinning: boolean = true): void {
@@ -261,7 +259,6 @@ export default class Tools {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
-                    // "Authorization": "Bearer " + this.getToken(),
                     "Authorization": "JWT " + this.getToken(),
                     "fingerprint": await this.getFingerPrint()
                 },
@@ -310,7 +307,7 @@ export default class Tools {
                 data
             };
             if([200, 201, 204].indexOf(result.status) === -1){
-                this.popMessage(result.data, '', 'error');
+                this.popMessage(result.data, 'error');
             }
             if (result.status === 401) {
                 this.logout();
