@@ -224,13 +224,16 @@ export default class Tools {
     }
 
     static popMessage(description: string | Object, type: string='success'): void {
+        const toastConfig = {
+            position: toast.POSITION.BOTTOM_RIGHT,
+        };
         const messages = this.errorMessageProcessing(description);
         if(!messages) return;
 
         if(type === 'success'){
-            toast.success(messages?messages:'Success!');
+            toast.success(messages?messages:'Success!', toastConfig);
         }else{
-            toast.error(messages?messages:'Error!');
+            toast.error(messages?messages:'Error!', toastConfig);
         }
     }
 
