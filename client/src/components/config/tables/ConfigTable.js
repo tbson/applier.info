@@ -3,10 +3,13 @@ import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
 import { connect } from 'react-redux';
 // $FlowFixMe: do not complain about importing node_modules
+import { bindActionCreators } from 'redux';
+// $FlowFixMe: do not complain about importing node_modules
 import { withRouter } from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import { actions, apiUrls } from '../_data';
 import ConfigForm from '../forms/ConfigForm';
+import ConfigAction from '../actions';
 import ConfigModal from '../forms/ConfigModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import store from 'src/store';
@@ -15,6 +18,7 @@ import Tools from 'src/utils/helpers/Tools';
 
 type Props = {
     configReducer: Object,
+    action: Function
 };
 type States = {
     dataLoaded: bool,
@@ -23,7 +27,7 @@ type States = {
 };
 
 
-class ConfigTable extends React.Component<Props, States> {
+export class ConfigTable extends React.Component<Props, States> {
 
     list: Function;
     setInitData: Function;
@@ -55,10 +59,10 @@ class ConfigTable extends React.Component<Props, States> {
     }
 
     setInitData (initData: Object) {
-        store.dispatch({type: 'config/list', payload: {
+        this.props.action('list', {
             data: [...initData.items],
             pages: initData.pages
-        }});
+        });
         this.setState({dataLoaded: true});
     }
 
@@ -85,23 +89,14 @@ class ConfigTable extends React.Component<Props, States> {
                 if (id) {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
-                            store.dispatch({
-                                type: 'config/obj',
-                                payload: {data: result.data}
-                            });
+                            this.props.action('obj', {data: result.data})
                         }
                         this.setState(state);
                     });
                     return;
                 } else {
-                    store.dispatch({
-                        type: 'config/obj',
-                        payload: {data: {}}
-                    });
-                    store.dispatch({
-                        type: 'config/err',
-                        payload: {data: {}}
-                    });
+                    this.props.action('obj', {})
+                    this.props.action('err', {})
                 }
                 break;
         }
@@ -112,12 +107,7 @@ class ConfigTable extends React.Component<Props, States> {
         const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', params);
         if (result.success) {
             result.data.checked = false;
-            store.dispatch({
-                type: 'config/add',
-                payload: {
-                    data: result.data
-                }
-            });
+            this.props.action('add', { data: result.data });
             return null;
         }
         return result.data;
@@ -126,19 +116,13 @@ class ConfigTable extends React.Component<Props, States> {
     async handleEdit (id: number, params: Object) {
         const result = await Tools.apiCall(apiUrls.crud + id.toString() + '/edit/', 'PUT', params);
         if (result.success) {
-            store.dispatch({
-                type: 'config/edit',
-                payload: {
-                    id,
-                    data: result.data
-                }
-            });
+            this.props.action('edit', { id, data: result.data });
             return null;
         }
         return result.data;
     }
 
-    async handleSubmit (event) {
+    async handleSubmit (event: Object) {
         event.preventDefault();
         let error: ?Object = null;
         const params = Tools.formDataToObj(new FormData(event.target));
@@ -151,10 +135,7 @@ class ConfigTable extends React.Component<Props, States> {
         if (!error) {
             this.toggleModal('mainModal');
         } else {
-            store.dispatch({
-                type: 'config/err',
-                payload: {data: error}
-            });
+            this.props.action('err', {data: error})
         }
     }
 
@@ -171,10 +152,7 @@ class ConfigTable extends React.Component<Props, States> {
         if (!decide) return;
         const result = await Tools.apiCall(apiUrls.crud + id + '/delete/', 'DELETE');
         if (result.success) {
-            store.dispatch({
-                type: 'config/remove',
-                payload: {id}
-            });
+            this.props.action('remove', { id })
         } else {
             this.list();
         }
@@ -191,11 +169,7 @@ class ConfigTable extends React.Component<Props, States> {
                             <th className="row25">
                                 <span
                                     className="oi oi-check text-info pointer"
-                                    onClick={() => (
-                                        store.dispatch({
-                                            type: 'config/toggleCheckAll'
-                                        })
-                                    )}></span>
+                                    onClick={() => this.props.action('toggleCheckAll') }></span>
                             </th>
                             <th scope="col">Key</th>
                             <th scope="col">Value</th>
@@ -217,7 +191,8 @@ class ConfigTable extends React.Component<Props, States> {
                                     data={data}
                                     key={key} _key={key}
                                     toggleModal={this.toggleModal}
-                                    handleRemove={this.handleRemove}/>
+                                    handleRemove={this.handleRemove}
+                                    action={this.props.action}/>
                             ))
                         }
                     </tbody>
@@ -245,12 +220,18 @@ class ConfigTable extends React.Component<Props, States> {
     }
 }
 
-
+type DataType = {
+    id: number,
+    uid: string,
+    value: string,
+    checked: ?bool
+};
 type RowPropTypes = {
-    data: Object,
+    data: DataType,
     _key: number,
     toggleModal: Function,
-    handleRemove: Function
+    handleRemove: Function,
+    action: Function
 }
 export class Row extends React.Component<RowPropTypes> {
 
@@ -263,29 +244,26 @@ export class Row extends React.Component<RowPropTypes> {
                         type="checkbox"
                         checked={data.checked}
                         onChange={ event => {
-                            store.dispatch({
-                                type: 'config/edit',
-                                payload: {
-                                    data: {checked: event.target.checked},
-                                    id: data.id
-                                }
-                            })
+                            this.props.action('edit', {
+                                data: { checked: event.target.checked },
+                                id: data.id
+                            });
                         }}/>
                 </th>
-                <td>
+                <td className="uid">
                     {data.uid}
                 </td>
-                <td>
+                <td className="value">
                     {data.value}
                 </td>
                 <td className="center">
                     <span
                         className="oi oi-pencil text-info pointer"
-                        onClick={() => this.props.toggleModal('mainModal', data.id)}></span>
+                        onClick={ () => this.props.toggleModal('mainModal', data.id) }></span>
                     &nbsp;&nbsp;&nbsp;
                     <span
                         className="oi oi-x text-danger pointer"
-                        onClick={() => this.props.handleRemove(String(data.id))}></span>
+                        onClick={ () => this.props.handleRemove(String(data.id)) }></span>
                 </td>
             </tr>
         );
@@ -294,4 +272,6 @@ export class Row extends React.Component<RowPropTypes> {
 
 export default withRouter(connect(state => ({
     configReducer: state.configReducer
-}), dispatch => ({}))(ConfigTable));
+}), dispatch => ({
+    action: bindActionCreators(ConfigAction, dispatch)
+}))(ConfigTable));
