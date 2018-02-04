@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import { actions, apiUrls } from '../_data';
 import ConfigForm from '../forms/ConfigForm';
-import ConfigAction from '../actions';
+import configAction from '../actions';
 import ConfigModal from '../forms/ConfigModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import store from 'src/store';
@@ -273,5 +273,5 @@ export class Row extends React.Component<RowPropTypes> {
 export default withRouter(connect(state => ({
     configReducer: state.configReducer
 }), dispatch => ({
-    action: bindActionCreators(ConfigAction, dispatch)
+    action: bindActionCreators(configAction, dispatch)
 }))(ConfigTable));

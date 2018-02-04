@@ -1,18 +1,16 @@
 // @flow
-export default function ConfigAction(action: string, payload: ?Object): Object{
+export default function configAction(action: string, payload: ?Object): Object{
     const prefix = 'config' + '/';
     const type = prefix + action;
-    switch(action){
-        case 'obj':
-        case 'err':
-        case 'list':
-        case 'add':
-        case 'edit':
-        case 'remove':
-            return { type, payload };
-        case 'toggleCheckAll':
-            return { type };
-        default:
-            return {};
-    }
+    const actions = [
+        'obj',
+        'err',
+        'list',
+        'add',
+        'edit',
+        'remove',
+        'toggleCheckAll'
+    ];
+    if (actions.indexOf(action) !== -1) return { type, payload };
+    return {};
 }
