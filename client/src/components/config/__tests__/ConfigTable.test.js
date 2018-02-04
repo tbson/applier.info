@@ -2,12 +2,12 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { shallow, mount, render } from 'enzyme';
-import { Row } from '../tables/ConfigTable';
+import { Row, ConfigTable } from '../tables/ConfigTable';
 
 Enzyme.configure({ adapter: new Adapter() });
 
 
-describe('ConfigTable component', () => {
+describe('ConfigTable Row component', () => {
     let wrapper;
     const props = {
         _key: 0,
@@ -65,3 +65,41 @@ describe('ConfigTable component', () => {
     });
 
 });
+
+
+describe('ConfigTable component', () => {
+    let wrapper;
+    const props = {
+        configReducer: {},
+        action: jest.fn()
+    };
+
+    beforeAll(() => {
+        wrapper = shallow(<ConfigTable {...props}/>);
+    });
+
+    it('Get list', () => {
+
+    });
+
+    it('Check all', () => {
+
+    });
+
+    it('Number of rows', () => {
+
+    });
+
+    it('Add', () => {
+
+    });
+
+    it('Edit', () => {
+
+    });
+
+    it('Remove', () => {
+
+    });
+});
+

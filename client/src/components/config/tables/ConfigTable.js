@@ -238,7 +238,7 @@ export class Row extends React.Component<RowPropTypes> {
     render () {
         const data = this.props.data;
         return (
-            <tr key={this.props._key}>
+            <tr key={this.props._key} className="tableRow">
                 <th className="row25">
                     <input
                         className="check"
