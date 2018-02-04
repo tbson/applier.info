@@ -23,7 +23,9 @@ type Props = {
 type States = {
     dataLoaded: bool,
     mainModal: bool,
-    id: ?number
+    id: ?number,
+    nextUrl: ?string,
+    prevUrl: ?string
 };
 
 
@@ -42,7 +44,9 @@ export class ConfigTable extends React.Component<Props, States> {
         this.state = {
             dataLoaded: false,
             mainModal: false,
-            id: null
+            id: null,
+            nextUrl: null,
+            prevUrl: null
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -63,19 +67,21 @@ export class ConfigTable extends React.Component<Props, States> {
             data: [...initData.items],
             pages: initData.pages
         });
-        this.setState({dataLoaded: true});
+        this.setState({
+            dataLoaded: true,
+            nextUrl: initData.links.next,
+            prevUrl: initData.links.previous
+        });
     }
 
-    async list (outerParams:Object = {}, page:number = 1) {
-        let params = {
-            page
-        };
+    async list (outerParams:Object = {}, url:?string=null) {
+        let params = {};
 
         if(!Tools.emptyObj(outerParams)){
             params = {...params, ...outerParams};
         }
 
-        const result = await Tools.apiCall(apiUrls.crud, 'GET');
+        const result = await Tools.apiCall(url?url:apiUrls.crud, 'GET');
         if(result.success){
             this.setInitData(result.data);
         }
@@ -197,18 +203,24 @@ export class ConfigTable extends React.Component<Props, States> {
                         }
                     </tbody>
 
-                    <tfoot>
+                    <tfoot className="thead-light">
                         <tr>
-                            <th className="row25" colSpan="99">
+                            <th className="row25">
                                 <span
                                     className="oi oi-x text-danger pointer"
                                     onClick={
                                         () => this.handleRemove(Tools.getCheckedId(this.props.configReducer.list))
                                     }></span>
                             </th>
+                            <th className="row25 right" colSpan="99">
+                                <Pagination 
+                                    next={this.state.nextUrl}
+                                    prev={this.state.prevUrl}
+                                    onNavigate={url => this.list({}, url)}/>
+                            </th>
                         </tr>
                     </tfoot>
-                </table>
+                </table> 
                 <ConfigModal
                     open={this.state.mainModal}
                     defaultValue={this.props.configReducer.obj}
@@ -219,6 +231,53 @@ export class ConfigTable extends React.Component<Props, States> {
         );
     }
 }
+
+
+type PaginationPropTypes = {
+    next: ?string,
+    prev: ?string,
+    onNavigate: Function
+}
+export class Pagination extends React.Component<PaginationPropTypes> {
+    renderPrev (prev:string) {
+        if (!prev) return null;
+        return (
+            <button 
+                className="btn btn-primary btn-sm"
+                onClick={() => this.props.onNavigate(prev)}>
+                <span className="oi oi-chevron-left pointer"></span>
+                &nbsp;
+                Prev
+            </button>
+        );
+    };
+
+    renderNext (next:string) {
+        if (!next) return null;
+        return ([
+            <span key="1">
+                &nbsp;&nbsp;&nbsp;
+            </span>,
+            <button
+                className="btn btn-primary btn-sm" key="2"
+                onClick={() => this.props.onNavigate(next)}>
+                Next
+                &nbsp;
+                <span className="oi oi-chevron-right pointer"></span>
+            </button>
+        ]);
+    };
+
+    render () {
+        return (
+            <div>
+                {this.renderPrev(this.props.prev)}
+                {this.renderNext(this.props.next)}
+            </div>
+        );
+    }
+}
+
 
 type DataType = {
     id: number,
@@ -234,7 +293,6 @@ type RowPropTypes = {
     action: Function
 }
 export class Row extends React.Component<RowPropTypes> {
-
     render () {
         const data = this.props.data;
         return (
@@ -261,7 +319,9 @@ export class Row extends React.Component<RowPropTypes> {
                     <span
                         className="editBtn oi oi-pencil text-info pointer"
                         onClick={ () => this.props.toggleModal('mainModal', data.id) }></span>
-                    &nbsp;&nbsp;&nbsp;
+                    <span>
+                        &nbsp;&nbsp;&nbsp;
+                    </span>
                     <span
                         className="removeBtn oi oi-x text-danger pointer"
                         onClick={ () => this.props.handleRemove(String(data.id)) }></span>
