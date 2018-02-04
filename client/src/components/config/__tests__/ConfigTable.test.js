@@ -8,19 +8,24 @@ Enzyme.configure({ adapter: new Adapter() });
 
 
 describe('ConfigTable component', () => {
-    it('should render without throwing an error', () => {
-        const props = {
-            _key: 0,
-            data: {
-                id: 1,
-                uid: 'key1',
-                value: 'value 1',
-            },
-            toggleModal: jest.fn(),
-            handleRemove: jest.fn(),
-            action: jest.fn()
-        };
-        const wrapper = shallow(<Row {...props}/>);
+    let wrapper;
+    const props = {
+        _key: 0,
+        data: {
+            id: 1,
+            uid: 'key1',
+            value: 'value 1',
+        },
+        toggleModal: jest.fn(),
+        handleRemove: jest.fn(),
+        action: jest.fn()
+    };
+
+    beforeAll(() => {
+        wrapper = shallow(<Row {...props}/>);
+    });
+
+    it('Check output value', () => {
         expect(wrapper.contains(
                 <td className="uid">
                     key1
@@ -33,12 +38,30 @@ describe('ConfigTable component', () => {
                 </td>
             )
         ).toEqual(true);
+    });
 
+
+    it('Check', () => {
         wrapper.find('.check').first().simulate('change', {target: {checked: true}});
+        expect(props.action.mock.calls.length).toEqual(1);
         expect(props.action.mock.calls[0][0]).toEqual('edit');
         expect(props.action.mock.calls[0][1]).toEqual({
             data: {checked: true},
             id: 1
         });
     });
+
+    it('Toggle modal', () => {
+        wrapper.find('.editBtn').first().simulate('click');
+        expect(props.toggleModal.mock.calls.length).toEqual(1);
+        expect(props.toggleModal.mock.calls[0][0]).toEqual('mainModal');
+        expect(props.toggleModal.mock.calls[0][1]).toEqual(1);
+    });
+
+    it('Remove', () => {
+        wrapper.find('.removeBtn').first().simulate('click');
+        expect(props.handleRemove.mock.calls.length).toEqual(1);
+        expect(props.handleRemove.mock.calls[0][0]).toEqual('1');
+    });
+
 });

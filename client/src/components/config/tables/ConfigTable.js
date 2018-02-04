@@ -259,11 +259,11 @@ export class Row extends React.Component<RowPropTypes> {
                 </td>
                 <td className="center">
                     <span
-                        className="oi oi-pencil text-info pointer"
+                        className="editBtn oi oi-pencil text-info pointer"
                         onClick={ () => this.props.toggleModal('mainModal', data.id) }></span>
                     &nbsp;&nbsp;&nbsp;
                     <span
-                        className="oi oi-x text-danger pointer"
+                        className="removeBtn oi oi-x text-danger pointer"
                         onClick={ () => this.props.handleRemove(String(data.id)) }></span>
                 </td>
             </tr>
