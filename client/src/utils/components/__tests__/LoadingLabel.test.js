@@ -9,9 +9,11 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('LoadingLabel component', () => {
     it('should render without throwing an error', () => {
-        expect(shallow(<LoadingLabel />).exists(
-            <div className="alert alert-info" role="alert">Loading data...</div>)
-        ).toBe(true)
+        const wrapper = shallow(<LoadingLabel/>);
+        expect(wrapper.contains(
+                <div className="alert alert-info" role="alert">Loading data...</div>
+            )
+        ).toEqual(true)
     });
 });
 
