@@ -39,6 +39,7 @@
     "compression-webpack-plugin": "^1.0.1",
     "css-loader": "0.28.7",
     "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.13.1",
     "eslint-config-standard": "11.0.0-beta.0",
     "eslint-plugin-import": "2.8.0",
@@ -49,6 +50,7 @@
     "file-loader": "1.1.5",
     "flow-bin": "^0.59.0",
     "jest": "22.1.4",
+    "jest-enzyme": "^4.1.1",
     "jest-webpack": "^0.3.1",
     "less": "2.7.3",
     "less-loader": "4.0.5",
@@ -63,7 +65,6 @@
   },
   "dependencies": {
     "bootstrap": "4.0.0-beta.2",
-    "react-toastify": "3.3.1",
     "fingerprintjs2": "^1.5.1",
     "history": "^4.7.2",
     "ip": "^1.1.5",
@@ -75,6 +76,7 @@
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
+    "react-toastify": "3.3.1",
     "redux": "^3.7.2"
   }
 }

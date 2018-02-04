@@ -1,6 +1,10 @@
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import Tools from  '../Tools';
 import 'src/__mocks__/localStorage';
 import { LOCAL_STORAGE_PREFIX, API_URL } from 'src/constants';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 test('cap', () => {
     let input = 'test';
