@@ -17,7 +17,8 @@ describe('ConfigTable component', () => {
                 value: 'value 1',
             },
             toggleModal: jest.fn(),
-            handleRemove: jest.fn()
+            handleRemove: jest.fn(),
+            action: jest.fn()
         };
         const wrapper = shallow(<Row {...props}/>);
         expect(wrapper.contains(
@@ -32,5 +33,12 @@ describe('ConfigTable component', () => {
                 </td>
             )
         ).toEqual(true);
+
+        wrapper.find('.check').first().simulate('change', {target: {checked: true}});
+        expect(props.action.mock.calls[0][0]).toEqual('edit');
+        expect(props.action.mock.calls[0][1]).toEqual({
+            data: {checked: true},
+            id: 1
+        });
     });
 });
