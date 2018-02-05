@@ -20,7 +20,7 @@ class ListView(ListAPIView):
     permission_classes = [CustomPermission]
     queryset = Config.objects.all()
     serializer_class = ConfigBaseSerializer
-    search_fields = ['uid', 'value']
+    search_fields = ('uid', 'value')
 
 
 class DetailView(RetrieveAPIView):

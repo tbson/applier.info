@@ -25,7 +25,8 @@ type States = {
     mainModal: bool,
     id: ?number,
     nextUrl: ?string,
-    prevUrl: ?string
+    prevUrl: ?string,
+    searchStr: string
 };
 
 
@@ -38,7 +39,9 @@ export class ConfigTable extends React.Component<Props, States> {
     handleAdd: Function;
     handleEdit: Function;
     handleRemove: Function;
+    handleSearch: Function;
 
+    filterTimeout:?TimeoutID = null;
     constructor(props: Object) {
         super(props);
         this.state = {
@@ -46,7 +49,8 @@ export class ConfigTable extends React.Component<Props, States> {
             mainModal: false,
             id: null,
             nextUrl: null,
-            prevUrl: null
+            prevUrl: null,
+            searchStr: ''
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -56,6 +60,7 @@ export class ConfigTable extends React.Component<Props, States> {
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     }
 
     componentDidMount () {
@@ -81,7 +86,7 @@ export class ConfigTable extends React.Component<Props, States> {
             params = {...params, ...outerParams};
         }
 
-        const result = await Tools.apiCall(url?url:apiUrls.crud, 'GET');
+        const result = await Tools.apiCall(url?url:apiUrls.crud, 'GET', params);
         if(result.success){
             this.setInitData(result.data);
         }
@@ -164,11 +169,30 @@ export class ConfigTable extends React.Component<Props, States> {
         }
     }
 
+    handleSearch (event:Object) {
+        this.setState({searchStr: event.target.value}, () => {
+            const searchStr:string = this.state.searchStr;
+
+            if(this.filterTimeout !== null){
+                clearTimeout(this.filterTimeout);
+            }
+
+            this.filterTimeout = setTimeout(() => {
+                if(searchStr.length > 2){
+                    this.list({search: searchStr});
+                }else if(!searchStr.length){
+                    this.list();
+                }
+            }, 600);
+        });
+    }
+
     render() {
         if (!this.state.dataLoaded) return (<LoadingLabel/>);
         const list = this.props.configReducer.list;
         return (
             <div>
+                <SearchInput searchStr={this.state.searchStr} onSearch={this.handleSearch}/>
                 <table className="table">
                     <thead className="thead-light">
                         <tr>
@@ -233,13 +257,34 @@ export class ConfigTable extends React.Component<Props, States> {
 }
 
 
+type SearchInputPropTypes = {
+    onSearch: Function,
+    searchStr: string
+}
+
+export class SearchInput extends React.Component<SearchInputPropTypes> {
+    render () {
+        return (
+            <div className="input-group mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    value={this.props.searchStr}
+                    onChange={this.props.onSearch}
+                    placeholder="Search..."/>
+            </div>
+        );
+    }
+}
+
+
 type PaginationPropTypes = {
     next: ?string,
     prev: ?string,
     onNavigate: Function
 }
 export class Pagination extends React.Component<PaginationPropTypes> {
-    renderPrev (prev:string) {
+    renderPrev (prev:?string) {
         if (!prev) return null;
         return (
             <button 
@@ -252,7 +297,7 @@ export class Pagination extends React.Component<PaginationPropTypes> {
         );
     };
 
-    renderNext (next:string) {
+    renderNext (next:?string) {
         if (!next) return null;
         return ([
             <span key="1">
