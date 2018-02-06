@@ -1,37 +1,35 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 // $FlowFixMe: do not complain about importing node_modules
-import { bindActionCreators } from 'redux';
+import {bindActionCreators} from 'redux';
 // $FlowFixMe: do not complain about importing node_modules
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
-import { actions, apiUrls } from '../_data';
+import {actions, apiUrls} from '../_data';
 import ConfigForm from '../forms/ConfigForm';
 import configAction from '../actions';
 import ConfigModal from '../forms/ConfigModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
+import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
 import store from 'src/store';
 import Tools from 'src/utils/helpers/Tools';
 
-
 type Props = {
     configReducer: Object,
-    action: Function
+    action: Function,
 };
 type States = {
-    dataLoaded: bool,
-    mainModal: bool,
+    dataLoaded: boolean,
+    mainModal: boolean,
     id: ?number,
     nextUrl: ?string,
     prevUrl: ?string,
-    searchStr: string
+    searchStr: string,
 };
 
-
 export class ConfigTable extends React.Component<Props, States> {
-
     list: Function;
     setInitData: Function;
     toggleModal: Function;
@@ -41,7 +39,7 @@ export class ConfigTable extends React.Component<Props, States> {
     handleRemove: Function;
     handleSearch: Function;
 
-    filterTimeout:?TimeoutID = null;
+    filterTimeout: ?TimeoutID = null;
     constructor(props: Object) {
         super(props);
         this.state = {
@@ -50,7 +48,7 @@ export class ConfigTable extends React.Component<Props, States> {
             id: null,
             nextUrl: null,
             prevUrl: null,
-            searchStr: ''
+            searchStr: '',
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -63,77 +61,77 @@ export class ConfigTable extends React.Component<Props, States> {
         this.handleSearch = this.handleSearch.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.list();
     }
 
-    setInitData (initData: Object) {
+    setInitData(initData: Object) {
         this.props.action('list', {
             data: [...initData.items],
-            pages: initData.pages
+            pages: initData.pages,
         });
         this.setState({
             dataLoaded: true,
             nextUrl: initData.links.next,
-            prevUrl: initData.links.previous
+            prevUrl: initData.links.previous,
         });
     }
 
-    async list (outerParams:Object = {}, url:?string=null) {
+    async list(outerParams: Object = {}, url: ?string = null) {
         let params = {};
 
-        if(!Tools.emptyObj(outerParams)){
+        if (!Tools.emptyObj(outerParams)) {
             params = {...params, ...outerParams};
         }
 
-        const result = await Tools.apiCall(url?url:apiUrls.crud, 'GET', params);
-        if(result.success){
+        const result = await Tools.apiCall(url ? url : apiUrls.crud, 'GET', params);
+        if (result.success) {
             this.setInitData(result.data);
         }
     }
 
-    toggleModal (modalId: string, id: ?number = null) {
+    toggleModal(modalId: string, id: ?number = null) {
         let state = {id};
-        state[modalId] = !this.state[modalId]
+        state[modalId] = !this.state[modalId];
         switch (modalId) {
             case 'mainModal':
                 if (id) {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
-                            this.props.action('obj', {data: result.data})
+                            this.props.action('obj', {data: result.data});
                         }
                         this.setState(state);
                     });
                     return;
                 } else {
-                    this.props.action('obj', {})
-                    this.props.action('err', {})
+                    this.props.action('obj', {});
+                    this.props.action('err', {});
                 }
                 break;
         }
         this.setState(state);
     }
 
-    async handleAdd (params: Object) {
+    async handleAdd(params: Object) {
         const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', params);
         if (result.success) {
             result.data.checked = false;
-            this.props.action('add', { data: result.data });
+            this.props.action('add', {data: result.data});
             return null;
         }
         return result.data;
     }
 
-    async handleEdit (id: number, params: Object) {
+    async handleEdit(id: number, params: Object) {
         const result = await Tools.apiCall(apiUrls.crud + id.toString() + '/edit/', 'PUT', params);
         if (result.success) {
-            this.props.action('edit', { id, data: result.data });
+            this.props.action('edit', {id, data: result.data});
             return null;
         }
         return result.data;
     }
 
-    async handleSubmit (event: Object) {
+    async handleSubmit(event: Object) {
         event.preventDefault();
         let error: ?Object = null;
         const params = Tools.formDataToObj(new FormData(event.target));
@@ -146,11 +144,11 @@ export class ConfigTable extends React.Component<Props, States> {
         if (!error) {
             this.toggleModal('mainModal');
         } else {
-            this.props.action('err', {data: error})
+            this.props.action('err', {data: error});
         }
     }
 
-    async handleRemove (id: string) {
+    async handleRemove(id: string) {
         const listId = id.split(',');
         if (!id || !listId.length) return;
         let message = '';
@@ -163,24 +161,24 @@ export class ConfigTable extends React.Component<Props, States> {
         if (!decide) return;
         const result = await Tools.apiCall(apiUrls.crud + id + '/delete/', 'DELETE');
         if (result.success) {
-            this.props.action('remove', { id })
+            this.props.action('remove', {id});
         } else {
             this.list();
         }
     }
 
-    handleSearch (event:Object) {
+    handleSearch(event: Object) {
         this.setState({searchStr: event.target.value}, () => {
-            const searchStr:string = this.state.searchStr;
+            const searchStr: string = this.state.searchStr;
 
-            if(this.filterTimeout !== null){
+            if (this.filterTimeout !== null) {
                 clearTimeout(this.filterTimeout);
             }
 
             this.filterTimeout = setTimeout(() => {
-                if(searchStr.length > 2){
+                if (searchStr.length > 2) {
                     this.list({search: searchStr});
-                }else if(!searchStr.length){
+                } else if (!searchStr.length) {
                     this.list();
                 }
             }, 600);
@@ -188,18 +186,19 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     render() {
-        if (!this.state.dataLoaded) return (<LoadingLabel/>);
+        if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.props.configReducer.list;
         return (
             <div>
-                <SearchInput searchStr={this.state.searchStr} onSearch={this.handleSearch}/>
+                <SearchInput searchStr={this.state.searchStr} onSearch={this.handleSearch} />
                 <table className="table">
                     <thead className="thead-light">
                         <tr>
                             <th className="row25">
                                 <span
                                     className="oi oi-check text-info pointer"
-                                    onClick={() => this.props.action('toggleCheckAll') }></span>
+                                    onClick={() => this.props.action('toggleCheckAll')}
+                                />
                             </th>
                             <th scope="col">Key</th>
                             <th scope="col">Value</th>
@@ -207,24 +206,23 @@ export class ConfigTable extends React.Component<Props, States> {
                                 <button
                                     className="btn btn-primary btn-sm btn-block"
                                     onClick={() => this.toggleModal('mainModal')}>
-                                    <span className="oi oi-plus"></span>&nbsp;
-                                    Add
+                                    <span className="oi oi-plus" />&nbsp; Add
                                 </button>
                             </th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {
-                            list.map((data, key) => (
-                                <Row
-                                    data={data}
-                                    key={key} _key={key}
-                                    toggleModal={this.toggleModal}
-                                    handleRemove={this.handleRemove}
-                                    action={this.props.action}/>
-                            ))
-                        }
+                        {list.map((data, key) => (
+                            <Row
+                                data={data}
+                                key={key}
+                                _key={key}
+                                toggleModal={this.toggleModal}
+                                handleRemove={this.handleRemove}
+                                action={this.props.action}
+                            />
+                        ))}
                     </tbody>
 
                     <tfoot className="thead-light">
@@ -232,92 +230,26 @@ export class ConfigTable extends React.Component<Props, States> {
                             <th className="row25">
                                 <span
                                     className="oi oi-x text-danger pointer"
-                                    onClick={
-                                        () => this.handleRemove(Tools.getCheckedId(this.props.configReducer.list))
-                                    }></span>
+                                    onClick={() => this.handleRemove(Tools.getCheckedId(this.props.configReducer.list))}
+                                />
                             </th>
                             <th className="row25 right" colSpan="99">
-                                <Pagination 
+                                <Pagination
                                     next={this.state.nextUrl}
                                     prev={this.state.prevUrl}
-                                    onNavigate={url => this.list({}, url)}/>
+                                    onNavigate={url => this.list({}, url)}
+                                />
                             </th>
                         </tr>
                     </tfoot>
-                </table> 
+                </table>
                 <ConfigModal
                     open={this.state.mainModal}
                     defaultValue={this.props.configReducer.obj}
                     errorMessage={this.props.configReducer.err}
                     handleClose={() => this.setState({mainModal: false})}
-                    handleSubmit={this.handleSubmit}/>
-            </div>
-        );
-    }
-}
-
-
-type SearchInputPropTypes = {
-    onSearch: Function,
-    searchStr: string
-}
-
-export class SearchInput extends React.Component<SearchInputPropTypes> {
-    render () {
-        return (
-            <div className="input-group mb-3">
-                <input
-                    type="text"
-                    className="form-control"
-                    value={this.props.searchStr}
-                    onChange={this.props.onSearch}
-                    placeholder="Search..."/>
-            </div>
-        );
-    }
-}
-
-
-type PaginationPropTypes = {
-    next: ?string,
-    prev: ?string,
-    onNavigate: Function
-}
-export class Pagination extends React.Component<PaginationPropTypes> {
-    renderPrev (prev:?string) {
-        if (!prev) return null;
-        return (
-            <button 
-                className="btn btn-primary btn-sm"
-                onClick={() => this.props.onNavigate(prev)}>
-                <span className="oi oi-chevron-left pointer"></span>
-                &nbsp;
-                Prev
-            </button>
-        );
-    };
-
-    renderNext (next:?string) {
-        if (!next) return null;
-        return ([
-            <span key="1">
-                &nbsp;&nbsp;&nbsp;
-            </span>,
-            <button
-                className="btn btn-primary btn-sm" key="2"
-                onClick={() => this.props.onNavigate(next)}>
-                Next
-                &nbsp;
-                <span className="oi oi-chevron-right pointer"></span>
-            </button>
-        ]);
-    };
-
-    render () {
-        return (
-            <div>
-                {this.renderPrev(this.props.prev)}
-                {this.renderNext(this.props.next)}
+                    handleSubmit={this.handleSubmit}
+                />
             </div>
         );
     }
@@ -328,17 +260,17 @@ type DataType = {
     id: number,
     uid: string,
     value: string,
-    checked: ?bool
+    checked: ?boolean,
 };
 type RowPropTypes = {
     data: DataType,
     _key: number,
     toggleModal: Function,
     handleRemove: Function,
-    action: Function
-}
+    action: Function,
+};
 export class Row extends React.Component<RowPropTypes> {
-    render () {
+    render() {
         const data = this.props.data;
         return (
             <tr key={this.props._key} className="tableRow">
@@ -347,37 +279,39 @@ export class Row extends React.Component<RowPropTypes> {
                         className="check"
                         type="checkbox"
                         checked={data.checked}
-                        onChange={ event => {
+                        onChange={event => {
                             this.props.action('edit', {
-                                data: { checked: event.target.checked },
-                                id: data.id
+                                data: {checked: event.target.checked},
+                                id: data.id,
                             });
-                        }}/>
+                        }}
+                    />
                 </th>
-                <td className="uid">
-                    {data.uid}
-                </td>
-                <td className="value">
-                    {data.value}
-                </td>
+                <td className="uid">{data.uid}</td>
+                <td className="value">{data.value}</td>
                 <td className="center">
                     <span
                         className="editBtn oi oi-pencil text-info pointer"
-                        onClick={ () => this.props.toggleModal('mainModal', data.id) }></span>
-                    <span>
-                        &nbsp;&nbsp;&nbsp;
-                    </span>
+                        onClick={() => this.props.toggleModal('mainModal', data.id)}
+                    />
+                    <span>&nbsp;&nbsp;&nbsp;</span>
                     <span
                         className="removeBtn oi oi-x text-danger pointer"
-                        onClick={ () => this.props.handleRemove(String(data.id)) }></span>
+                        onClick={() => this.props.handleRemove(String(data.id))}
+                    />
                 </td>
             </tr>
         );
     }
 }
 
-export default withRouter(connect(state => ({
-    configReducer: state.configReducer
-}), dispatch => ({
-    action: bindActionCreators(configAction, dispatch)
-}))(ConfigTable));
+export default withRouter(
+    connect(
+        state => ({
+            configReducer: state.configReducer,
+        }),
+        dispatch => ({
+            action: bindActionCreators(configAction, dispatch),
+        }),
+    )(ConfigTable),
+);
