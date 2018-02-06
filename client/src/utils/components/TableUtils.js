@@ -2,8 +2,8 @@
 import * as React from 'react';
 
 type SearchInputPropTypes = {
-    onSearch: Function,
     searchStr: string,
+    onSearch: Function,
 };
 
 export class SearchInput extends React.Component<SearchInputPropTypes> {

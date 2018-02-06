@@ -58,3 +58,28 @@ describe('Pagination component', () => {
         expect(wrapper.find('button')).toHaveLength(2);
     });
 });
+
+describe('SearchInput component', () => {
+    it('Empty input str with change', () => {
+        let props = {
+            searchStr: '',
+            onSearch: jest.fn(),
+        };
+        let wrapper = shallow(<SearchInput {...props} />);
+        let elem = wrapper.find('input').first();
+        elem.simulate('change', 'abc');
+
+        expect(props.onSearch.mock.calls.length).toEqual(1);
+        expect(props.onSearch.mock.calls[0][0]).toEqual('abc');
+        expect(elem.props().value).toEqual('');
+    });
+    it('Not empty input str', () => {
+        let props = {
+            searchStr: 'abc',
+            onSearch: jest.fn(),
+        };
+        let wrapper = shallow(<SearchInput {...props} />);
+        let elem = wrapper.find('input').first();
+        expect(elem.props().value).toEqual('abc');
+    });
+});
