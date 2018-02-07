@@ -2,7 +2,7 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import {shallow, mount, render} from 'enzyme';
-import {Row, Pagination, ConfigTable} from '../tables/ConfigTable';
+import {Row, ConfigTable} from '../tables/ConfigTable';
 import Tools from 'src/utils/helpers/Tools';
 
 Enzyme.configure({adapter: new Adapter()});
@@ -14,6 +14,7 @@ function seeding(numberOfItems) {
             id: i,
             uid: 'key' + String(i),
             value: 'value ' + String(i),
+            checked: false,
         });
     }
     return result;
@@ -75,49 +76,46 @@ describe('ConfigTable Row component', () => {
     });
 });
 
-
-/*
 describe('ConfigTable component', () => {
-    let wrapper;
-    const props = {
-        configReducer: {},
-        action: jest.fn()
-    };
-
     beforeAll(() => {
-        wrapper = shallow(<ConfigTable {...props}/>);
+        Tools.apiCall = (url, method, params = {}, popMessage = true, usingLoading = true) =>
+            new Promise((resolve, reject) => {
+                resolve({
+                    status: 200,
+                    success: true,
+                    data: {
+                        count: 1,
+                        pages: 1,
+                        page_size: 10,
+                        links: {next: null, previous: null},
+                        items: seeding(10),
+                    },
+                });
+            });
     });
 
     it('Get list', () => {
-        Tools.apiCall = new Promise((resolve, reject) => {
-            resolve({
-                count: 1,
+        const props = {
+            configReducer: {
                 pages: 1,
-                page_size: 10,
-                links: {next: null, previous: null},
-                items: seeding(10)
-            });
-        });
+                obj: {},
+                err: {},
+                list: seeding(10),
+            },
+            action: jest.fn(),
+        };
+
+        const wrapper = shallow(<ConfigTable {...props} />);
+        expect(wrapper.find('.tableRow')).toHaveLength(10);
     });
 
-    it('Check all', () => {
+    it('Check all', () => {});
 
-    });
+    it('Number of rows', () => {});
 
-    it('Number of rows', () => {
+    it('Add', () => {});
 
-    });
+    it('Edit', () => {});
 
-    it('Add', () => {
-
-    });
-
-    it('Edit', () => {
-
-    });
-
-    it('Remove', () => {
-
-    });
+    it('Remove', () => {});
 });
-*/

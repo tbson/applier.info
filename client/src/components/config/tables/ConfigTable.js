@@ -186,7 +186,7 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     render() {
-        if (!this.state.dataLoaded) return <LoadingLabel />;
+        // if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.props.configReducer.list;
         return (
             <div>
@@ -215,6 +215,7 @@ export class ConfigTable extends React.Component<Props, States> {
                     <tbody>
                         {list.map((data, key) => (
                             <Row
+                                className="tableRow"
                                 data={data}
                                 key={key}
                                 _key={key}
@@ -254,7 +255,16 @@ export class ConfigTable extends React.Component<Props, States> {
         );
     }
 }
-
+export default withRouter(
+    connect(
+        state => ({
+            configReducer: state.configReducer,
+        }),
+        dispatch => ({
+            action: bindActionCreators(configAction, dispatch),
+        }),
+    )(ConfigTable),
+);
 
 type DataType = {
     id: number,
@@ -273,7 +283,7 @@ export class Row extends React.Component<RowPropTypes> {
     render() {
         const data = this.props.data;
         return (
-            <tr key={this.props._key} className="tableRow">
+            <tr key={this.props._key}>
                 <th className="row25">
                     <input
                         className="check"
@@ -304,14 +314,3 @@ export class Row extends React.Component<RowPropTypes> {
         );
     }
 }
-
-export default withRouter(
-    connect(
-        state => ({
-            configReducer: state.configReducer,
-        }),
-        dispatch => ({
-            action: bindActionCreators(configAction, dispatch),
-        }),
-    )(ConfigTable),
-);
