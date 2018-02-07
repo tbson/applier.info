@@ -3,6 +3,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import {shallow, mount, render} from 'enzyme';
 import {Row, ConfigTable} from '../tables/ConfigTable';
+import LoadingLabel from 'src/utils/components/LoadingLabel';
 import Tools from 'src/utils/helpers/Tools';
 
 Enzyme.configure({adapter: new Adapter()});
@@ -87,14 +88,14 @@ describe('ConfigTable component', () => {
                         count: 1,
                         pages: 1,
                         page_size: 10,
-                        links: {next: null, previous: null},
+                        links: {next: 'nextUrl', previous: 'prevUrl'},
                         items: seeding(10),
                     },
                 });
             });
     });
 
-    it('Get list', () => {
+    it('Get list', (done) => {
         const props = {
             configReducer: {
                 pages: 1,
@@ -106,7 +107,29 @@ describe('ConfigTable component', () => {
         };
 
         const wrapper = shallow(<ConfigTable {...props} />);
-        expect(wrapper.find('.tableRow')).toHaveLength(10);
+
+        // Data not loaded -> show waiting
+        expect(wrapper.contains(<LoadingLabel />)).toEqual(true);
+
+        setTimeout(() => {
+            // After loading data done
+            wrapper.update();
+            expect(wrapper.find('.tableRow')).toHaveLength(10);
+
+            // Update list action trigger
+            expect(props.action.mock.calls.length).toEqual(1);
+            expect(props.action.mock.calls[0][0]).toEqual('list');
+            expect(props.action.mock.calls[0][1]).toEqual({
+                data: props.configReducer.list,
+                pages: props.configReducer.pages
+            });
+
+            // Check states
+            expect(wrapper.state().dataLoaded).toBe(true);
+            expect(wrapper.state().nextUrl).toEqual('nextUrl');
+            expect(wrapper.state().prevUrl).toEqual('prevUrl');
+            done();
+        }, 100);
     });
 
     it('Check all', () => {});

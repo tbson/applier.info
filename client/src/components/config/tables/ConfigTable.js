@@ -186,7 +186,7 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     render() {
-        // if (!this.state.dataLoaded) return <LoadingLabel />;
+        if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.props.configReducer.list;
         return (
             <div>
