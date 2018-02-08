@@ -196,7 +196,7 @@ export class ConfigTable extends React.Component<Props, States> {
                         <tr>
                             <th className="row25">
                                 <span
-                                    className="oi oi-check text-info pointer"
+                                    className="oi oi-check text-info pointer check-all-button"
                                     onClick={() => this.props.action('toggleCheckAll')}
                                 />
                             </th>
@@ -215,7 +215,7 @@ export class ConfigTable extends React.Component<Props, States> {
                     <tbody>
                         {list.map((data, key) => (
                             <Row
-                                className="tableRow"
+                                className="table-row"
                                 data={data}
                                 key={key}
                                 _key={key}

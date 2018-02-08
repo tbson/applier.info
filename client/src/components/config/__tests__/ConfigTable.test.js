@@ -114,7 +114,7 @@ describe('ConfigTable component', () => {
         setTimeout(() => {
             // After loading data done
             wrapper.update();
-            expect(wrapper.find('.tableRow')).toHaveLength(10);
+            expect(wrapper.find('.table-row')).toHaveLength(10);
 
             // Update list action trigger
             expect(props.action.mock.calls.length).toEqual(1);
@@ -132,9 +132,28 @@ describe('ConfigTable component', () => {
         }, 100);
     });
 
-    it('Check all', () => {});
+    it('Check all', (done) => {
+        const props = {
+            configReducer: {
+                pages: 1,
+                obj: {},
+                err: {},
+                list: seeding(10),
+            },
+            action: jest.fn(),
+        };
 
-    it('Number of rows', () => {});
+        const wrapper = shallow(<ConfigTable {...props} />);
+        setTimeout(() => {
+            // After loading data done
+            wrapper.update();
+            wrapper.find('.check-all-button').first().simulate('click');
+            // First one is update list reducer
+            expect(props.action.mock.calls.length).toEqual(2);
+            expect(props.action.mock.calls[1][0]).toEqual('toggleCheckAll');
+            done();
+        }, 100);
+    });
 
     it('Add', () => {});
 
