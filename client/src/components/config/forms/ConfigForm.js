@@ -1,11 +1,11 @@
-
 // @flow
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { actions } from '../_data';
+// $FlowFixMe: do not complain about importing node_modules
+import {connect} from 'react-redux';
+// $FlowFixMe: do not complain about importing node_modules
+import {withRouter} from 'react-router-dom';
+import {actions} from '../_data';
 import store from 'src/store';
-
 
 type Props = {
     handleSubmit: Function,
@@ -13,10 +13,9 @@ type Props = {
     formId: string,
     submitTitle: string,
     defaultValue: Object,
-    errorMessage: Object
+    errorMessage: Object,
 };
 type States = {};
-
 
 class ConfigForm extends React.Component<Props, States> {
     resetForm: Function;
@@ -29,9 +28,9 @@ class ConfigForm extends React.Component<Props, States> {
             username: null,
             email: null,
             first_name: null,
-            last_name: null
+            last_name: null,
         },
-        errorMessage: {}
+        errorMessage: {},
     };
 
     constructor(props) {
@@ -42,24 +41,22 @@ class ConfigForm extends React.Component<Props, States> {
         this.setErrorMessage = this.setErrorMessage.bind(this);
     }
 
-    resetForm () {
+    resetForm() {
         window.document.getElementById(this.props.formId).reset();
         window.document.querySelector('#' + this.props.formId + ' [name=username]').focus();
     }
 
-    setClassName (name) {
-        return this.props.errorMessage[name] ? "form-control is-invalid" : "form-control";
+    setClassName(name) {
+        return this.props.errorMessage[name] ? 'form-control is-invalid' : 'form-control';
     }
 
-    setErrorMessage (name) {
+    setErrorMessage(name) {
         return this.props.errorMessage[name];
     }
 
-    render () {
+    render() {
         return (
-            <form
-                id={this.props.formId}
-                onSubmit={this.props.handleSubmit}>
+            <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="uid">Key</label>
                     <input
@@ -70,10 +67,9 @@ class ConfigForm extends React.Component<Props, States> {
                         className={this.setClassName('uid')}
                         required
                         autoFocus
-                        placeholder="Key..."/>
-                        <div className="invalid-feedback">
-                            {this.setErrorMessage('uid')}
-                        </div>
+                        placeholder="Key..."
+                    />
+                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
                 </div>
 
                 <div className="form-group">
@@ -85,16 +81,15 @@ class ConfigForm extends React.Component<Props, States> {
                         type="text"
                         className={this.setClassName('value')}
                         required
-                        placeholder="Value..."/>
-                        <div className="invalid-feedback">
-                            {this.setErrorMessage('value')}
-                        </div>
+                        placeholder="Value..."
+                    />
+                    <div className="invalid-feedback">{this.setErrorMessage('value')}</div>
                 </div>
 
                 <div className="right">
                     {this.props.children}
                     <button className="btn btn-primary">
-                        <span className="oi oi-check"></span>&nbsp;
+                        <span className="oi oi-check" />&nbsp;
                         {this.props.submitTitle}
                     </button>
                 </div>
@@ -103,6 +98,4 @@ class ConfigForm extends React.Component<Props, States> {
     }
 }
 
-export default connect((state, props) => ({
-}), dispatch => ({
-}))(ConfigForm);
+export default connect((state, props) => ({}), dispatch => ({}))(ConfigForm);

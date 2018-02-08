@@ -3,36 +3,27 @@ import * as React from 'react';
 import CustomModal from 'src/utils/components/CustomModal';
 import LoginForm from './LoginForm';
 
-
 type PropTypes = {
-    open: bool,
+    open: boolean,
     handleClose: Function,
-    handleSubmit: Function
-}
+    handleSubmit: Function,
+};
 class ResetPasswordModal extends React.Component<PropTypes> {
     static defaultProps = {
-        open: false
+        open: false,
     };
 
-    render () {
+    render() {
         if (!this.props.open) return null;
         return (
-            <CustomModal
-                open={true}
-                close={this.props.handleClose}
-                title="Reset password"
-                size="md">
+            <CustomModal open={true} close={this.props.handleClose} title="Reset password" size="md">
                 <div>
                     <LoginForm
                         formId="resetPasswordForm"
                         submitTitle="Reset password"
                         handleSubmit={this.props.handleSubmit}>
-                        <button
-                            type="button"
-                            onClick={this.props.handleClose}
-                            className="btn btn-warning">
-                            <span className="oi oi-x"></span>&nbsp;
-                            Cancel
+                        <button type="button" onClick={this.props.handleClose} className="btn btn-warning">
+                            <span className="oi oi-x" />&nbsp; Cancel
                         </button>
                     </LoginForm>
                 </div>

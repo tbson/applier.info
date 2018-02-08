@@ -4,51 +4,51 @@ import Modal from 'react-modal';
 
 class CustomModal extends React.Component {
     static propTypes = {
-        size: PropTypes.string
+        size: PropTypes.string,
     };
     static defaultProps = {
-        size: 'full'
+        size: 'full',
     };
 
     constructor(props) {
         super(props);
     }
 
-    render(){
+    render() {
         let customStyles = {
             overlay: {
                 zIndex: 3,
-                overflowY: 'scroll'
+                overflowY: 'scroll',
             },
-            content : {
+            content: {
                 top: '5%',
                 left: '30%',
                 right: '30%',
                 bottom: 'auto',
                 overflowX: 'visible',
-                overflowY: 'visible'
-            }
+                overflowY: 'visible',
+            },
         };
-        switch(this.props.size){
+        switch (this.props.size) {
             case 'sm':
                 customStyles.content.left = '30%';
                 customStyles.content.right = '30%';
-            break;
+                break;
             case 'md':
                 customStyles.content.left = '20%';
                 customStyles.content.right = '20%';
-            break;
+                break;
             case 'lg':
                 customStyles.content.left = '3%';
                 customStyles.content.right = '3%';
-            break;
+                break;
             case 'full':
                 customStyles.content.left = '0%';
                 customStyles.content.right = '0%';
                 customStyles.content.top = '0%';
                 customStyles.content.bottom = '0%';
                 customStyles.content.borderWidth = 0;
-            break;
+                break;
             default:
                 customStyles.content.left = '20%';
                 customStyles.content.right = '20%';
@@ -58,29 +58,26 @@ class CustomModal extends React.Component {
             position: 'absolute',
             top: 5,
             right: 5,
-            cursor: 'pointer'
+            cursor: 'pointer',
         };
         const headingStyle = {
             margin: 0,
-            marginBottom: 10
+            marginBottom: 10,
         };
-        return(
-            <Modal
-                style={customStyles}
-                isOpen={this.props.open}
-                contentLabel="Modal"
-                ariaHideApp={false}>
+        return (
+            <Modal style={customStyles} isOpen={this.props.open} contentLabel="Modal" ariaHideApp={false}>
                 <span
                     style={closeButtonStyle}
                     className="fa fa-times non-printable"
-                    onClick={() => this.props.close()}>
-                </span>
-                <h4 className="non-printable" style={headingStyle}>{ this.props.title }</h4>
-                { this.props.children }
+                    onClick={() => this.props.close()}
+                />
+                <h4 className="non-printable" style={headingStyle}>
+                    {this.props.title}
+                </h4>
+                {this.props.children}
             </Modal>
         );
     }
 }
 
 export default CustomModal;
-

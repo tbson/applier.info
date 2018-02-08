@@ -1,21 +1,20 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 // $FlowFixMe: do not complain about importing node_modules
-import { withRouter } from 'react-router-dom';
-import { actions } from './_data';
+import {withRouter} from 'react-router-dom';
+import {actions} from './_data';
 import CustomModal from 'src/utils/components/CustomModal';
 // import FormLogin from './forms/FormLogin';
-import { apiUrls } from './_data';
+import {apiUrls} from './_data';
 import Tools from 'src/utils/helpers/Tools';
 import store from 'src/store';
 import LoginForm from './forms/LoginForm';
 import ResetPasswordModal from './forms/ResetPasswordModal';
 
-
 type Props = {
-    loginFail: boolean
+    loginFail: boolean,
 };
 
 type States = Object;
@@ -27,13 +26,13 @@ class Login extends React.Component<Props, States> {
     renderErrorMessage: Function;
 
     static defaultProps = {
-        loginFail: false
+        loginFail: false,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            modal: false
+            modal: false,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSubmitResetPassword = this.handleSubmitResetPassword.bind(this);
@@ -41,7 +40,7 @@ class Login extends React.Component<Props, States> {
         this.renderErrorMessage = this.renderErrorMessage.bind(this);
     }
 
-    async handleSubmit (event) {
+    async handleSubmit(event) {
         event.preventDefault();
         const data = Tools.formDataToObj(new FormData(event.target));
         const result = await Tools.apiCall(apiUrls.tokenAuth, 'POST', data);
@@ -50,36 +49,33 @@ class Login extends React.Component<Props, States> {
             Tools.navigateTo();
         } else {
             this.setState({
-                loginFail: true
+                loginFail: true,
             });
         }
     }
 
-    async handleSubmitResetPassword (event) {
+    async handleSubmitResetPassword(event) {
         event.preventDefault();
         const data = Tools.formDataToObj(new FormData(event.target));
         const result = await Tools.apiCall(apiUrls.resetPassword, 'POST', data);
     }
 
-    toggleModal () {
+    toggleModal() {
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
         });
     }
 
-    renderErrorMessage () {
+    renderErrorMessage() {
         if (!this.state.loginFail) return null;
         return (
-            <div
-                className="alert alert-danger"
-                role="alert"
-                style={{marginTop: 16}}>
+            <div className="alert alert-danger" role="alert" style={{marginTop: 16}}>
                 Wrong username or password!
             </div>
-        )
+        );
     }
 
-    componentDidMount () {
+    componentDidMount() {
         const authData = Tools.getStorageObj('authData');
         if (authData.email) {
             Tools.navigateTo();
@@ -91,32 +87,25 @@ class Login extends React.Component<Props, States> {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-
                         <div className="jumbotron">
-                            <LoginForm
-                                formId="loginForm"
-                                submitTitle="Login"
-                                handleSubmit={this.handleSubmit}>
-                                <span
-                                    className="pointer link"
-                                    onClick={this.toggleModal}>
+                            <LoginForm formId="loginForm" submitTitle="Login" handleSubmit={this.handleSubmit}>
+                                <span className="pointer link" onClick={this.toggleModal}>
                                     Reset password
                                 </span>
                                 &nbsp;&nbsp;
                             </LoginForm>
                             {this.renderErrorMessage()}
                         </div>
-
                     </div>
                 </div>
                 <ResetPasswordModal
                     open={this.state.modal}
                     handleClose={() => this.setState({modal: false})}
-                    handleSubmit={this.handleSubmitResetPassword}/>
+                    handleSubmit={this.handleSubmitResetPassword}
+                />
             </div>
         );
     }
 }
 
-export default withRouter(connect(state => ({
-}), dispatch => ({}))(Login))
+export default withRouter(connect(state => ({}), dispatch => ({}))(Login));

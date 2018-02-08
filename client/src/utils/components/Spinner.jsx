@@ -1,23 +1,22 @@
 // @flow
-import * as React from 'react'
+import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import { connect } from 'react-redux'
+import {connect} from 'react-redux';
 // $FlowFixMe: do not complain about importing node_modules
-import styles from './Spinner.styl'
+import styles from './Spinner.styl';
 
 type Props = {
-    spinning: bool
+    spinning: boolean,
 };
 type State = {};
-
 
 class Spinner extends React.Component<Props, State> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
-    render () {
+    render() {
         if (!this.props.spinning) return null;
         return (
             <div className={styles.loaderBg}>
@@ -27,7 +26,9 @@ class Spinner extends React.Component<Props, State> {
     }
 }
 
-
-export default connect(state => ({
-    spinning: state.commonState.spinning
-}), dispatch => ({}))(Spinner);
+export default connect(
+    state => ({
+        spinning: state.commonState.spinning,
+    }),
+    dispatch => ({}),
+)(Spinner);

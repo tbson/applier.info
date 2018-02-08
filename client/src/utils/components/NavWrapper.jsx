@@ -1,10 +1,13 @@
 // @flow
-import * as React from 'react'
-import { connect } from 'react-redux'
-import { withRouter, Route, Link } from 'react-router-dom'
-import { NavLink } from 'react-router-dom';
+import * as React from 'react';
+// $FlowFixMe: do not complain about importing node_modules
+import {connect} from 'react-redux';
+// $FlowFixMe: do not complain about importing node_modules
+import {withRouter, Route, Link} from 'react-router-dom';
+// $FlowFixMe: do not complain about importing node_modules
+import {NavLink} from 'react-router-dom';
 import Tools from 'src/utils/helpers/Tools';
-import './NavWrapper.css'
+import './NavWrapper.css';
 
 type Props = Object;
 
@@ -17,19 +20,19 @@ class App extends React.Component<Props, State> {
     constructor(props) {
         super(props);
         this.state = {
-            toggled: true
-        }
+            toggled: true,
+        };
         this.toggleAll = this.toggleAll.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         const mql = window.matchMedia(`(min-width: 800px)`);
         mql.addListener(this.mediaQueryChanged);
         this.setState({mql: mql});
 
         this.setState({
-            toggled: window.innerWidth >= 800 ? true : false
+            toggled: window.innerWidth >= 800 ? true : false,
         });
     }
 
@@ -37,48 +40,42 @@ class App extends React.Component<Props, State> {
         this.state.mql.removeListener(this.mediaQueryChanged);
     }
 
-    mediaQueryChanged () {
-        console.log("media change");
+    mediaQueryChanged() {
+        console.log('media change');
         this.setState({
-            toggled: !this.state.toggled
+            toggled: !this.state.toggled,
         });
     }
 
-    toggleAll (e) {
+    toggleAll(e) {
         this.setState({
-            toggled: !this.state.toggled
+            toggled: !this.state.toggled,
         });
     }
 
-    logout () {
+    logout() {
         Tools.removeStorage('authData');
         Tools.navigateTo('login');
     }
 
     render() {
         return (
-            <div id="wrapper" className={this.state.toggled?'toggled':''}>
+            <div id="wrapper" className={this.state.toggled ? 'toggled' : ''}>
                 <div id="sidebar-wrapper">
                     <ul className="sidebar-nav">
-                        <li className="sidebar-brand">
-                            APPLIER
-                        </li>
+                        <li className="sidebar-brand">APPLIER</li>
 
                         <li>
                             <NavLink exact to="/">
-                                <span className="oi oi-person"></span>&nbsp;&nbsp;
-                                <span>
-                                    Profile
-                                </span>
+                                <span className="oi oi-person" />&nbsp;&nbsp;
+                                <span>Profile</span>
                             </NavLink>
                         </li>
 
                         <li>
                             <NavLink exact to="/config">
-                                <span className="oi oi-cog"></span>&nbsp;&nbsp;
-                                <span>
-                                    Config
-                                </span>
+                                <span className="oi oi-cog" />&nbsp;&nbsp;
+                                <span>Config</span>
                             </NavLink>
                         </li>
                     </ul>
@@ -86,25 +83,19 @@ class App extends React.Component<Props, State> {
 
                 <div id="page-content-wrapper">
                     <div id="main-heading">
-                        <span
-                            id="nav-toggler"
-                            onClick={() => this.toggleAll()}>
-                            &#9776;</span>
+                        <span id="nav-toggler" onClick={() => this.toggleAll()}>
+                            &#9776;
+                        </span>
                         <span>Tran Bac Son</span>
                         &nbsp;&nbsp;
-                        <span
-                            className="oi oi-account-logout pointer"
-                            onClick={() => this.logout()}></span>
+                        <span className="oi oi-account-logout pointer" onClick={() => this.logout()} />
                     </div>
 
-                    <div className="container-fluid">
-                        {this.props.children}
-                    </div>
+                    <div className="container-fluid">{this.props.children}</div>
                 </div>
             </div>
-    )
+        );
     }
 }
 
 export default withRouter(connect(state => ({}), dispatch => ({}))(App));
-

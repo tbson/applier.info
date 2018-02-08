@@ -3,23 +3,23 @@ input:invalid {
     border-color: #dc3545;
 }
 */
-.pointer{
+.pointer {
     cursor: pointer;
 }
 
-.right{
+.right {
     text-align: right;
 }
 
-.center{
+.center {
     text-align: center;
 }
 
-.left{
+.left {
     text-align: left;
 }
 
-.float-right{
+.float-right {
     float: right;
 }
 
@@ -28,7 +28,7 @@ input:invalid {
 }
 
 .link {
-    color: #0C65FF;
+    color: #0c65ff;
 }
 
 .button-success,

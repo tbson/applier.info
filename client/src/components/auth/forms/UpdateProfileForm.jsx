@@ -1,10 +1,11 @@
 // @flow
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { actions } from '../_data';
+// $FlowFixMe: do not complain about importing node_modules
+import {connect} from 'react-redux';
+// $FlowFixMe: do not complain about importing node_modules
+import {withRouter} from 'react-router-dom';
+import {actions} from '../_data';
 import store from 'src/store';
-
 
 type Props = {
     handleSubmit: Function,
@@ -12,10 +13,9 @@ type Props = {
     formId: string,
     submitTitle: string,
     defaultValue: Object,
-    errorMessage: Object
+    errorMessage: Object,
 };
 type States = {};
-
 
 class UpdateProfileForm extends React.Component<Props, States> {
     resetForm: Function;
@@ -28,9 +28,9 @@ class UpdateProfileForm extends React.Component<Props, States> {
             username: null,
             email: null,
             first_name: null,
-            last_name: null
+            last_name: null,
         },
-        errorMessage: {}
+        errorMessage: {},
     };
 
     constructor(props) {
@@ -41,24 +41,22 @@ class UpdateProfileForm extends React.Component<Props, States> {
         this.setErrorMessage = this.setErrorMessage.bind(this);
     }
 
-    resetForm () {
+    resetForm() {
         window.document.getElementById(this.props.formId).reset();
         window.document.querySelector('#' + this.props.formId + ' [name=username]').focus();
     }
 
-    setClassName (name) {
-        return this.props.errorMessage[name] ? "form-control is-invalid" : "form-control";
+    setClassName(name) {
+        return this.props.errorMessage[name] ? 'form-control is-invalid' : 'form-control';
     }
 
-    setErrorMessage (name) {
+    setErrorMessage(name) {
         return this.props.errorMessage[name];
     }
 
-    render () {
+    render() {
         return (
-            <form
-                id={this.props.formId}
-                onSubmit={this.props.handleSubmit}>
+            <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input
@@ -69,10 +67,9 @@ class UpdateProfileForm extends React.Component<Props, States> {
                         className={this.setClassName('username')}
                         required
                         autoFocus
-                        placeholder="Username..."/>
-                        <div className="invalid-feedback">
-                            {this.setErrorMessage('username')}
-                        </div>
+                        placeholder="Username..."
+                    />
+                    <div className="invalid-feedback">{this.setErrorMessage('username')}</div>
                 </div>
 
                 <div className="form-group">
@@ -84,10 +81,9 @@ class UpdateProfileForm extends React.Component<Props, States> {
                         type="email"
                         className={this.setClassName('email')}
                         required
-                        placeholder="Email..."/>
-                        <div className="invalid-feedback">
-                            {this.setErrorMessage('email')}
-                        </div>
+                        placeholder="Email..."
+                    />
+                    <div className="invalid-feedback">{this.setErrorMessage('email')}</div>
                 </div>
 
                 <div className="row">
@@ -101,10 +97,9 @@ class UpdateProfileForm extends React.Component<Props, States> {
                                 type="text"
                                 className={this.setClassName('first_name')}
                                 required
-                                placeholder="Firstname..."/>
-                            <div className="invalid-feedback">
-                                {this.setErrorMessage('first_name')}
-                            </div>
+                                placeholder="Firstname..."
+                            />
+                            <div className="invalid-feedback">{this.setErrorMessage('first_name')}</div>
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -117,10 +112,9 @@ class UpdateProfileForm extends React.Component<Props, States> {
                                 type="text"
                                 className={this.setClassName('last_name')}
                                 required
-                                placeholder="Lastname..."/>
-                            <div className="invalid-feedback">
-                                {this.setErrorMessage('last_name')}
-                            </div>
+                                placeholder="Lastname..."
+                            />
+                            <div className="invalid-feedback">{this.setErrorMessage('last_name')}</div>
                         </div>
                     </div>
                 </div>
@@ -128,7 +122,7 @@ class UpdateProfileForm extends React.Component<Props, States> {
                 <div className="right">
                     {this.props.children}
                     <button className="btn btn-primary">
-                        <span className="oi oi-check"></span>&nbsp;
+                        <span className="oi oi-check" />&nbsp;
                         {this.props.submitTitle}
                     </button>
                 </div>
@@ -137,7 +131,4 @@ class UpdateProfileForm extends React.Component<Props, States> {
     }
 }
 
-export default connect((state, props) => ({
-}), dispatch => ({
-}))(UpdateProfileForm);
-
+export default connect((state, props) => ({}), dispatch => ({}))(UpdateProfileForm);

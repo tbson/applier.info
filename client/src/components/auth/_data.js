@@ -9,8 +9,8 @@ const rawApiUrls = [
             tokenAuth: 'token-auth',
             resetPassword: 'reset-password',
             changePassword: 'change-password',
-        }
-    }
+        },
+    },
 ];
 
 export const actions = {

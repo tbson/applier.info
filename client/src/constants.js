@@ -1,11 +1,11 @@
-import { createBrowserHistory } from 'history';
-
+import {createBrowserHistory} from 'history';
 
 export const APP_TITLE = 'Applier';
 export const APP_NAMESPACE = 'applier';
-export const APP = window.location.href !== 'about:blank'?window.location.href.split('://')[1].split('/')[1]:'blank';
-export const URL_PREFIX = APP?'/' + APP + '/':'/';
-export const URL_PREFIX_STRIP = APP==='blank'?APP:(APP?'/' + APP:'/');
+export const APP =
+    window.location.href !== 'about:blank' ? window.location.href.split('://')[1].split('/')[1] : 'blank';
+export const URL_PREFIX = APP ? '/' + APP + '/' : '/';
+export const URL_PREFIX_STRIP = APP === 'blank' ? APP : APP ? '/' + APP : '/';
 export const LOCAL_STORAGE_PREFIX = APP_NAMESPACE + '_' + APP;
 
 export const API_PREFIX = '/api/v1/';
@@ -27,23 +27,17 @@ export const FIELD_TYPE = {
     DATE: 'DATE',
     DATETIME: 'DATETIME',
     IMAGE: 'IMAGE',
-    FILE: 'FILE'
-}
+    FILE: 'FILE',
+};
 
-export const ADMIN_ROLES = [
-    'quan-tri-vien'
-];
+export const ADMIN_ROLES = ['quan-tri-vien'];
 
-export const USER_ROLES = [
-    'khach-hang'
-];
+export const USER_ROLES = ['khach-hang'];
 
-
-export const History = createBrowserHistory(URL_PREFIX_STRIP==='blank'?{}:{ basename: URL_PREFIX_STRIP });
+export const History = createBrowserHistory(URL_PREFIX_STRIP === 'blank' ? {} : {basename: URL_PREFIX_STRIP});
 
 try {
-    __webpack_public_path__ = APP?'/' + APP + '/':'/';
+    __webpack_public_path__ = APP ? '/' + APP + '/' : '/';
 } catch (error) {
     // Do nothing
 }
-

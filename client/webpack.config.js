@@ -1,29 +1,24 @@
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const CompressionPlugin = require('compression-webpack-plugin')
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const CompressionPlugin = require('compression-webpack-plugin');
 
-const TARGET = process.env.npm_lifecycle_event
-const path = require('path')
-const fs = require('fs')
+const TARGET = process.env.npm_lifecycle_event;
+const path = require('path');
+const fs = require('fs');
 const PATHS = {
-  app: path.join(__dirname, 'src'),
-  build: path.join(__dirname, 'build'),
-  test: path.join(__dirname, 'tests')
-}
+    app: path.join(__dirname, 'src'),
+    build: path.join(__dirname, 'build'),
+    test: path.join(__dirname, 'tests'),
+};
 
-process.env.BABEL_ENV = TARGET
+process.env.BABEL_ENV = TARGET;
 
 const common = {
     entry: {
-        app: [
-            PATHS.app
-        ]
+        app: [PATHS.app],
     },
     resolve: {
-        modules: [
-            path.resolve(__dirname),
-            'node_modules'
-        ],
+        modules: [path.resolve(__dirname), 'node_modules'],
         /*
         ,
         alias: {
@@ -35,54 +30,61 @@ const common = {
             helpers: 'app/utils/helpers'
         },
         */
-        extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx'],
     },
     output: {
         path: PATHS.build,
-        filename: '[name].js'
+        filename: '[name].js',
     },
-    module: {loaders: [
-        {
-            test: /\.css$/,
-            use: ['style-loader', 'css-loader', 'sass-loader']
-        },
-        {
-            test: /\.styl$/,
-            loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
-        },
-        {
-            test: /\.scss$/,
-            use: ['style-loader', 'css-loader', 'sass-loader']
-        },
-        {
-            test: /\.less$/,
-            use: ['style-loader', 'css-loader', 'less-loader']
-        },
-        {
-            test: /\.png$/,
-            loader: 'file-loader'
-        }, {
-            test: /\.jpg$/,
-            loader: 'file-loader'
-        }, {
-            test: /\.gif$/,
-            loader: 'file-loader'
-        }, {
-            test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.otf($|\?)/,
-            loader: 'file-loader'
-        }, {
-            test: /\.jsx?$/,
-            loader: 'babel-loader',
-            include: PATHS.app,
-            exclude: /node_modules/
-        }
-    ]}
-}
+    module: {
+        loaders: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.styl$/,
+                loader:
+                    'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+            },
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader'],
+            },
+            {
+                test: /\.png$/,
+                loader: 'file-loader',
+            },
+            {
+                test: /\.jpg$/,
+                loader: 'file-loader',
+            },
+            {
+                test: /\.gif$/,
+                loader: 'file-loader',
+            },
+            {
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.otf($|\?)/,
+                loader: 'file-loader',
+            },
+            {
+                test: /\.jsx?$/,
+                loader: 'babel-loader',
+                include: PATHS.app,
+                exclude: /node_modules/,
+            },
+        ],
+    },
+};
 
-if(TARGET === 'start' || !TARGET) {
+if (TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
         watchOptions: {
-            ignored: /node_modules/
+            ignored: /node_modules/,
         },
         devtool: 'eval-source-map',
         // devtool: 'eval'
@@ -95,15 +97,13 @@ if(TARGET === 'start' || !TARGET) {
             host: '0.0.0.0',
             port: 4004,
             https: {
-                cert: fs.readFileSync("/code/ssl/cer.crt"),
-                key: fs.readFileSync("/code/ssl/rsa.key"),
-                ca: fs.readFileSync("/code/ssl/localca.pem")
-            }
+                cert: fs.readFileSync('/code/ssl/cer.crt'),
+                key: fs.readFileSync('/code/ssl/rsa.key'),
+                ca: fs.readFileSync('/code/ssl/localca.pem'),
+            },
         },
-        plugins: [
-            new webpack.NamedModulesPlugin()
-        ]
-    })
+        plugins: [new webpack.NamedModulesPlugin()],
+    });
 }
 
 /*
@@ -117,8 +117,8 @@ if (['build'].indexOf(TARGET) !== -1) {
         plugins: [
             new webpack.DefinePlugin({
                 'process.env': {
-                    'NODE_ENV': JSON.stringify('production')
-                }
+                    NODE_ENV: JSON.stringify('production'),
+                },
             }),
             new webpack.optimize.UglifyJsPlugin({
                 sourceMap: true,
@@ -128,12 +128,12 @@ if (['build'].indexOf(TARGET) !== -1) {
                     pure_getters: true,
                     unsafe: true,
                     unsafe_comps: true,
-                    screw_ie8: true
+                    screw_ie8: true,
                 },
                 output: {
-                    comments: false
+                    comments: false,
                 },
-                exclude: [/\.min\.js$/gi] // skip pre-minified libs
+                exclude: [/\.min\.js$/gi], // skip pre-minified libs
             }),
             new webpack.NoEmitOnErrorsPlugin(),
             new CompressionPlugin({
@@ -141,9 +141,9 @@ if (['build'].indexOf(TARGET) !== -1) {
                 algorithm: 'gzip',
                 test: /\.js$|\.css$|\.html$/,
                 threshold: 10240,
-                minRatio: 0
-            })
+                minRatio: 0,
+            }),
         ],
-        stats: { colors: true }
-    })
+        stats: {colors: true},
+    });
 }

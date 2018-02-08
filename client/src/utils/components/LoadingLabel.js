@@ -1,12 +1,13 @@
 // @flow
 import * as React from 'react';
 
-
-type PropTypes = {}
+type PropTypes = {};
 class LoadingLabel extends React.Component<PropTypes> {
-    render () {
+    render() {
         return (
-            <div className="alert alert-info" role="alert">Loading data...</div>
+            <div className="alert alert-info" role="alert">
+                Loading data...
+            </div>
         );
     }
 }
