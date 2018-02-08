@@ -29,5 +29,5 @@ class Spinner extends React.Component<Props, State> {
 
 
 export default connect(state => ({
-    spinning: state.commonReducer.spinning
+    spinning: state.commonState.spinning
 }), dispatch => ({}))(Spinner);

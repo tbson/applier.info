@@ -15,7 +15,7 @@ type ProfileType = {
     role_id: string
 };
 
-export type AuthReducerType = {
+export type AuthStateType = {
     mainModalVisible: boolean,
     resetForm: ResetFormType,
     login: LoginType,
@@ -23,7 +23,7 @@ export type AuthReducerType = {
 };
 
 
-export const authReducerDefault: AuthReducerType = {
+export const authStateDefault: AuthStateType = {
     mainModalVisible: false,
     resetForm: {
         FormLogin: 0
@@ -41,9 +41,9 @@ export const authReducerDefault: AuthReducerType = {
 };
 
 
-export default function authReducer(
-    state: AuthReducerType = authReducerDefault,
-    action: {type: string, payload: any}): AuthReducerType {
+export default function authState(
+    state: AuthStateType = authStateDefault,
+    action: {type: string, payload: any}): AuthStateType {
     const prefix = 'auth' + '/';
     const {data, pages, index, dataLoaded, modalId, open} = (action.payload ? action.payload : {});
     switch(action.type){

@@ -17,7 +17,7 @@ import store from 'src/store';
 import Tools from 'src/utils/helpers/Tools';
 
 type Props = {
-    configReducer: Object,
+    configState: Object,
     action: Function,
 };
 type States = {
@@ -187,7 +187,7 @@ export class ConfigTable extends React.Component<Props, States> {
 
     render() {
         if (!this.state.dataLoaded) return <LoadingLabel />;
-        const list = this.props.configReducer.list;
+        const list = this.props.configState.list;
         return (
             <div>
                 <SearchInput searchStr={this.state.searchStr} onSearch={this.handleSearch} />
@@ -231,7 +231,7 @@ export class ConfigTable extends React.Component<Props, States> {
                             <th className="row25">
                                 <span
                                     className="oi oi-x text-danger pointer"
-                                    onClick={() => this.handleRemove(Tools.getCheckedId(this.props.configReducer.list))}
+                                    onClick={() => this.handleRemove(Tools.getCheckedId(this.props.configState.list))}
                                 />
                             </th>
                             <th className="row25 right" colSpan="99">
@@ -246,8 +246,8 @@ export class ConfigTable extends React.Component<Props, States> {
                 </table>
                 <ConfigModal
                     open={this.state.mainModal}
-                    defaultValue={this.props.configReducer.obj}
-                    errorMessage={this.props.configReducer.err}
+                    defaultValue={this.props.configState.obj}
+                    errorMessage={this.props.configState.err}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
                 />
@@ -258,7 +258,7 @@ export class ConfigTable extends React.Component<Props, States> {
 export default withRouter(
     connect(
         state => ({
-            configReducer: state.configReducer,
+            configState: state.configState,
         }),
         dispatch => ({
             action: bindActionCreators(configAction, dispatch),

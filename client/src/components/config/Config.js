@@ -34,5 +34,5 @@ const styles = {
 }
 
 export default withRouter(connect(state => ({
-    configReducer: state.configReducer
+    configState: state.configState
 }), dispatch => ({}))(Config));

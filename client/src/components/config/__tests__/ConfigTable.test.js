@@ -97,7 +97,7 @@ describe('ConfigTable component', () => {
 
     it('Get list', (done) => {
         const props = {
-            configReducer: {
+            configState: {
                 pages: 1,
                 obj: {},
                 err: {},
@@ -120,8 +120,8 @@ describe('ConfigTable component', () => {
             expect(props.action.mock.calls.length).toEqual(1);
             expect(props.action.mock.calls[0][0]).toEqual('list');
             expect(props.action.mock.calls[0][1]).toEqual({
-                data: props.configReducer.list,
-                pages: props.configReducer.pages
+                data: props.configState.list,
+                pages: props.configState.pages
             });
 
             // Check states
@@ -134,7 +134,7 @@ describe('ConfigTable component', () => {
 
     it('Check all', (done) => {
         const props = {
-            configReducer: {
+            configState: {
                 pages: 1,
                 obj: {},
                 err: {},

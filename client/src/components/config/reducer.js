@@ -1,5 +1,5 @@
 // @flow
-type ConfigReducerType = {
+type ConfigStateType = {
     pages: number,
     obj: Object,
     err: Object,
@@ -7,16 +7,16 @@ type ConfigReducerType = {
 };
 
 
-const configReducerDefault: ConfigReducerType = {
+const configStateDefault: ConfigStateType = {
     pages: 0,
     obj: {},
     err: {},
     list: []
 };
 
-export default function configReducer(
-    state: ConfigReducerType = configReducerDefault,
-    action: {type: string, payload: any}): ConfigReducerType{
+export default function configState(
+    state: ConfigStateType = configStateDefault,
+    action: {type: string, payload: any}): ConfigStateType{
     const prefix = 'config' + '/';
     const {data, pages, id} = (action.payload ? action.payload : {});
     switch(action.type){
