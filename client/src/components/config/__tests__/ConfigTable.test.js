@@ -79,23 +79,21 @@ describe('ConfigTable Row component', () => {
 
 describe('ConfigTable component', () => {
     beforeAll(() => {
-        Tools.apiCall = (url, method, params = {}, popMessage = true, usingLoading = true) =>
-            new Promise((resolve, reject) => {
-                resolve({
-                    status: 200,
-                    success: true,
-                    data: {
-                        count: 1,
-                        pages: 1,
-                        page_size: 10,
-                        links: {next: 'nextUrl', previous: 'prevUrl'},
-                        items: seeding(10),
-                    },
-                });
-            });
+        const response = {
+            status: 200,
+            success: true,
+            data: {
+                count: 1,
+                pages: 1,
+                page_size: 10,
+                links: {next: 'nextUrl', previous: 'prevUrl'},
+                items: seeding(10),
+            },
+        };
+        Tools.apiCall = async (url, method, params = {}, popMessage = true, usingLoading = true) => response;
     });
 
-    it('Get list', (done) => {
+    it('Get list', done => {
         const props = {
             configState: {
                 pages: 1,
@@ -121,7 +119,7 @@ describe('ConfigTable component', () => {
             expect(props.action.mock.calls[0][0]).toEqual('list');
             expect(props.action.mock.calls[0][1]).toEqual({
                 data: props.configState.list,
-                pages: props.configState.pages
+                pages: props.configState.pages,
             });
 
             // Check states
@@ -132,7 +130,7 @@ describe('ConfigTable component', () => {
         }, 100);
     });
 
-    it('Check all', (done) => {
+    it('Check all', done => {
         const props = {
             configState: {
                 pages: 1,
@@ -147,7 +145,10 @@ describe('ConfigTable component', () => {
         setTimeout(() => {
             // After loading data done
             wrapper.update();
-            wrapper.find('.check-all-button').first().simulate('click');
+            wrapper
+                .find('.check-all-button')
+                .first()
+                .simulate('click');
             // First one is update list reducer
             expect(props.action.mock.calls.length).toEqual(2);
             expect(props.action.mock.calls[1][0]).toEqual('toggleCheckAll');
@@ -155,7 +156,7 @@ describe('ConfigTable component', () => {
         }, 100);
     });
 
-    it('Add', (done) => {
+    it('Add', done => {
         const props = {
             configState: {
                 pages: 1,
@@ -172,7 +173,10 @@ describe('ConfigTable component', () => {
         setTimeout(() => {
             // After loading data done
             wrapper.update();
-            wrapper.find('.add-button').first().simulate('click');
+            wrapper
+                .find('.add-button')
+                .first()
+                .simulate('click');
 
             expect(toggleModalSpy).toHaveBeenCalled();
             expect(toggleModalSpy.mock.calls[0][0]).toEqual('mainModal');
@@ -190,14 +194,17 @@ describe('ConfigTable component', () => {
             },
             action: jest.fn(),
         };
-        it('No check', (done) => {
+        it('No check', done => {
             const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
 
             const wrapper = shallow(<ConfigTable {...props} />);
             setTimeout(() => {
                 // After loading data done
                 wrapper.update();
-                wrapper.find('.bulk-remove-button').first().simulate('click');
+                wrapper
+                    .find('.bulk-remove-button')
+                    .first()
+                    .simulate('click');
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('');
@@ -206,7 +213,7 @@ describe('ConfigTable component', () => {
             }, 100);
         });
 
-        it('Check 1', (done) => {
+        it('Check 1', done => {
             props.configState.list[0].checked = true;
 
             const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
@@ -215,7 +222,10 @@ describe('ConfigTable component', () => {
             setTimeout(() => {
                 // After loading data done
                 wrapper.update();
-                wrapper.find('.bulk-remove-button').first().simulate('click');
+                wrapper
+                    .find('.bulk-remove-button')
+                    .first()
+                    .simulate('click');
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1');
@@ -224,7 +234,7 @@ describe('ConfigTable component', () => {
             }, 100);
         });
 
-        it('Check 3', (done) => {
+        it('Check 3', done => {
             props.configState.list[0].checked = true;
             props.configState.list[1].checked = true;
             props.configState.list[2].checked = true;
@@ -235,13 +245,77 @@ describe('ConfigTable component', () => {
             setTimeout(() => {
                 // After loading data done
                 wrapper.update();
-                wrapper.find('.bulk-remove-button').first().simulate('click');
+                wrapper
+                    .find('.bulk-remove-button')
+                    .first()
+                    .simulate('click');
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1,2,3');
                 jest.restoreAllMocks();
                 done();
             }, 100);
+        });
+    });
+
+    describe('ConfigTable methods', () => {
+        it('list', async () => {
+            const setInitDataSpy = jest.spyOn(ConfigTable.prototype, 'setInitData');
+
+            const props = {
+                configState: {
+                    pages: 1,
+                    obj: {},
+                    err: {},
+                    list: seeding(10),
+                },
+                action: jest.fn(),
+            };
+            const wrapper = shallow(<ConfigTable {...props} />);
+
+            const response = {
+                status: 200,
+                success: true,
+                data: {
+                    count: 1,
+                    pages: 1,
+                    page_size: 10,
+                    links: {next: 'nextUrl', previous: 'prevUrl'},
+                    items: seeding(10),
+                },
+            };
+            const apiCallSpy = jest
+                .spyOn(Tools, 'apiCall')
+                .mockImplementation(
+                    async (url, method, params = {}, popMessage = true, usingLoading = true) => response,
+                );
+
+            const params = {
+                key1: 'value 1',
+                key2: 'value 2',
+            };
+
+            // Execute 1st time
+            const result = await wrapper.instance().list(params);
+            expect(result).toEqual(response);
+
+            // Default URL
+            expect(apiCallSpy).toHaveBeenCalled();
+            expect(apiCallSpy.mock.calls[0][0]).toEqual('about:///api/v1/config/');
+            expect(apiCallSpy.mock.calls[0][1]).toEqual('GET');
+            expect(apiCallSpy.mock.calls[0][2]).toEqual(params);
+
+            expect(setInitDataSpy).toHaveBeenCalled();
+            // 1st one caused by componentDidMount
+            expect(setInitDataSpy.mock.calls[1][0]).toEqual(result.data);
+
+            // Execute 2nd time
+            // Custome URL
+            await wrapper.instance().list({}, 'someUrl');
+            expect(apiCallSpy).toHaveBeenCalled();
+            expect(apiCallSpy.mock.calls[1][0]).toEqual('someUrl');
+            expect(apiCallSpy.mock.calls[1][1]).toEqual('GET');
+            expect(apiCallSpy.mock.calls[1][2]).toEqual({});
         });
     });
 });

@@ -79,15 +79,18 @@ export class ConfigTable extends React.Component<Props, States> {
 
     async list(outerParams: Object = {}, url: ?string = null) {
         let params = {};
+        let result = {}
 
         if (!Tools.emptyObj(outerParams)) {
             params = {...params, ...outerParams};
         }
 
-        const result = await Tools.apiCall(url ? url : apiUrls.crud, 'GET', params);
+        result = await Tools.apiCall(url ? url : apiUrls.crud, 'GET', params);
         if (result.success) {
             this.setInitData(result.data);
+            return result;
         }
+        return result;
     }
 
     toggleModal(modalId: string, id: ?number = null) {
