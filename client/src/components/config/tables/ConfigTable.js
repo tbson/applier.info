@@ -204,7 +204,7 @@ export class ConfigTable extends React.Component<Props, States> {
                             <th scope="col">Value</th>
                             <th scope="col" style={{padding: 8}} className="row80">
                                 <button
-                                    className="btn btn-primary btn-sm btn-block"
+                                    className="btn btn-primary btn-sm btn-block add-button"
                                     onClick={() => this.toggleModal('mainModal')}>
                                     <span className="oi oi-plus" />&nbsp; Add
                                 </button>
@@ -230,7 +230,7 @@ export class ConfigTable extends React.Component<Props, States> {
                         <tr>
                             <th className="row25">
                                 <span
-                                    className="oi oi-x text-danger pointer"
+                                    className="oi oi-x text-danger pointer bulk-remove-button"
                                     onClick={() => this.handleRemove(Tools.getCheckedId(this.props.configState.list))}
                                 />
                             </th>

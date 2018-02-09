@@ -155,9 +155,93 @@ describe('ConfigTable component', () => {
         }, 100);
     });
 
-    it('Add', () => {});
+    it('Add', (done) => {
+        const props = {
+            configState: {
+                pages: 1,
+                obj: {},
+                err: {},
+                list: seeding(10),
+            },
+            action: jest.fn(),
+        };
 
-    it('Edit', () => {});
+        const toggleModalSpy = jest.spyOn(ConfigTable.prototype, 'toggleModal');
 
-    it('Remove', () => {});
+        const wrapper = shallow(<ConfigTable {...props} />);
+        setTimeout(() => {
+            // After loading data done
+            wrapper.update();
+            wrapper.find('.add-button').first().simulate('click');
+
+            expect(toggleModalSpy).toHaveBeenCalled();
+            expect(toggleModalSpy.mock.calls[0][0]).toEqual('mainModal');
+            done();
+        }, 100);
+    });
+
+    describe('Bulk remove', () => {
+        const props = {
+            configState: {
+                pages: 1,
+                obj: {},
+                err: {},
+                list: seeding(10),
+            },
+            action: jest.fn(),
+        };
+        it('No check', (done) => {
+            const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
+
+            const wrapper = shallow(<ConfigTable {...props} />);
+            setTimeout(() => {
+                // After loading data done
+                wrapper.update();
+                wrapper.find('.bulk-remove-button').first().simulate('click');
+
+                expect(handleRemoveSpy).toHaveBeenCalled();
+                expect(handleRemoveSpy.mock.calls[0][0]).toEqual('');
+                jest.restoreAllMocks();
+                done();
+            }, 100);
+        });
+
+        it('Check 1', (done) => {
+            props.configState.list[0].checked = true;
+
+            const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
+
+            const wrapper = shallow(<ConfigTable {...props} />);
+            setTimeout(() => {
+                // After loading data done
+                wrapper.update();
+                wrapper.find('.bulk-remove-button').first().simulate('click');
+
+                expect(handleRemoveSpy).toHaveBeenCalled();
+                expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1');
+                jest.restoreAllMocks();
+                done();
+            }, 100);
+        });
+
+        it('Check 3', (done) => {
+            props.configState.list[0].checked = true;
+            props.configState.list[1].checked = true;
+            props.configState.list[2].checked = true;
+
+            const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
+
+            const wrapper = shallow(<ConfigTable {...props} />);
+            setTimeout(() => {
+                // After loading data done
+                wrapper.update();
+                wrapper.find('.bulk-remove-button').first().simulate('click');
+
+                expect(handleRemoveSpy).toHaveBeenCalled();
+                expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1,2,3');
+                jest.restoreAllMocks();
+                done();
+            }, 100);
+        });
+    });
 });
