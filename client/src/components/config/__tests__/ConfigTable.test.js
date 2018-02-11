@@ -260,19 +260,7 @@ describe('ConfigTable component', () => {
 
     describe('ConfigTable methods', () => {
         it('list', async () => {
-            const setInitDataSpy = jest.spyOn(ConfigTable.prototype, 'setInitData');
-
-            const props = {
-                configState: {
-                    pages: 1,
-                    obj: {},
-                    err: {},
-                    list: seeding(10),
-                },
-                action: jest.fn(),
-            };
-            const wrapper = shallow(<ConfigTable {...props} />);
-
+            // Mock apiCall function
             const response = {
                 status: 200,
                 success: true,
@@ -284,11 +272,33 @@ describe('ConfigTable component', () => {
                     items: seeding(10),
                 },
             };
+
             const apiCallSpy = jest
                 .spyOn(Tools, 'apiCall')
                 .mockImplementation(
                     async (url, method, params = {}, popMessage = true, usingLoading = true) => response,
                 );
+
+            // Spy setInitData function
+            const setInitDataSpy = jest.spyOn(ConfigTable.prototype, 'setInitData');
+
+            // Init component
+            const props = {
+                configState: {
+                    pages: 1,
+                    obj: {},
+                    err: {},
+                    list: seeding(10),
+                },
+                action: jest.fn(),
+            };
+            const wrapper = shallow(<ConfigTable {...props} />);
+
+            // setInitData will call after ConfigTable mount
+            expect(apiCallSpy).toHaveBeenCalled();
+            expect(apiCallSpy.mock.calls[0][0]).toEqual('about:///api/v1/config/');
+            expect(apiCallSpy.mock.calls[0][1]).toEqual('GET');
+            expect(apiCallSpy.mock.calls[0][2]).toEqual({});
 
             const params = {
                 key1: 'value 1',
@@ -301,21 +311,18 @@ describe('ConfigTable component', () => {
 
             // Default URL
             expect(apiCallSpy).toHaveBeenCalled();
-            expect(apiCallSpy.mock.calls[0][0]).toEqual('about:///api/v1/config/');
-            expect(apiCallSpy.mock.calls[0][1]).toEqual('GET');
-            expect(apiCallSpy.mock.calls[0][2]).toEqual(params);
-
+            expect(apiCallSpy.mock.calls[1][0]).toEqual('about:///api/v1/config/');
+            expect(apiCallSpy.mock.calls[1][1]).toEqual('GET');
+            expect(apiCallSpy.mock.calls[1][2]).toEqual(params);
             expect(setInitDataSpy).toHaveBeenCalled();
-            // 1st one caused by componentDidMount
-            expect(setInitDataSpy.mock.calls[1][0]).toEqual(result.data);
 
             // Execute 2nd time
             // Custome URL
             await wrapper.instance().list({}, 'someUrl');
             expect(apiCallSpy).toHaveBeenCalled();
-            expect(apiCallSpy.mock.calls[1][0]).toEqual('someUrl');
-            expect(apiCallSpy.mock.calls[1][1]).toEqual('GET');
-            expect(apiCallSpy.mock.calls[1][2]).toEqual({});
+            expect(apiCallSpy.mock.calls[2][0]).toEqual('someUrl');
+            expect(apiCallSpy.mock.calls[2][1]).toEqual('GET');
+            expect(apiCallSpy.mock.calls[2][2]).toEqual({});
         });
     });
 });
