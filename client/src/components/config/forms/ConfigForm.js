@@ -12,7 +12,11 @@ type Props = {
     children?: React.Node,
     formId: string,
     submitTitle: string,
-    defaultValue: Object,
+    defaultValues: {
+        id: ?number,
+        uid: ?string,
+        value: ?string,
+    },
     errorMessage: Object,
 };
 type States = {};
@@ -24,11 +28,10 @@ class ConfigForm extends React.Component<Props, States> {
 
     static defaultProps = {
         submitTitle: 'Submit',
-        defaultValue: {
-            username: null,
-            email: null,
-            first_name: null,
-            last_name: null,
+        defaultValues: {
+            id: null,
+            uid: null,
+            value: null,
         },
         errorMessage: {},
     };
@@ -43,7 +46,7 @@ class ConfigForm extends React.Component<Props, States> {
 
     resetForm() {
         window.document.getElementById(this.props.formId).reset();
-        window.document.querySelector('#' + this.props.formId + ' [name=username]').focus();
+        window.document.querySelector('#' + this.props.formId + ' [name=uid]').focus();
     }
 
     setClassName(name) {
@@ -57,10 +60,11 @@ class ConfigForm extends React.Component<Props, States> {
     render() {
         return (
             <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
+                <input defaultValue={this.props.defaultValues.id} name="id" type="hidden" />
                 <div className="form-group">
                     <label htmlFor="uid">Key</label>
                     <input
-                        defaultValue={this.props.defaultValue.uid}
+                        defaultValue={this.props.defaultValues.uid}
                         id="uid"
                         name="uid"
                         type="text"
@@ -75,7 +79,7 @@ class ConfigForm extends React.Component<Props, States> {
                 <div className="form-group">
                     <label htmlFor="value">Value</label>
                     <input
-                        defaultValue={this.props.defaultValue.value}
+                        defaultValue={this.props.defaultValues.value}
                         id="value"
                         name="value"
                         type="text"
