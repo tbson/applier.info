@@ -7,8 +7,8 @@ type PropTypes = {
     open: boolean,
     handleClose: Function,
     handleSubmit: Function,
-    defaultValue: Object,
-    errorMessage: Object,
+    defaultValues: Object,
+    errorMessages: Object,
 };
 class ConfigModal extends React.Component<PropTypes> {
     static defaultProps = {
@@ -23,8 +23,8 @@ class ConfigModal extends React.Component<PropTypes> {
                     <ConfigForm
                         formId="configForm"
                         submitTitle="Update"
-                        defaultValue={this.props.defaultValue}
-                        errorMessage={this.props.errorMessage}
+                        defaultValues={this.props.defaultValues}
+                        errorMessages={this.props.errorMessages}
                         handleSubmit={this.props.handleSubmit}>
                         <button type="button" onClick={this.props.handleClose} className="btn btn-warning">
                             <span className="oi oi-x" />&nbsp; Cancel
