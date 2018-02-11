@@ -47,7 +47,7 @@ export default function configState(
                 list: [{...data}, ...state.list],
             };
         case prefix + 'edit':
-            const index = state.list.findIndex(item => item.id === id);
+            const index = state.list.findIndex(item => item.id === parseInt(id));
             return {
                 ...state,
                 list: [
