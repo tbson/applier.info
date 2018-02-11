@@ -8,7 +8,7 @@ import Tools from 'src/utils/helpers/Tools';
 
 Enzyme.configure({adapter: new Adapter()});
 
-function seeding(numberOfItems) {
+function seeding(numberOfItems, single = false) {
     let result = [];
     for (let i = 1; i <= numberOfItems; i++) {
         result.push({
@@ -18,7 +18,8 @@ function seeding(numberOfItems) {
             checked: false,
         });
     }
-    return result;
+    if (!single) return result;
+    return result[result.length - 1];
 }
 
 describe('ConfigTable Row component', () => {
@@ -194,6 +195,11 @@ describe('ConfigTable component', () => {
             },
             action: jest.fn(),
         };
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
         it('No check', done => {
             const handleRemoveSpy = jest.spyOn(ConfigTable.prototype, 'handleRemove').mockImplementation(() => null);
 
@@ -208,7 +214,6 @@ describe('ConfigTable component', () => {
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('');
-                jest.restoreAllMocks();
                 done();
             }, 100);
         });
@@ -229,7 +234,6 @@ describe('ConfigTable component', () => {
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1');
-                jest.restoreAllMocks();
                 done();
             }, 100);
         });
@@ -252,13 +256,16 @@ describe('ConfigTable component', () => {
 
                 expect(handleRemoveSpy).toHaveBeenCalled();
                 expect(handleRemoveSpy.mock.calls[0][0]).toEqual('1,2,3');
-                jest.restoreAllMocks();
                 done();
             }, 100);
         });
     });
 
     describe('ConfigTable methods', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
         it('list', async () => {
             // Mock apiCall function
             const response = {
@@ -323,6 +330,116 @@ describe('ConfigTable component', () => {
             expect(apiCallSpy.mock.calls[2][0]).toEqual('someUrl');
             expect(apiCallSpy.mock.calls[2][1]).toEqual('GET');
             expect(apiCallSpy.mock.calls[2][2]).toEqual({});
+        });
+
+        describe('toggleModal', () => {
+            it('Not defined modalName or null ID', async () => {
+                // Mock apiCall function
+                const response = {
+                    status: 200,
+                    success: true,
+                    data: seeding(1, true),
+                };
+                const apiCallSpy = jest
+                    .spyOn(Tools, 'apiCall')
+                    .mockImplementation(
+                        async (url, method, params = {}, popMessage = true, usingLoading = true) => response,
+                    );
+
+                // Mock componentDidMount
+                jest.spyOn(ConfigTable.prototype, 'componentDidMount').mockImplementation(() => {});
+
+                // Init component
+                const props = {
+                    configState: {
+                        pages: 1,
+                        obj: {},
+                        err: {},
+                        list: seeding(10),
+                    },
+                    action: jest.fn(),
+                };
+                let wrapper = shallow(<ConfigTable {...props} />);
+
+                // State not pre-defined
+                let modalName = 'newThing';
+                let result = wrapper.instance().toggleModal(modalName);
+                expect(result).toEqual({});
+
+                // State not pre-defined
+                modalName = null;
+                result = wrapper.instance().toggleModal(modalName);
+                expect(result).toEqual({});
+
+                // State not pre-defined
+                result = wrapper.instance().toggleModal();
+                expect(result).toEqual({});
+
+                // State defined
+                modalName = 'mainModal';
+                result = wrapper.instance().toggleModal(modalName);
+                expect(result).toEqual({
+                    id: null,
+                    mainModal: true,
+                });
+
+                // No id -> add new or close -> reset obj
+                expect(props.action.mock.calls[0][0]).toEqual('obj');
+                expect(props.action.mock.calls[0][1]).toEqual({});
+
+                // No id -> add new or close -> reset err
+                expect(props.action.mock.calls[1][0]).toEqual('err');
+                expect(props.action.mock.calls[1][1]).toEqual({});
+
+                expect(props.action.mock.calls.length).toEqual(2);
+            });
+
+            it('Not null ID', async (done) => {
+                // Mock apiCall function
+                const response = {
+                    status: 200,
+                    success: true,
+                    data: seeding(1, true),
+                };
+                const apiCallSpy = jest
+                    .spyOn(Tools, 'apiCall')
+                    .mockImplementation(
+                        async (url, method, params = {}, popMessage = true, usingLoading = true) => response,
+                    );
+
+                // Mock componentDidMount
+                jest.spyOn(ConfigTable.prototype, 'componentDidMount').mockImplementation(() => {});
+
+                // Init component
+                const props = {
+                    configState: {
+                        pages: 1,
+                        obj: {},
+                        err: {},
+                        list: seeding(10),
+                    },
+                    action: jest.fn(),
+                };
+
+                // Init component again
+                const wrapper = shallow(<ConfigTable {...props} />);
+
+                // State defined
+                const modalName = 'mainModal';
+                const id = 1;
+                const result = wrapper.instance().toggleModal(modalName, 1);
+                expect(result).toEqual({
+                    id: 1,
+                    mainModal: true,
+                });
+                setTimeout(() => {
+                    // Has id -> set obj
+                    expect(props.action.mock.calls.length).toEqual(1);
+                    expect(props.action.mock.calls[0][0]).toEqual('obj');
+                    expect(props.action.mock.calls[0][1]).toEqual({data: response.data});
+                    done();
+                });
+            });
         });
     });
 });

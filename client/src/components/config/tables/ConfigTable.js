@@ -79,7 +79,7 @@ export class ConfigTable extends React.Component<Props, States> {
 
     async list(outerParams: Object = {}, url: ?string = null) {
         let params = {};
-        let result = {}
+        let result = {};
 
         if (!Tools.emptyObj(outerParams)) {
             params = {...params, ...outerParams};
@@ -93,10 +93,13 @@ export class ConfigTable extends React.Component<Props, States> {
         return result;
     }
 
-    toggleModal(modalId: string, id: ?number = null) {
-        let state = {id};
-        state[modalId] = !this.state[modalId];
-        switch (modalId) {
+    toggleModal(modalName: string, id: ?number = null): Object {
+        // If modalName not defined -> exit here
+        if (typeof this.state[modalName] == 'undefined') return {};
+
+        const state = {id};
+        state[modalName] = !this.state[modalName];
+        switch (modalName) {
             case 'mainModal':
                 if (id) {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
@@ -105,7 +108,6 @@ export class ConfigTable extends React.Component<Props, States> {
                         }
                         this.setState(state);
                     });
-                    return;
                 } else {
                     this.props.action('obj', {});
                     this.props.action('err', {});
@@ -113,6 +115,7 @@ export class ConfigTable extends React.Component<Props, States> {
                 break;
         }
         this.setState(state);
+        return state;
     }
 
     async handleAdd(params: Object) {
