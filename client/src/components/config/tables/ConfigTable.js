@@ -108,6 +108,7 @@ export class ConfigTable extends React.Component<Props, States> {
                         }
                         this.setState(state);
                     });
+                    return state;
                 } else {
                     this.props.action('obj', {});
                     this.props.action('err', {});
@@ -116,6 +117,27 @@ export class ConfigTable extends React.Component<Props, States> {
         }
         this.setState(state);
         return state;
+    }
+
+    async handleSubmit(event: Object): Promise<boolean> {
+        event.preventDefault();
+        let error: ?Object = null;
+        const params = Tools.formDataToObj(new FormData(event.target));
+        if (!params.id) {
+            error = await this.handleAdd(params);
+        } else {
+            error = await this.handleEdit(params.id, params);
+        }
+
+        if (!error) {
+            // No error -> close current modal
+            this.toggleModal('mainModal');
+            return false;
+        } else {
+            // Have error -> update err object
+            this.props.action('err', {data: error});
+            return true;
+        }
     }
 
     async handleAdd(params: Object) {
@@ -135,23 +157,6 @@ export class ConfigTable extends React.Component<Props, States> {
             return null;
         }
         return result.data;
-    }
-
-    async handleSubmit(event: Object) {
-        event.preventDefault();
-        let error: ?Object = null;
-        const params = Tools.formDataToObj(new FormData(event.target));
-
-        if (!this.state.id) {
-            error = await this.handleAdd(params);
-        } else {
-            error = await this.handleEdit(this.state.id, params);
-        }
-        if (!error) {
-            this.toggleModal('mainModal');
-        } else {
-            this.props.action('err', {data: error});
-        }
     }
 
     async handleRemove(id: string) {
@@ -252,8 +257,8 @@ export class ConfigTable extends React.Component<Props, States> {
                 </table>
                 <ConfigModal
                     open={this.state.mainModal}
-                    defaultValue={this.props.configState.obj}
-                    errorMessage={this.props.configState.err}
+                    defaultValues={this.props.configState.obj}
+                    errorMessages={this.props.configState.err}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
                 />
