@@ -40,7 +40,7 @@ export default class Tools {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    static formDataToObj(formData: FormData) {
+    static formDataToObj(formData: FormData): Object {
         let data = {};
         for (let pair of formData.entries()) {
             data[pair[0]] = pair[1] === 'null' ? null : pair[1];
