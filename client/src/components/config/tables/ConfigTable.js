@@ -23,10 +23,6 @@ type Props = {
 type States = {
     dataLoaded: boolean,
     mainModal: boolean,
-    id: ?number,
-    nextUrl: ?string,
-    prevUrl: ?string,
-    searchStr: string,
 };
 
 export class ConfigTable extends React.Component<Props, States> {
@@ -40,15 +36,13 @@ export class ConfigTable extends React.Component<Props, States> {
     handleSearch: Function;
 
     filterTimeout: ?TimeoutID = null;
+    nextUrl: ?string;
+    prevUrl: ?string;
     constructor(props: Object) {
         super(props);
         this.state = {
             dataLoaded: false,
             mainModal: false,
-            id: null,
-            nextUrl: null,
-            prevUrl: null,
-            searchStr: '',
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -70,10 +64,10 @@ export class ConfigTable extends React.Component<Props, States> {
             data: [...initData.items],
             pages: initData.pages,
         });
+        this.nextUrl = initData.links.next;
+        this.prevUrl = initData.links.previous;
         this.setState({
             dataLoaded: true,
-            nextUrl: initData.links.next,
-            prevUrl: initData.links.previous,
         });
     }
 
@@ -126,21 +120,21 @@ export class ConfigTable extends React.Component<Props, States> {
         if (!params.id) {
             error = await this.handleAdd(params);
         } else {
-            error = await this.handleEdit(params.id, params);
+            error = await this.handleEdit(params);
         }
 
         if (!error) {
             // No error -> close current modal
             this.toggleModal('mainModal');
-            return false;
+            return true;
         } else {
             // Have error -> update err object
             this.props.action('err', {data: error});
-            return true;
+            return false;
         }
     }
 
-    async handleAdd(params: Object) {
+    async handleAdd(params: {uid: string, value: string}) {
         const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', params);
         if (result.success) {
             result.data.checked = false;
@@ -150,10 +144,11 @@ export class ConfigTable extends React.Component<Props, States> {
         return result.data;
     }
 
-    async handleEdit(id: number, params: Object) {
-        const result = await Tools.apiCall(apiUrls.crud + id.toString() + '/edit/', 'PUT', params);
+    async handleEdit(params: {id: number, uid: string, value: string, checked: boolean}) {
+        const id = String(params.id);
+        const result = await Tools.apiCall(apiUrls.crud + id + '/edit/', 'PUT', params);
         if (result.success) {
-            this.props.action('edit', {id, data: result.data});
+            this.props.action('edit', {id: parseInt(id), data: result.data});
             return null;
         }
         return result.data;
@@ -179,21 +174,13 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     handleSearch(event: Object) {
-        this.setState({searchStr: event.target.value}, () => {
-            const searchStr: string = this.state.searchStr;
-
-            if (this.filterTimeout !== null) {
-                clearTimeout(this.filterTimeout);
-            }
-
-            this.filterTimeout = setTimeout(() => {
-                if (searchStr.length > 2) {
-                    this.list({search: searchStr});
-                } else if (!searchStr.length) {
-                    this.list();
-                }
-            }, 600);
-        });
+        event.preventDefault();
+        const {searchStr} = Tools.formDataToObj(new FormData(event.target));
+        if (searchStr.length > 2) {
+            this.list({search: searchStr});
+        } else if (!searchStr.length) {
+            this.list();
+        }
     }
 
     render() {
@@ -201,7 +188,7 @@ export class ConfigTable extends React.Component<Props, States> {
         const list = this.props.configState.list;
         return (
             <div>
-                <SearchInput searchStr={this.state.searchStr} onSearch={this.handleSearch} />
+                <SearchInput onSearch={this.handleSearch} />
                 <table className="table">
                     <thead className="thead-light">
                         <tr>
@@ -247,8 +234,8 @@ export class ConfigTable extends React.Component<Props, States> {
                             </th>
                             <th className="row25 right" colSpan="99">
                                 <Pagination
-                                    next={this.state.nextUrl}
-                                    prev={this.state.prevUrl}
+                                    next={this.nextUrl}
+                                    prev={this.prevUrl}
                                     onNavigate={url => this.list({}, url)}
                                 />
                             </th>
