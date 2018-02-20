@@ -2,22 +2,22 @@
 import * as React from 'react';
 
 type SearchInputPropTypes = {
-    searchStr: string,
     onSearch: Function,
 };
 
 export class SearchInput extends React.Component<SearchInputPropTypes> {
     render() {
         return (
-            <div className="input-group mb-3">
-                <input
-                    type="text"
-                    className="form-control"
-                    value={this.props.searchStr}
-                    onChange={this.props.onSearch}
-                    placeholder="Search..."
-                />
-            </div>
+            <form onSubmit={this.props.onSearch}>
+                <div className="input-group mb-3">
+                    <input type="text" name="searchStr" className="form-control" placeholder="Search..." />
+                    <div className="input-group-append">
+                        <button className="btn btn-outline-secondary">
+                            <span className="oi oi-check" />
+                        </button>
+                    </div>
+                </div>
+            </form>
         );
     }
 }
