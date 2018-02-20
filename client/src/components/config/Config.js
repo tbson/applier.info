@@ -31,9 +31,7 @@ const styles = {};
 
 export default withRouter(
     connect(
-        state => ({
-            configState: state.configState,
-        }),
+        state => ({}),
         dispatch => ({}),
     )(Config),
 );
