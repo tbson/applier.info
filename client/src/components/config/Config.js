@@ -1,8 +1,6 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
 import {actions, apiUrls} from './_data';
 import store from 'src/store';
@@ -29,9 +27,4 @@ class Config extends React.Component<Props, States> {
 
 const styles = {};
 
-export default withRouter(
-    connect(
-        state => ({}),
-        dispatch => ({}),
-    )(Config),
-);
+export default withRouter(Config);

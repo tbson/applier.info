@@ -1,8 +1,6 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {bindActionCreators} from 'redux';
 // $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
@@ -23,6 +21,9 @@ type Props = {
 type States = {
     dataLoaded: boolean,
     mainModal: boolean,
+    mainList: Array<Object>,
+    mainFormData: Object,
+    mainFormErr: Object,
 };
 
 export class ConfigTable extends React.Component<Props, States> {
@@ -32,6 +33,8 @@ export class ConfigTable extends React.Component<Props, States> {
     handleSubmit: Function;
     handleAdd: Function;
     handleEdit: Function;
+    handleToggleCheckAll: Function;
+    handleCheck: Function;
     handleRemove: Function;
     handleSearch: Function;
 
@@ -43,6 +46,9 @@ export class ConfigTable extends React.Component<Props, States> {
         this.state = {
             dataLoaded: false,
             mainModal: false,
+            mainList: [],
+            mainFormData: {},
+            mainFormErr: {},
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -51,6 +57,8 @@ export class ConfigTable extends React.Component<Props, States> {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleToggleCheckAll = this.handleToggleCheckAll.bind(this);
+        this.handleCheck = this.handleCheck.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
     }
@@ -60,14 +68,15 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     setInitData(initData: Object) {
-        this.props.action('list', {
-            data: [...initData.items],
-            pages: initData.pages,
-        });
         this.nextUrl = initData.links.next;
         this.prevUrl = initData.links.previous;
+        const newData = initData.items.map(item => {
+            item.checked = !!item.checked;
+            return item;
+        });
         this.setState({
             dataLoaded: true,
+            mainList: [...newData],
         });
     }
 
@@ -91,21 +100,23 @@ export class ConfigTable extends React.Component<Props, States> {
         // If modalName not defined -> exit here
         if (typeof this.state[modalName] == 'undefined') return {};
 
-        const state = {id};
+        const state = {};
         state[modalName] = !this.state[modalName];
         switch (modalName) {
             case 'mainModal':
                 if (id) {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
-                            this.props.action('obj', {data: result.data});
+                            this.setState({mainFormData: result.data});
                         }
                         this.setState(state);
                     });
                     return state;
                 } else {
-                    this.props.action('obj', {});
-                    this.props.action('err', {});
+                    this.setState({
+                        mainFormData: {},
+                        mainFormErr: {},
+                    });
                 }
                 break;
         }
@@ -129,7 +140,7 @@ export class ConfigTable extends React.Component<Props, States> {
             return true;
         } else {
             // Have error -> update err object
-            this.props.action('err', {data: error});
+            this.setState({mainFormErr: error});
             return false;
         }
     }
@@ -137,8 +148,7 @@ export class ConfigTable extends React.Component<Props, States> {
     async handleAdd(params: {uid: string, value: string}) {
         const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', params);
         if (result.success) {
-            result.data.checked = false;
-            this.props.action('add', {data: result.data});
+            this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
             return null;
         }
         return result.data;
@@ -148,10 +158,44 @@ export class ConfigTable extends React.Component<Props, States> {
         const id = String(params.id);
         const result = await Tools.apiCall(apiUrls.crud + id + '/edit/', 'PUT', params);
         if (result.success) {
-            this.props.action('edit', {id: parseInt(id), data: result.data});
+            const index = this.state.mainList.findIndex(item => item.id === parseInt(id));
+            const {checked} = this.state.mainList[index];
+            this.state.mainList[index] = {...result.data, checked};
+            this.setState({mainList: this.state.mainList});
             return null;
         }
         return result.data;
+    }
+
+    handleToggleCheckAll() {
+        var newList = [];
+        const checkedItem = this.state.mainList.filter(item => item.checked);
+        const result = (checked: boolean) => {
+            const mainList = this.state.mainList.map(value => {
+                return {...value, checked};
+            });
+            this.setState({mainList});
+        }
+
+        if (checkedItem) {
+            if (checkedItem.length === this.state.mainList.length) {
+                // Checked all -> uncheck all
+                return result(false);
+            }
+            // Some item checked -> checke all
+            return result(true);
+        } else {
+            // Nothing checked -> check all
+            return result(true);
+        }
+    }
+
+
+    handleCheck(data: Object, event: Object) {
+        data.checked = event.target.checked;
+        const index = this.state.mainList.findIndex(item => item.id === parseInt(data.id));
+        this.state.mainList[index] = {...data};
+        this.setState({mainList: this.state.mainList});
     }
 
     async handleRemove(id: string) {
@@ -167,7 +211,9 @@ export class ConfigTable extends React.Component<Props, States> {
         if (!decide) return;
         const result = await Tools.apiCall(apiUrls.crud + id + '/delete/', 'DELETE');
         if (result.success) {
-            this.props.action('remove', {id});
+            const listId = id.split(',').map(item => parseInt(item));
+            const mainList = this.state.mainList.filter(item => listId.indexOf(item.id) === -1);
+            this.setState({mainList});
         } else {
             this.list();
         }
@@ -185,7 +231,7 @@ export class ConfigTable extends React.Component<Props, States> {
 
     render() {
         if (!this.state.dataLoaded) return <LoadingLabel />;
-        const list = this.props.configState.list;
+        const list = this.state.mainList;
         return (
             <div>
                 <SearchInput onSearch={this.handleSearch} />
@@ -195,7 +241,7 @@ export class ConfigTable extends React.Component<Props, States> {
                             <th className="row25">
                                 <span
                                     className="oi oi-check text-info pointer check-all-button"
-                                    onClick={() => this.props.action('toggleCheckAll')}
+                                    onClick={() => this.handleToggleCheckAll()}
                                 />
                             </th>
                             <th scope="col">Key</th>
@@ -219,7 +265,7 @@ export class ConfigTable extends React.Component<Props, States> {
                                 _key={key}
                                 toggleModal={this.toggleModal}
                                 handleRemove={this.handleRemove}
-                                action={this.props.action}
+                                onCheck={this.handleCheck}
                             />
                         ))}
                     </tbody>
@@ -229,7 +275,7 @@ export class ConfigTable extends React.Component<Props, States> {
                             <th className="row25">
                                 <span
                                     className="oi oi-x text-danger pointer bulk-remove-button"
-                                    onClick={() => this.handleRemove(Tools.getCheckedId(this.props.configState.list))}
+                                    onClick={() => this.handleRemove(Tools.getCheckedId(this.state.mainList))}
                                 />
                             </th>
                             <th className="row25 right" colSpan="99">
@@ -244,8 +290,8 @@ export class ConfigTable extends React.Component<Props, States> {
                 </table>
                 <ConfigModal
                     open={this.state.mainModal}
-                    defaultValues={this.props.configState.obj}
-                    errorMessages={this.props.configState.err}
+                    defaultValues={this.state.mainFormData}
+                    errorMessages={this.state.mainFormErr}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
                 />
@@ -253,16 +299,7 @@ export class ConfigTable extends React.Component<Props, States> {
         );
     }
 }
-export default withRouter(
-    connect(
-        state => ({
-            configState: state.configState,
-        }),
-        dispatch => ({
-            action: bindActionCreators(configAction, dispatch),
-        }),
-    )(ConfigTable),
-);
+export default withRouter(ConfigTable);
 
 type DataType = {
     id: number,
@@ -275,7 +312,7 @@ type RowPropTypes = {
     _key: number,
     toggleModal: Function,
     handleRemove: Function,
-    action: Function,
+    onCheck: Function,
 };
 export class Row extends React.Component<RowPropTypes> {
     render() {
@@ -287,12 +324,7 @@ export class Row extends React.Component<RowPropTypes> {
                         className="check"
                         type="checkbox"
                         checked={data.checked}
-                        onChange={event => {
-                            this.props.action('edit', {
-                                data: {checked: event.target.checked},
-                                id: data.id,
-                            });
-                        }}
+                        onChange={event => this.props.onCheck(data, event)}
                     />
                 </th>
                 <td className="uid">{data.uid}</td>

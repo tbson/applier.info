@@ -17,7 +17,7 @@ type Props = {
         uid: ?string,
         value: ?string,
     },
-    errorMessage: Object,
+    errorMessages: Object,
 };
 type States = {};
 
@@ -33,7 +33,7 @@ class ConfigForm extends React.Component<Props, States> {
             uid: null,
             value: null,
         },
-        errorMessage: {},
+        errorMessages: {},
     };
 
     constructor(props) {
@@ -50,11 +50,11 @@ class ConfigForm extends React.Component<Props, States> {
     }
 
     setClassName(name) {
-        return this.props.errorMessage[name] ? 'form-control is-invalid' : 'form-control';
+        return this.props.errorMessages[name] ? 'form-control is-invalid' : 'form-control';
     }
 
     setErrorMessage(name) {
-        return this.props.errorMessage[name];
+        return this.props.errorMessages[name];
     }
 
     render() {
