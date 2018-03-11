@@ -3,7 +3,6 @@ import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
 import {actions, apiUrls} from './_data';
-import store from 'src/store';
 import NavWrapper from 'src/utils/components/NavWrapper';
 import ConfigTable from './tables/ConfigTable';
 
@@ -11,7 +10,7 @@ type Props = {};
 type States = {};
 
 class Config extends React.Component<Props, States> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {};
     }

@@ -2,6 +2,7 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import {shallow, mount, render} from 'enzyme';
+import 'src/__mocks__/FormData';
 import {Row, ConfigTable} from '../tables/ConfigTable';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import Tools from 'src/utils/helpers/Tools';
@@ -394,7 +395,7 @@ describe('ConfigTable component', () => {
                 expect(props.action.mock.calls.length).toEqual(2);
             });
 
-            it('Not null ID', async (done) => {
+            it('Not null ID', async done => {
                 // Mock apiCall function
                 const response = {
                     status: 200,
@@ -440,6 +441,85 @@ describe('ConfigTable component', () => {
                     done();
                 });
             });
+        });
+
+        it('handleSubmit', async () => {
+            const event = {
+                preventDefault: () => {},
+                target: null
+            };
+            const preventDefault = jest.spyOn(event, 'preventDefault');
+            const toggleModal = jest.spyOn(ConfigTable.prototype, 'toggleModal')
+                .mockImplementation(
+                    () => ({}),
+                );
+            jest.spyOn(ConfigTable.prototype, 'componentDidMount').mockImplementation(() => {});
+
+            // Init component
+            const props = {
+                configState: {
+                    pages: 1,
+                    obj: {},
+                    err: {},
+                    list: seeding(10),
+                },
+                action: jest.fn(),
+            };
+
+            const handleAddSuccess = jest.spyOn(ConfigTable.prototype, 'handleAdd')
+                .mockImplementation(
+                    async params => null
+                );
+            const handleEditSuccess = jest.spyOn(ConfigTable.prototype, 'handleEdit')
+                .mockImplementation(
+                    async params => null
+                );
+
+            // Init component again
+            const wrapper = shallow(<ConfigTable {...props} />);
+
+            // Add success
+            // Edit fail
+            jest.spyOn(Tools, 'formDataToObj')
+                .mockImplementation(
+                    () => ({
+                        uid: 'uid1',
+                        value: 'value1',
+                    }),
+                );
+            const addSuccess = await wrapper.instance().handleSubmit(event);
+            expect(addSuccess).toEqual(true);
+            expect(handleAddSuccess.mock.calls.length).toEqual(1);
+            expect(toggleModal.mock.calls.length).toEqual(1);
+
+            // Edit success
+            jest.spyOn(Tools, 'formDataToObj')
+                .mockImplementation(
+                    () => ({
+                        id: 1,
+                        uid: 'uid1',
+                        value: 'value1',
+                    }),
+                );
+            const editSuccess = await wrapper.instance().handleSubmit(event);
+            expect(editSuccess).toEqual(true);
+            expect(handleEditSuccess.mock.calls.length).toEqual(1);
+            expect(toggleModal.mock.calls.length).toEqual(2)
+
+            /*
+            // Add fail
+            jest.spyOn(Tools, 'formDataToObj')
+                .mockImplementation(
+                    () => ({
+                        uid: 'uid1',
+                        value: 'value1',
+                    }),
+                );
+            const addFalse = await wrapper.instance().handleSubmit(event);
+            expect(addFalse).toEqual(false);
+            expect(handleAdd.mock.calls.length).toEqual(1);
+            expect(toggleModal.mock.calls.length).toEqual(1);
+            */
         });
     });
 });

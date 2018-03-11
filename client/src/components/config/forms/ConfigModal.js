@@ -10,7 +10,7 @@ type PropTypes = {
     defaultValues: Object,
     errorMessages: Object,
 };
-class ConfigModal extends React.Component<PropTypes> {
+export default class ConfigModal extends React.Component<PropTypes> {
     static defaultProps = {
         open: false,
     };
@@ -35,4 +35,3 @@ class ConfigModal extends React.Component<PropTypes> {
         );
     }
 }
-export default ConfigModal;

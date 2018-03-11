@@ -1,22 +1,17 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {bindActionCreators} from 'redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
-import {actions, apiUrls} from '../_data';
+import {apiUrls} from '../_data';
 import ConfigForm from '../forms/ConfigForm';
-import configAction from '../actions';
 import ConfigModal from '../forms/ConfigModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
-import store from 'src/store';
 import Tools from 'src/utils/helpers/Tools';
 
 type Props = {
     configState: Object,
-    action: Function,
 };
 type States = {
     dataLoaded: boolean,
@@ -41,7 +36,7 @@ export class ConfigTable extends React.Component<Props, States> {
     filterTimeout: ?TimeoutID = null;
     nextUrl: ?string;
     prevUrl: ?string;
-    constructor(props: Object) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             dataLoaded: false,
