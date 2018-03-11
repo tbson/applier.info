@@ -10,7 +10,6 @@ services:
         container_name: applier_client
         build:
             context: ./
-            dockerfile: client.dockerfile
         command: bash -c "yarn start"
         working_dir: /code
         ports:

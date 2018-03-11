@@ -1,5 +1,8 @@
-cp applier.conf ~/Code/docker/nginx/conf.d/
+arg1=${1:-dev}
+cp nginx.conf ../..//docker/nginx/conf.d/applier.conf
 docker-compose -f api/docker-compose.yml up -d
-docker-compose -f client/docker-compose.yml up -d
-docker-compose -f ../../docker/nginx/docker-compose.yml up -d
+if [ $arg1 = "dev" ]; then
+    docker-compose -f client/docker-compose.yml up -d
+fi
+docker-compose -f ../../docker/nginx/docker-compose.yml restart
 docker-compose -f api/docker-compose.yml logs -f
