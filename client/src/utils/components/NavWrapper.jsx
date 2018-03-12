@@ -53,11 +53,6 @@ class App extends React.Component<Props, State> {
         });
     }
 
-    logout() {
-        Tools.removeStorage('authData');
-        Tools.navigateTo('login');
-    }
-
     render() {
         return (
             <div id="wrapper" className={this.state.toggled ? 'toggled' : ''}>
@@ -88,7 +83,7 @@ class App extends React.Component<Props, State> {
                         </span>
                         <span>Tran Bac Son</span>
                         &nbsp;&nbsp;
-                        <span className="oi oi-account-logout pointer" onClick={() => this.logout()} />
+                        <span className="oi oi-account-logout pointer" onClick={() => Tools.logout(this.props.history)} />
                     </div>
 
                     <div className="container-fluid">{this.props.children}</div>

@@ -46,7 +46,7 @@ class Login extends React.Component<Props, States> {
         const result = await Tools.apiCall(apiUrls.tokenAuth, 'POST', data);
         if (result.success) {
             Tools.setStorage('authData', result.data.user);
-            Tools.navigateTo();
+            Tools.navigateTo(this.props.history);
         } else {
             this.setState({
                 loginFail: true,
@@ -78,7 +78,7 @@ class Login extends React.Component<Props, States> {
     componentDidMount() {
         const authData = Tools.getStorageObj('authData');
         if (authData.email) {
-            Tools.navigateTo();
+            Tools.navigateTo(this.props.history);
         }
     }
 

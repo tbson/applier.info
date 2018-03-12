@@ -18,7 +18,7 @@ import {
     DOMAIN,
     FIELD_TYPE,
     URL_PREFIX_STRIP,
-    History,
+    BASE_URL,
 } from 'src/constants';
 let fingerprint = null;
 
@@ -48,8 +48,8 @@ export default class Tools {
         return data;
     }
 
-    static navigateTo(url: string = '/', params: Array<mixed> = []) {
-        return History.push([url, ...params].join('/'));
+    static navigateTo(history: Object, url: string = '/', params: Array<mixed> = []) {
+        return history.push([url, ...params].join('/'));
     }
 
     static parseJson(input: any): string {
@@ -219,9 +219,9 @@ export default class Tools {
         }
     }
 
-    static logout() {
+    static logout(history: Object) {
         this.removeStorage('authData');
-        this.navigateTo('login');
+        this.navigateTo(history, 'login');
     }
 
     static popMessage(description: string | Object, type: string = 'success'): void {
@@ -314,7 +314,8 @@ export default class Tools {
                 this.popMessage(result.data, 'error');
             }
             if (result.status === 401) {
-                this.logout();
+                this.removeStorage('authData');
+                window.location = BASE_URL + 'login';
             }
             return result;
         } catch (error) {

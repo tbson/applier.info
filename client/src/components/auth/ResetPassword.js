@@ -20,7 +20,6 @@ type States = {
 };
 
 class ResetPassword extends React.Component<Props, States> {
-    logout: Function;
 
     constructor(props) {
         super(props);
@@ -30,23 +29,17 @@ class ResetPassword extends React.Component<Props, States> {
         this.logout = this.logout.bind(this);
     }
 
-    logout() {
-        Tools.removeStorage('authData');
-        Tools.navigateTo('/login');
-    }
-
     async componentDidMount() {
         const result = await Tools.apiCall(apiUrls.resetPassword, 'GET', this.props.match.params);
-        console.log(result);
         if (result.success) {
-            this.logout();
+            Tools.logout(this.props.history);
         } else {
             const message = ['Wrong token or token expired', 'Login page comming in 4 seconds.'].join('. ');
             this.setState({
                 message,
             });
             setTimeout(() => {
-                Tools.navigateTo('/login');
+                Tools.navigateTo(this.props.history, '/login');
             }, 4000);
         }
     }
