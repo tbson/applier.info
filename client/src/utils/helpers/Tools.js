@@ -8,7 +8,8 @@ import kebabCase from 'lodash/kebabCase';
 import {toast} from 'react-toastify';
 // $FlowFixMe: do not complain about importing node_modules
 import camelCase from 'lodash/camelCase';
-import store from 'src/store';
+// $FlowFixMe: do not complain about importing node_modules
+import EventEmitter from 'fbemitter';
 
 import {
     LOCAL_STORAGE_PREFIX,
@@ -30,6 +31,8 @@ type rawApiUrlsType = [
 ];
 
 export default class Tools {
+    static emitter = new EventEmitter();
+
     static checkDevMode(): boolean {
         const domainArr = window.location.host.split('.');
         const suffix = domainArr[domainArr.length - 1];
@@ -239,13 +242,7 @@ export default class Tools {
     }
 
     static toggleGlobalLoading(spinning: boolean = true): void {
-        const action = {
-            type: 'TOGGLE_SPINNER',
-            payload: {
-                spinning,
-            },
-        };
-        store.dispatch(action);
+        this.emitter.emit('TOGGLE_SPINNER', spinning);
     }
 
     static async apiCall(

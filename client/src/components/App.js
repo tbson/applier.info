@@ -1,8 +1,6 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter, Switch, Route} from 'react-router-dom';
 // $FlowFixMe: do not complain about importing node_modules
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -41,4 +39,4 @@ class App extends React.Component<Props> {
     }
 }
 
-export default withRouter(connect(state => ({}), dispatch => ({}))(App));
+export default withRouter(App);

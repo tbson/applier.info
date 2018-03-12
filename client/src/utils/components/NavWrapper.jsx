@@ -1,8 +1,6 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter, Route, Link} from 'react-router-dom';
 // $FlowFixMe: do not complain about importing node_modules
 import {NavLink} from 'react-router-dom';
@@ -93,4 +91,4 @@ class App extends React.Component<Props, State> {
     }
 }
 
-export default withRouter(connect(state => ({}), dispatch => ({}))(App));
+export default withRouter(App);
