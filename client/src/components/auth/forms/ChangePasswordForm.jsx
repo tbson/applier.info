@@ -1,11 +1,5 @@
 // @flow
 import * as React from 'react';
-// $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
-import {withRouter} from 'react-router-dom';
-import {actions} from '../_data';
-import store from 'src/store';
 
 type Props = {
     children?: React.Node,
@@ -23,7 +17,7 @@ class ChangePasswordForm extends React.Component<Props, States> {
         submitTitle: 'Submit',
     };
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {};
         this.resetForm = this.resetForm.bind(this);
@@ -84,4 +78,4 @@ class ChangePasswordForm extends React.Component<Props, States> {
     }
 }
 
-export default connect((state, props) => ({}), dispatch => ({}))(ChangePasswordForm);
+export default ChangePasswordForm;

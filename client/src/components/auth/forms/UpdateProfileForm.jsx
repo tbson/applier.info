@@ -1,11 +1,5 @@
 // @flow
 import * as React from 'react';
-// $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
-import {withRouter} from 'react-router-dom';
-import {actions} from '../_data';
-import store from 'src/store';
 
 type Props = {
     handleSubmit: Function,
@@ -33,7 +27,7 @@ class UpdateProfileForm extends React.Component<Props, States> {
         errorMessage: {},
     };
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {};
         this.resetForm = this.resetForm.bind(this);
@@ -46,11 +40,11 @@ class UpdateProfileForm extends React.Component<Props, States> {
         window.document.querySelector('#' + this.props.formId + ' [name=username]').focus();
     }
 
-    setClassName(name) {
+    setClassName(name: string) {
         return this.props.errorMessage[name] ? 'form-control is-invalid' : 'form-control';
     }
 
-    setErrorMessage(name) {
+    setErrorMessage(name: Object) {
         return this.props.errorMessage[name];
     }
 
@@ -131,4 +125,4 @@ class UpdateProfileForm extends React.Component<Props, States> {
     }
 }
 
-export default connect((state, props) => ({}), dispatch => ({}))(UpdateProfileForm);
+export default UpdateProfileForm;

@@ -1,7 +1,5 @@
 // @flow
 import * as React from 'react';
-// $FlowFixMe: do not complain about importing node_modules
-import {withRouter} from 'react-router-dom';
 
 type Props = {
     handleSubmit: Function,

@@ -1,12 +1,9 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
-import {actions, apiUrls} from './_data';
-import store from 'src/store';
+import {apiUrls} from './_data';
 import Tools from 'src/utils/helpers/Tools';
 import NavWrapper from 'src/utils/components/NavWrapper';
 import UpdateProfileForm from './forms/UpdateProfileForm';
@@ -186,4 +183,4 @@ class Profile extends React.Component<Props, States> {
 
 const styles = {};
 
-export default withRouter(connect(state => ({}), dispatch => ({}))(Profile));
+export default withRouter(Profile);

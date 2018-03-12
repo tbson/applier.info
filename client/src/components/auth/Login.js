@@ -1,19 +1,16 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
-// $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
-import {actions} from './_data';
 import CustomModal from 'src/utils/components/CustomModal';
 // import FormLogin from './forms/FormLogin';
 import {apiUrls} from './_data';
 import Tools from 'src/utils/helpers/Tools';
-import store from 'src/store';
 import LoginForm from './forms/LoginForm';
 import ResetPasswordModal from './forms/ResetPasswordModal';
 
 type Props = {
+    history: Object,
     loginFail: boolean,
 };
 
@@ -108,4 +105,4 @@ class Login extends React.Component<Props, States> {
     }
 }
 
-export default withRouter(connect(state => ({}), dispatch => ({}))(Login));
+export default withRouter(Login);

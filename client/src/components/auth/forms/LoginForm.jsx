@@ -1,7 +1,5 @@
 // @flow
 import * as React from 'react';
-// $FlowFixMe: do not complain about importing node_modules
-import {connect} from 'react-redux';
 
 type Props = {
     children?: React.Node,
@@ -19,7 +17,7 @@ class LoginForm extends React.Component<Props, States> {
         submitTitle: 'Submit',
     };
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {};
         this.resetForm = this.resetForm.bind(this);
@@ -79,4 +77,4 @@ class LoginForm extends React.Component<Props, States> {
     }
 }
 
-export default connect((state, props) => ({}), dispatch => ({}))(LoginForm);
+export default LoginForm;
