@@ -1,4 +1,8 @@
 {
+    "extends": [
+        "standard",
+        "plugin:react/recommended"
+    ],
     "globals": {
         "jQuery": true,
         "$": true

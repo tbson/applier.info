@@ -16,5 +16,8 @@ api/public/media/
 api/public/clients/
 client/node_modules/
 client/build/
+client/dist/
+client/logfile
+client/yarn-error.log
 client/docker-compose.yml
 vclien
