@@ -1,11 +1,11 @@
 FROM node:carbon
 
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash
-
 RUN mkdir /code
 
 WORKDIR /code
 
-ADD . /code/
+COPY package.json .
 
-RUN yarn
+RUN npm install --quiet
+
+COPY . .
