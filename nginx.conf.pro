@@ -12,7 +12,7 @@ server {
     ssl_certificate /resource/ssl/applier/fullchain.pem;
     ssl_certificate_key /resource/ssl/applier/privkey.pem;
 
-    location / {
+    location /api/v1/ {
         proxy_pass https://applier_api:8001;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -24,7 +24,11 @@ server {
         rewrite ^/public(/.*)$ $1 break;
         add_header Access-Control-Allow-Origin *;
     }
-
+    location / {
+        root /resource/public/applier/clients;
+        try_files $uri $uri/ /index.html =404;
+        add_header Access-Control-Allow-Origin *;
+    }
     location /admin {
         root /resource/public/applier/clients;
         try_files $uri $uri/ /admin/index.html =404;
