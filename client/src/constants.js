@@ -2,8 +2,9 @@ import {createBrowserHistory} from 'history';
 
 export const APP_TITLE = 'Applier';
 export const APP_NAMESPACE = 'applier';
-export const APP =
+let APP_RAW =
     window.location.href !== 'about:blank' ? window.location.href.split('://')[1].split('/')[1] : 'blank';
+export const APP = ['blank', 'admin', 'user'].indexOf(APP_RAW) !== -1 ? APP_RAW : '';
 export const URL_PREFIX = APP ? '/' + APP + '/' : '/';
 export const URL_PREFIX_STRIP = APP === 'blank' ? APP : APP ? '/' + APP : '/';
 export const LOCAL_STORAGE_PREFIX = APP_NAMESPACE + '_' + APP;

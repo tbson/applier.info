@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router} from 'react-router-dom';
-import constants from './constants';
-import {History} from 'src/constants';
-import App from './components/App';
+import {APP, History} from 'src/constants';
+import Back from './back/App';
+import Front from './front/App';
+
+function switchAPP () {
+    if (APP) return <Back/>;
+    return <Front/>;
+}
 
 ReactDOM.render(
     <Router history={History}>
-        <App />
+        <div>
+            {switchAPP()}
+        </div>
     </Router>,
     document.getElementById('app'),
 );

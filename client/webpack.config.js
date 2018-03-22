@@ -15,9 +15,6 @@ const PATHS = {
 process.env.BABEL_ENV = TARGET;
 
 const common = {
-    entry: {
-        app: [PATHS.app],
-    },
     resolve: {
         modules: [path.resolve(__dirname), 'node_modules'],
         /*
@@ -84,6 +81,10 @@ const common = {
 
 if (TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
+        entry: {
+            // app: [PATHS.app],
+            app: PATHS.app + '/index.js',
+        },
         watchOptions: {
             ignored: /node_modules/,
         },
@@ -112,8 +113,11 @@ if(TARGET === 'test' || TARGET === 'tdd') {
 }
 */
 
-if (['build'].indexOf(TARGET) !== -1) {
+if (['build-back', 'build-front'].indexOf(TARGET) !== -1) {
     module.exports = merge(common, {
+        entry: {
+            app: PATHS.app + '/' + TARGET.split('-')[1] + '/index.js',
+        },
         devtool: 'cheap-module-source-map',
         plugins: [
             new webpack.DefinePlugin({
