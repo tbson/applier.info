@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CompressionPlugin = require('compression-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const TARGET = process.env.npm_lifecycle_event;
 const path = require('path');
@@ -143,6 +144,15 @@ if (['build'].indexOf(TARGET) !== -1) {
                 threshold: 10240,
                 minRatio: 0,
             }),
+            /*
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'server',
+                //  The host changed from 127.0.0.0 to make it work when running it in docker container. Maybe you do not need that change.
+                analyzerHost: '0.0.0.0',
+                analyzerPort: '8888',
+                openAnalyzer: false,
+            }),
+            */
         ],
         stats: {colors: true},
     });
