@@ -141,7 +141,7 @@ export class ConfigTable extends React.Component<Props, States> {
     }
 
     async handleAdd(params: {uid: string, value: string}) {
-        const result = await Tools.apiCall(apiUrls.crud + 'create/', 'POST', params);
+        const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
             return null;
@@ -151,7 +151,7 @@ export class ConfigTable extends React.Component<Props, States> {
 
     async handleEdit(params: {id: number, uid: string, value: string, checked: boolean}) {
         const id = String(params.id);
-        const result = await Tools.apiCall(apiUrls.crud + id + '/edit/', 'PUT', params);
+        const result = await Tools.apiCall(apiUrls.crud + id, 'PUT', params);
         if (result.success) {
             const index = this.state.mainList.findIndex(item => item.id === parseInt(id));
             const {checked} = this.state.mainList[index];
@@ -204,7 +204,10 @@ export class ConfigTable extends React.Component<Props, States> {
         }
         const decide = confirm(message);
         if (!decide) return;
-        const result = await Tools.apiCall(apiUrls.crud + id + '/delete/', 'DELETE');
+        const result = await Tools.apiCall(
+            apiUrls.crud + (listId.length === 1 ? id : '?ids=' + id), 
+            'DELETE'
+        );
         if (result.success) {
             const listId = id.split(',').map(item => parseInt(item));
             const mainList = this.state.mainList.filter(item => listId.indexOf(item.id) === -1);
