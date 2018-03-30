@@ -17,18 +17,7 @@ process.env.BABEL_ENV = TARGET;
 const common = {
     resolve: {
         modules: [path.resolve(__dirname), 'node_modules'],
-        /*
-        ,
-        alias: {
-            app: 'app',
-            libs: 'app/libs/',
-            components: 'app/components/',
-            utils: 'app/utils/',
-            images: 'app/images/',
-            helpers: 'app/utils/helpers'
-        },
-        */
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js'],
     },
     output: {
         path: PATHS.build,
@@ -38,20 +27,12 @@ const common = {
         loaders: [
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
+                use: ['style-loader', 'css-loader'],
             },
             {
                 test: /\.styl$/,
                 loader:
                     'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-            },
-            {
-                test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
-            },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader'],
             },
             {
                 test: /\.png$/,
@@ -70,7 +51,7 @@ const common = {
                 loader: 'file-loader',
             },
             {
-                test: /\.jsx?$/,
+                test: /\.js?$/,
                 loader: 'babel-loader',
                 include: PATHS.app,
                 exclude: /node_modules/,
