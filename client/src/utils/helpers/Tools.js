@@ -46,7 +46,9 @@ export default class Tools {
     static formDataToObj(formData: FormData): Object {
         let data = {};
         for (let pair of formData.entries()) {
-            data[pair[0]] = pair[1] === 'null' ? null : pair[1];
+            if (typeof data[pair[0]] == 'undefined') {
+                data[pair[0]] = pair[1] === 'null' ? null : pair[1];
+            }
         }
         return data;
     }
