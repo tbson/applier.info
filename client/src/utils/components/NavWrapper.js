@@ -66,6 +66,13 @@ class App extends React.Component<Props, State> {
                         </li>
 
                         <li>
+                            <NavLink exact to="/administrator">
+                                <span className="oi oi-person" />&nbsp;&nbsp;
+                                <span>Administrator</span>
+                            </NavLink>
+                        </li>
+
+                        <li>
                             <NavLink exact to="/config">
                                 <span className="oi oi-cog" />&nbsp;&nbsp;
                                 <span>Config</span>

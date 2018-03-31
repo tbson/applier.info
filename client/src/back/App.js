@@ -16,6 +16,7 @@ import NavWrapper from 'src/utils/components/NavWrapper';
 import PrivateRoute from 'src/utils/components/PrivateRoute';
 import Login from './auth/Login';
 import Profile from './auth/Profile';
+import Administrator from './administrator/Administrator';
 import ResetPassword from './auth/ResetPassword';
 import Config from './config/Config';
 import Group from './group/Group';
@@ -34,6 +35,7 @@ class App extends React.Component<Props> {
                     <Route exact path="/" component={Profile} />
                     <Route path="/login" component={Login} />
                     <Route path="/reset-password/:token" component={ResetPassword} />
+                    <Route path="/administrator" component={Administrator} />
                     <Route path="/config" component={Config} />
                     <Route path="/group" component={Group} />
                     <Route path="/permission" component={Permission} />

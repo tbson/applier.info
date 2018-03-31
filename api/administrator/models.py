@@ -18,6 +18,9 @@ class Administrator(models.Model):
     signup_token = models.CharField(max_length=250, blank=True)
     signup_token_created = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return self.user.email
+
     class Meta:
         db_table = "administrators"
         ordering = ['-id']
