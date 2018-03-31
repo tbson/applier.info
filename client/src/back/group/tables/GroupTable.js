@@ -15,6 +15,7 @@ type States = {
     dataLoaded: boolean,
     mainModal: boolean,
     mainList: Array<Object>,
+    permissionList: Object,
     mainFormData: Object,
     mainFormErr: Object,
 };
@@ -39,6 +40,7 @@ export class GroupTable extends React.Component<Props, States> {
         dataLoaded: false,
         mainModal: false,
         mainList: [],
+        permissionList: {},
         mainFormData: {},
         mainFormErr: {},
     };
@@ -59,6 +61,7 @@ export class GroupTable extends React.Component<Props, States> {
 
     componentDidMount() {
         this.list();
+        this.permissionList();
     }
 
     setInitData(initData: Object) {
@@ -90,6 +93,23 @@ export class GroupTable extends React.Component<Props, States> {
         return result;
     }
 
+    async permissionList() {
+        const result = await Tools.apiCall(apiUrls.permissionCrud, 'GET');
+        if (result.success) {
+            let listItem = {};
+            for (let item of result.data.items) {
+                if (typeof listItem[item.content_type] == 'undefined') {
+                    listItem[item.content_type] = [item];
+                } else {
+                    listItem[item.content_type].push(item);
+                }
+            }
+            this.setState({permissionList: listItem})
+            return result;
+        }
+        return result;
+    }
+
     toggleModal(modalName: string, id: ?number = null): Object {
         // If modalName not defined -> exit here
         if (typeof this.state[modalName] == 'undefined') return {};
@@ -101,12 +121,31 @@ export class GroupTable extends React.Component<Props, States> {
                 if (id) {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
+                            const permissionList = result.data.permissions;
+                            for (let contentType in this.state.permissionList) {
+                                let permissionGroup = this.state.permissionList[contentType];
+                                for (let permission of permissionGroup) {
+                                    if (permissionList.indexOf(permission.id) != -1) {
+                                        permission.checked = true;
+                                    } else {
+                                        permission.checked = false;
+                                    }
+                                }
+                            }
+                            this.setState({permissionList: this.state.permissionList});
                             this.setState({mainFormData: result.data});
                         }
                         this.setState(state);
                     });
                     return state;
                 } else {
+                    for (let contentType in this.state.permissionList) {
+                        let permissionGroup = this.state.permissionList[contentType];
+                        for (let permission of permissionGroup) {
+                            permission.checked = false;
+                        }
+                    }
+
                     this.setState({
                         mainFormData: {},
                         mainFormErr: {},
@@ -287,6 +326,7 @@ export class GroupTable extends React.Component<Props, States> {
                 <GroupModal
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
+                    permissionList={this.state.permissionList}
                     errorMessages={this.state.mainFormErr}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}

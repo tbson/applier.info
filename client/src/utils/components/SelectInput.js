@@ -1,11 +1,14 @@
 // @flow
 import * as React from 'react';
+// $FlowFixMe: do not complain about importing node_modules
 import Select from 'react-select';
+// $FlowFixMe: do not complain about importing node_modules
 import 'react-select/dist/react-select.css';
 
 type Props = {
     options: Array<?Object>,
     multi: boolean,
+    delimiter: string,
     name: string,
     defaultValue: any,
 };
@@ -21,6 +24,7 @@ class SelectInput extends React.Component<Props, States> {
     static defaultProps = {
         options: [],
         multi: false,
+        delimiter: ',',
         defaultValue: '',
     };
 
@@ -36,7 +40,7 @@ class SelectInput extends React.Component<Props, States> {
         });
     }
 
-    handleChange = result => {
+    handleChange = (result:any) => {
         if (result.length) {
             const value = result.map(item => item.value).join(this.props.delimiter);
             this.setState({value});

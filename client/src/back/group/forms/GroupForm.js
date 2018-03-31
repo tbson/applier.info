@@ -1,5 +1,7 @@
 // @flow
 import * as React from 'react';
+import PermissionsInput from './PermissionsInput';
+
 
 type Props = {
     handleSubmit: Function,
@@ -8,8 +10,10 @@ type Props = {
     submitTitle: string,
     defaultValues: {
         id: ?number,
-        name: ?string
+        name: ?string,
+        permissions: ?string
     },
+    permissionList: Object,
     errorMessages: Object,
 };
 type States = {};
@@ -23,8 +27,10 @@ export default class GroupForm extends React.Component<Props, States> {
         submitTitle: 'Submit',
         defaultValues: {
             id: null,
-            name: null
+            name: null,
+            permissions: null,
         },
+        permissionList: {},
         errorMessages: {},
     };
 
@@ -67,6 +73,8 @@ export default class GroupForm extends React.Component<Props, States> {
                     />
                     <div className="invalid-feedback">{this.setErrorMessage('name')}</div>
                 </div>
+
+                <PermissionsInput name="permissions" options={this.props.permissionList}/>
 
                 <div className="right">
                     {this.props.children}
