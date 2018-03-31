@@ -81,7 +81,7 @@ class App extends React.Component<Props, State> {
 
                         <li>
                             <NavLink exact to="/permission">
-                                <span className="oi oi-people" />&nbsp;&nbsp;
+                                <span className="oi oi-lock-unlocked" />&nbsp;&nbsp;
                                 <span>Permission</span>
                             </NavLink>
                         </li>
