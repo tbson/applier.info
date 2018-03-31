@@ -91,6 +91,10 @@ class AdministratorCreateSerializer(ModelSerializer):
         read_only_fields = ('id', 'fullname')
 
     def create(self, validated_data):
+        groups = []
+        for group in self.initial_data['groups'].split(','):
+            if group.isdigit():
+                groups.append(int(group))
         data = validated_data['user']
         user = User.objects.create_superuser(
             data.get('username', ''),
@@ -99,6 +103,12 @@ class AdministratorCreateSerializer(ModelSerializer):
             first_name=data.get('first_name', ''),
             last_name=data.get('last_name', '')
         )
+
+        if len(list(groups)):
+            groupList = Group.objects.filter(id__in=groups)
+            for group in groupList:
+                group.user_set.add(user)
+
         return Administrator.objects.create(user=user)
 
 
