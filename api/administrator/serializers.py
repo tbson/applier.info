@@ -3,6 +3,7 @@ from rest_framework.serializers import SerializerMethodField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from .models import Administrator
 
 
@@ -18,6 +19,7 @@ class AdministratorBaseSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'fullname',
+            'groups',
             'fingerprint',
         ]
 
@@ -36,9 +38,16 @@ class AdministratorBaseSerializer(ModelSerializer):
     )
 
     fullname = SerializerMethodField()
+    groups = SerializerMethodField()
 
     def get_fullname(self, obj):
         return obj.user.first_name + ' ' + obj.user.last_name
+
+    def get_groups(self, obj):
+        result = [];
+        for group in obj.user.groups.all():
+            result.append(str(group.id))
+        return ','.join(result)
 
 
 class AdministratorCreateSerializer(ModelSerializer):
@@ -134,6 +143,10 @@ class AdministratorUpdateSerializer(ModelSerializer):
         read_only_fields = ('id', 'fullname')
 
     def update(self, instance, validated_data):
+        groups = []
+        for group in self.initial_data['groups'].split(','):
+            if group.isdigit():
+                groups.append(int(group))
         user = instance.user
         data = validated_data.get('user', {})
 
@@ -164,6 +177,14 @@ class AdministratorUpdateSerializer(ModelSerializer):
         user.first_name = user.first_name if not data.get('first_name', None) else data['first_name']
         user.last_name = user.last_name if not data.get('last_name', None) else data['last_name']
         user.save()
+
+        for group in user.groups.all():
+            group.user_set.remove(user)
+
+        if len(list(groups)):
+            groupList = Group.objects.filter(id__in=groups)
+            for group in groupList:
+                group.user_set.add(user)
 
         instance.user = user
         return instance

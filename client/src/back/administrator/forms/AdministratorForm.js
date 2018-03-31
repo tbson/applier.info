@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import SelectInput from 'src/utils/components/SelectInput';
 
 type Props = {
     handleSubmit: Function,
@@ -13,7 +14,9 @@ type Props = {
         first_name: ?string,
         last_name: ?string,
         password: ?string,
+        groups: ?number,
     },
+    groupList: Array<Object>,
     errorMessages: Object,
 };
 type States = {};
@@ -32,7 +35,9 @@ export default class AdministratorForm extends React.Component<Props, States> {
             first_name: null,
             last_name: null,
             password: null,
+            groups: null,
         },
+        groupList: [],
         errorMessages: {},
     };
 
@@ -141,6 +146,16 @@ export default class AdministratorForm extends React.Component<Props, States> {
                     <div className="invalid-feedback">{this.setErrorMessage('password')}</div>
                 </div>
 
+                <div className="form-group">
+                    <label htmlFor="groups">Groups</label>
+                    <SelectInput
+                        multi={true}
+                        name="groups"
+                        options={this.props.groupList}
+                        defaultValue={this.props.defaultValues.groups}
+                    />
+                    <div className="invalid-feedback">{this.setErrorMessage('groups')}</div>
+                </div>
                 <div className="right">
                     {this.props.children}
                     <button className="btn btn-primary">
@@ -152,4 +167,3 @@ export default class AdministratorForm extends React.Component<Props, States> {
         );
     }
 }
-

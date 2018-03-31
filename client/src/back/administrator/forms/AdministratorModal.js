@@ -8,11 +8,13 @@ type PropTypes = {
     handleClose: Function,
     handleSubmit: Function,
     defaultValues: Object,
+    groupList: Array<Object>,
     errorMessages: Object,
 };
 export default class AdministratorModal extends React.Component<PropTypes> {
     static defaultProps = {
         open: false,
+        groupList: [],
     };
 
     render() {
@@ -24,6 +26,7 @@ export default class AdministratorModal extends React.Component<PropTypes> {
                         formId="administratorForm"
                         submitTitle="Update"
                         defaultValues={this.props.defaultValues}
+                        groupList={this.props.groupList}
                         errorMessages={this.props.errorMessages}
                         handleSubmit={this.props.handleSubmit}>
                         <button type="button" onClick={this.props.handleClose} className="btn btn-warning">

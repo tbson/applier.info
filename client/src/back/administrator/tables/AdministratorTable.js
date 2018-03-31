@@ -15,9 +15,11 @@ type States = {
     dataLoaded: boolean,
     mainModal: boolean,
     mainList: Array<Object>,
+    groupList: Array<Object>,
     mainFormData: Object,
     mainFormErr: Object,
 };
+
 
 export class AdministratorTable extends React.Component<Props, States> {
     list: Function;
@@ -39,6 +41,7 @@ export class AdministratorTable extends React.Component<Props, States> {
         dataLoaded: false,
         mainModal: false,
         mainList: [],
+        groupList: [],
         mainFormData: {},
         mainFormErr: {},
     };
@@ -59,6 +62,7 @@ export class AdministratorTable extends React.Component<Props, States> {
 
     componentDidMount() {
         this.list();
+        this.groupList();
     }
 
     setInitData(initData: Object) {
@@ -85,6 +89,17 @@ export class AdministratorTable extends React.Component<Props, States> {
         result = await Tools.apiCall(url ? url : apiUrls.crud, 'GET', params);
         if (result.success) {
             this.setInitData(result.data);
+            return result;
+        }
+        return result;
+    }
+
+    async groupList() {
+        const result = await Tools.apiCall(apiUrls.groupCrud, 'GET');
+        if (result.success) {
+            this.setState({
+                groupList: result.data.items.map(item => ({value: item.id, label: item.name}))
+            });
             return result;
         }
         return result;
@@ -139,7 +154,7 @@ export class AdministratorTable extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {email: string, username: string, first_name: string, last_name: string}) {
+    async handleAdd(params: {email: string, username: string, first_name: string, last_name: string, groups: string}) {
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
@@ -154,6 +169,7 @@ export class AdministratorTable extends React.Component<Props, States> {
         username: string,
         first_name: string,
         last_name: string,
+        groups: string,
         checked: boolean,
     }) {
         const id = String(params.id);
@@ -292,6 +308,7 @@ export class AdministratorTable extends React.Component<Props, States> {
                 <AdministratorModal
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
+                    groupList={this.state.groupList}
                     errorMessages={this.state.mainFormErr}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
