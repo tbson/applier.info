@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     'api_versioning',
     'config',
     'administrator',
-    'c_permission',
-    'c_group',
+    'permission',
+    'group',
 ]
 
 MIDDLEWARE = [

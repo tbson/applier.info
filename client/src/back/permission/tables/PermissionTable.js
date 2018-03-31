@@ -4,8 +4,8 @@ import * as React from 'react';
 import {withRouter} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import {apiUrls} from '../_data';
-import ConfigForm from '../forms/ConfigForm';
-import ConfigModal from '../forms/ConfigModal';
+import PermissionForm from '../forms/PermissionForm';
+import PermissionModal from '../forms/PermissionModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
 import Tools from 'src/utils/helpers/Tools';
@@ -19,7 +19,7 @@ type States = {
     mainFormErr: Object,
 };
 
-export class ConfigTable extends React.Component<Props, States> {
+export class PermissionTable extends React.Component<Props, States> {
     list: Function;
     setInitData: Function;
     toggleModal: Function;
@@ -139,7 +139,7 @@ export class ConfigTable extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {uid: string, value: string}) {
+    async handleAdd(params: {name: string}) {
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
@@ -148,7 +148,7 @@ export class ConfigTable extends React.Component<Props, States> {
         return result.data;
     }
 
-    async handleEdit(params: {id: number, uid: string, value: string, checked: boolean}) {
+    async handleEdit(params: {id: number, name: string, checked: boolean}) {
         const id = String(params.id);
         const result = await Tools.apiCall(apiUrls.crud + id, 'PUT', params);
         if (result.success) {
@@ -235,20 +235,25 @@ export class ConfigTable extends React.Component<Props, States> {
                 <table className="table">
                     <thead className="thead-light">
                         <tr>
+                            {/*
                             <th className="row25">
                                 <span
                                     className="oi oi-check text-info pointer check-all-button"
                                     onClick={() => this.handleToggleCheckAll()}
                                 />
                             </th>
-                            <th scope="col">Key</th>
-                            <th scope="col">Value</th>
+                            */}
+                            <th scope="col">Content type</th>
+                            <th scope="col">Code name</th>
+                            <th scope="col">Name</th>
                             <th scope="col" style={{padding: 8}} className="row80">
+                                {/*
                                 <button
                                     className="btn btn-primary btn-sm btn-block add-button"
                                     onClick={() => this.toggleModal('mainModal')}>
                                     <span className="oi oi-plus" />&nbsp; Add
                                 </button>
+                                */}
                             </th>
                         </tr>
                     </thead>
@@ -266,7 +271,7 @@ export class ConfigTable extends React.Component<Props, States> {
                             />
                         ))}
                     </tbody>
-
+                    {/*
                     <tfoot className="thead-light">
                         <tr>
                             <th className="row25">
@@ -284,8 +289,9 @@ export class ConfigTable extends React.Component<Props, States> {
                             </th>
                         </tr>
                     </tfoot>
+                    */}
                 </table>
-                <ConfigModal
+                <PermissionModal
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
                     errorMessages={this.state.mainFormErr}
@@ -296,12 +302,13 @@ export class ConfigTable extends React.Component<Props, States> {
         );
     }
 }
-export default withRouter(ConfigTable);
+export default withRouter(PermissionTable);
 
 type DataType = {
     id: number,
-    uid: string,
-    value: string,
+    content_type: string,
+    codename: string,
+    name: string,
     checked: ?boolean,
 };
 type RowPropTypes = {
@@ -316,6 +323,7 @@ export class Row extends React.Component<RowPropTypes> {
         const data = this.props.data;
         return (
             <tr key={this.props._key}>
+                {/*
                 <th className="row25">
                     <input
                         className="check"
@@ -324,18 +332,22 @@ export class Row extends React.Component<RowPropTypes> {
                         onChange={event => this.props.onCheck(data, event)}
                     />
                 </th>
-                <td className="uid">{data.uid}</td>
-                <td className="value">{data.value}</td>
-                <td className="center">
+                */}
+                <td className="name">{data.content_type}</td>
+                <td className="name">{data.codename}</td>
+                <td className="name">{data.name}</td>
+                <td className="right">
                     <span
                         className="editBtn oi oi-pencil text-info pointer"
                         onClick={() => this.props.toggleModal('mainModal', data.id)}
                     />
+                    {/*
                     <span>&nbsp;&nbsp;&nbsp;</span>
                     <span
                         className="removeBtn oi oi-x text-danger pointer"
                         onClick={() => this.props.handleRemove(String(data.id))}
                     />
+                    */}
                 </td>
             </tr>
         );

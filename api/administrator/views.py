@@ -27,7 +27,7 @@ from utils.helpers.tools import Tools
 
 
 class ListView(ListAPIView):
-    permissions = ['_custom_view_list_administrator']
+    permissions = ['view_administrator_list']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
     serializer_class = AdministratorBaseSerializer
@@ -35,28 +35,28 @@ class ListView(ListAPIView):
 
 
 class DetailView(RetrieveAPIView):
-    permissions = ['_custom_view_detail_administrator']
+    permissions = ['view_administrator_detail']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
     serializer_class = AdministratorBaseSerializer
 
 
 class CreateView(CreateAPIView):
-    permissions = ['_custom_create_administrator']
+    permissions = ['add_administrator']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
     serializer_class = AdministratorCreateSerializer
 
 
 class UpdateView(RetrieveUpdateAPIView):
-    permissions = ['_custom_edit_administrator']
+    permissions = ['update_administrator']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
     serializer_class = AdministratorUpdateSerializer
 
 
 class DeleteView(RetrieveDestroyAPIView):
-    permissions = ['_custom_delete_administrator']
+    permissions = ['delete_administrator']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
     serializer_class = AdministratorBaseSerializer

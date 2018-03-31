@@ -22,10 +22,7 @@ class Administrator(models.Model):
         db_table = "administrators"
         ordering = ['-id']
         permissions = (
-            ("_custom_view_list_administrator", "Can view list administrators"),
-            ("_custom_view_detail_administrator", "Can view detail administrator"),
-            ("_custom_view_profile_administrator", "Can view profile administrator"),
-            ("_custom_create_administrator", "Can create administrator"),
-            ("_custom_edit_administrator", "Can edit administrator"),
-            ("_custom_delete_administrator", "Can delete administrator"),
+            ("view_administrator_list", "Can view administrator list"),
+            ("view_administrator_detail", "Can view administrator detail"),
+            ("view_administrator_profile", "Can view administrator profile"),
         )

@@ -8,14 +8,15 @@ type Props = {
     submitTitle: string,
     defaultValues: {
         id: ?number,
-        uid: ?string,
-        value: ?string,
+        content_type: ?string,
+        name: ?string,
+        codename: ?string
     },
     errorMessages: Object,
 };
 type States = {};
 
-export default class ConfigForm extends React.Component<Props, States> {
+export default class PermissionForm extends React.Component<Props, States> {
     resetForm: Function;
     setClassName: Function;
     setErrorMessage: Function;
@@ -24,8 +25,9 @@ export default class ConfigForm extends React.Component<Props, States> {
         submitTitle: 'Submit',
         defaultValues: {
             id: null,
-            uid: null,
-            value: null,
+            content_type: null,
+            name: null,
+            codename: null,
         },
         errorMessages: {},
     };
@@ -40,7 +42,7 @@ export default class ConfigForm extends React.Component<Props, States> {
 
     resetForm() {
         window.document.getElementById(this.props.formId).reset();
-        window.document.querySelector('#' + this.props.formId + ' [name=uid]').focus();
+        window.document.querySelector('#' + this.props.formId + ' [name=name]').focus();
     }
 
     setClassName(name: string) {
@@ -55,33 +57,36 @@ export default class ConfigForm extends React.Component<Props, States> {
         return (
             <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
                 <input defaultValue={this.props.defaultValues.id} name="id" type="hidden" />
+                <p>
+                    Content type: <strong>{this.props.defaultValues.content_type}</strong>
+                </p>
                 <div className="form-group">
-                    <label htmlFor="uid">Key</label>
+                    <label htmlFor="name">Name</label>
                     <input
-                        defaultValue={this.props.defaultValues.uid}
-                        id="uid"
-                        name="uid"
+                        defaultValue={this.props.defaultValues.name}
+                        id="name"
+                        name="name"
                         type="text"
-                        className={this.setClassName('uid')}
+                        className={this.setClassName('name')}
                         required
                         autoFocus
-                        placeholder="Key..."
+                        placeholder="Name..."
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('name')}</div>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="value">Value</label>
+                    <label htmlFor="codename">Code name</label>
                     <input
-                        defaultValue={this.props.defaultValues.value}
-                        id="value"
-                        name="value"
+                        defaultValue={this.props.defaultValues.codename}
+                        id="codename"
+                        name="codename"
                         type="text"
-                        className={this.setClassName('value')}
+                        className={this.setClassName('codename')}
                         required
-                        placeholder="Value..."
+                        placeholder="Code name..."
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('value')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('codename')}</div>
                 </div>
 
                 <div className="right">

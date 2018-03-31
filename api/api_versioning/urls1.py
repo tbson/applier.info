@@ -14,11 +14,11 @@ urlpatterns = [
     ),
     path(
         'permission/',
-        include('c_permission.urls', namespace='c_permission'),
+        include('permission.urls', namespace='permission'),
     ),
     path(
         'group/',
-        include('c_group.urls', namespace='c_group'),
+        include('group.urls', namespace='group'),
     ),
 ]
 

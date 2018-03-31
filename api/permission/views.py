@@ -9,64 +9,63 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Config
+from django.contrib.auth.models import Permission
 from .serializers import (
-    ConfigBaseSerializer,
+    PermissionBaseSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.common_classes.base_manage_view import BaseManageView
 
 
 class ListView(ListAPIView):
-    permissions = ['view_config_list']
-    permission_classes = [CustomPermission]
-    queryset = Config.objects.all()
-    serializer_class = ConfigBaseSerializer
-    search_fields = ('uid', 'value')
+    permissions = ['view_permission_list']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
+    pagination_class = None
+    search_fields = ('codename', 'name')
+    ordering_fields = ('codename', 'name')
+    ordering = ('content_type__app_label',)
 
 
 class DetailView(RetrieveAPIView):
-    permissions = ['view_config_detail']
-    permission_classes = [CustomPermission]
-    queryset = Config.objects.all()
-    serializer_class = ConfigBaseSerializer
+    permissions = ['view_permission_detail']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
 
 
 class CreateView(CreateAPIView):
-    permissions = ['add_config']
-    permission_classes = [CustomPermission]
-    queryset = Config.objects.all()
-    serializer_class = ConfigBaseSerializer
+    permissions = ['add_permission']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
 
 
 class UpdateView(UpdateAPIView):
-    permissions = ['change_config']
-    permission_classes = [CustomPermission]
-    queryset = Config.objects.all()
-    serializer_class = ConfigBaseSerializer
+    permissions = ['change_permission']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
 
 
 class DeleteView(DestroyAPIView):
-    permissions = ['delete_config']
-    permission_classes = [CustomPermission]
-    queryset = Config.objects.all()
-    serializer_class = ConfigBaseSerializer
+    permissions = ['delete_permission']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
 
 
-class BulkDeleteView(APIView):
-    permissions = ['delete_config']
-    permission_classes = [CustomPermission]
+class BulkDeleteView(DestroyAPIView):
+    permissions = ['delete_permission']
+    queryset = Permission.objects.all()
+    serializer_class = PermissionBaseSerializer
 
     def get_object(self):
         pk = self.request.query_params.get('ids', '')
         pk = [int(pk)] if pk.isdigit() else map(lambda x: int(x), pk.split(','))
-        result = Config.objects.filter(pk__in=pk)
+        result = Permission.objects.filter(pk__in=pk)
         if result.count():
             return result
         raise Http404
 
-    def delete(self, request, format=None):
-        object = self.get_object()
+    def delete(self, request, pk, format=None):
+        object = self.get_object(pk)
         object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

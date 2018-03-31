@@ -18,6 +18,9 @@ import Login from './auth/Login';
 import Profile from './auth/Profile';
 import ResetPassword from './auth/ResetPassword';
 import Config from './config/Config';
+import Group from './group/Group';
+import Permission from './permission/Permission';
+
 
 type Props = {};
 
@@ -32,6 +35,8 @@ class App extends React.Component<Props> {
                     <Route path="/login" component={Login} />
                     <Route path="/reset-password/:token" component={ResetPassword} />
                     <Route path="/config" component={Config} />
+                    <Route path="/group" component={Group} />
+                    <Route path="/permission" component={Permission} />
                     {/*<PrivateRoute path="/hello" component={Home}/>*/}
                 </Switch>
             </div>

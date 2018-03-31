@@ -4,12 +4,12 @@ import * as React from 'react';
 import {withRouter} from 'react-router-dom';
 import {actions, apiUrls} from './_data';
 import NavWrapper from 'src/utils/components/NavWrapper';
-import ConfigTable from './tables/ConfigTable';
+import GroupTable from './tables/GroupTable';
 
 type Props = {};
 type States = {};
 
-class Config extends React.Component<Props, States> {
+class Group extends React.Component<Props, States> {
     state = {};
 
     constructor(props: Props) {
@@ -19,7 +19,7 @@ class Config extends React.Component<Props, States> {
     render() {
         return (
             <NavWrapper>
-                <ConfigTable />
+                <GroupTable />
             </NavWrapper>
         );
     }
@@ -27,4 +27,4 @@ class Config extends React.Component<Props, States> {
 
 const styles = {};
 
-export default withRouter(Config);
+export default withRouter(Group);

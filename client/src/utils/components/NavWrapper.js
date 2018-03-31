@@ -71,6 +71,20 @@ class App extends React.Component<Props, State> {
                                 <span>Config</span>
                             </NavLink>
                         </li>
+
+                        <li>
+                            <NavLink exact to="/group">
+                                <span className="oi oi-people" />&nbsp;&nbsp;
+                                <span>Group</span>
+                            </NavLink>
+                        </li>
+
+                        <li>
+                            <NavLink exact to="/permission">
+                                <span className="oi oi-people" />&nbsp;&nbsp;
+                                <span>Permission</span>
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
 
