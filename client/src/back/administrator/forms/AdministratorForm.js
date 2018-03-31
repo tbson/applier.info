@@ -61,7 +61,7 @@ export default class AdministratorForm extends React.Component<Props, States> {
         return (
             <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
                 <input defaultValue={this.props.defaultValues.id} name="id" type="hidden" />
-                <div class="row">
+                <div className="row">
                     <div className="col-sm">
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
@@ -95,7 +95,7 @@ export default class AdministratorForm extends React.Component<Props, States> {
                     </div>
                 </div>
 
-                <div class="row">
+                <div className="row">
                     <div className="col-sm">
                         <div className="form-group">
                             <label htmlFor="first_name">First name</label>

@@ -60,7 +60,7 @@ class DeleteView(DestroyAPIView):
     permissions = ['delete_administrator']
     permission_classes = [CustomPermission]
     queryset = Administrator.objects.all()
-    serializer_class = AdministratorUpdateSerializer
+    serializer_class = AdministratorBaseSerializer
 
 
 class BulkDeleteView(DestroyAPIView):
