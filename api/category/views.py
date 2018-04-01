@@ -22,7 +22,7 @@ class ListView(ListAPIView):
     permission_classes = [CustomPermission]
     queryset = Category.objects.all()
     serializer_class = CategoryBaseSerializer
-    search_fields = ('uid', 'value')
+    search_fields = ('uid', 'title')
 
 
 class DetailView(RetrieveAPIView):
