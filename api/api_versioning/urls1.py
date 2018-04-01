@@ -20,5 +20,9 @@ urlpatterns = [
         'group/',
         include('group.urls', namespace='group'),
     ),
+    path(
+        'category/',
+        include('category.urls', namespace='category'),
+    ),
 ]
 

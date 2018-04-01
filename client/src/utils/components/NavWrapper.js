@@ -92,6 +92,13 @@ class App extends React.Component<Props, State> {
                                 <span>Permission</span>
                             </NavLink>
                         </li>
+
+                        <li>
+                            <NavLink exact to="/category">
+                                <span className="oi oi-layers" />&nbsp;&nbsp;
+                                <span>Category</span>
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
 

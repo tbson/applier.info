@@ -43,13 +43,21 @@ export default class Tools {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    static formDataToObj(formData: FormData): Object {
+    static formDataToObj(formData: FormData, checkboxes: Array<string> = []): Object {
         let data = {};
         for (let pair of formData.entries()) {
             if (typeof data[pair[0]] == 'undefined') {
                 data[pair[0]] = pair[1] === 'null' ? null : pair[1];
             }
         }
+        for (let checkbox of checkboxes) {
+            if (!data[checkbox]) {
+                data[checkbox] = false;
+            } else {
+                data[checkbox] = true;
+            }
+        }
+        console.log(data);
         return data;
     }
 

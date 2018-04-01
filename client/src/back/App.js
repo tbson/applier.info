@@ -21,6 +21,7 @@ import ResetPassword from './auth/ResetPassword';
 import Config from './config/Config';
 import Group from './group/Group';
 import Permission from './permission/Permission';
+import Category from './category/Category';
 
 
 type Props = {};
@@ -39,6 +40,7 @@ class App extends React.Component<Props> {
                     <Route path="/config" component={Config} />
                     <Route path="/group" component={Group} />
                     <Route path="/permission" component={Permission} />
+                    <Route path="/category" component={Category} />
                     {/*<PrivateRoute path="/hello" component={Home}/>*/}
                 </Switch>
             </div>

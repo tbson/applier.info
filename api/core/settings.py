@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'administrator',
     'permission',
     'group',
+    'category',
 ]
 
 MIDDLEWARE = [

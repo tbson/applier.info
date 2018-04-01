@@ -3,6 +3,10 @@ input:invalid {
     border-color: #dc3545;
 }
 */
+.invalid-feedback {
+    display: block !important;
+}
+
 .pointer {
     cursor: pointer;
 }
@@ -59,6 +63,10 @@ input:invalid {
 }
 .button-secondary {
     background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.red {
+    color: red;
 }
 
 .green {
