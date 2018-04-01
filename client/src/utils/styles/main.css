@@ -31,6 +31,13 @@ input:invalid {
     color: #0c65ff;
 }
 
+.no-select {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */
+}
+
 .button-success,
 .button-error,
 .button-warning,
@@ -52,6 +59,10 @@ input:invalid {
 }
 .button-secondary {
     background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.green {
+    color: green;
 }
 
 .row25 {

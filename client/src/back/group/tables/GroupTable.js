@@ -112,9 +112,9 @@ export class GroupTable extends React.Component<Props, States> {
         return result;
     }
 
-    initPermission (permissionList: Array<number>, blanPermissionList: Object): Object {
-        for (let contentType in blanPermissionList) {
-            let permissionGroup = blanPermissionList[contentType];
+    initPermission (permissionList: Array<number>, blankPermissionList: Object): Object {
+        for (let contentType in blankPermissionList) {
+            let permissionGroup = blankPermissionList[contentType];
             for (let permission of permissionGroup) {
                 if (permissionList.indexOf(permission.id) != -1) {
                     permission.checked = true;
@@ -123,7 +123,7 @@ export class GroupTable extends React.Component<Props, States> {
                 }
             }
         }
-        return blanPermissionList;
+        return blankPermissionList;
     }
 
     toggleModal(modalName: string, id: ?number = null): Object {
@@ -143,7 +143,10 @@ export class GroupTable extends React.Component<Props, States> {
                         if (result.success) {
                             state.mainFormData = result.data;
                             this.setState({
-                                permissionList: this.initPermission(result.data.permissions, this.state.permissionList)
+                                permissionList: this.initPermission(
+                                    result.data.permissions.split(',').map(item => parseInt(item)),
+                                    this.state.permissionList
+                                )
                             });
                         }
                         this.setState(state);
