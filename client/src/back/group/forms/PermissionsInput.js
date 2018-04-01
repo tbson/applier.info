@@ -26,7 +26,7 @@ class PermissionsInput extends React.Component<Props, States> {
         super(props);
     }
 
-    handleChange = (value, item) => {
+    handleChange = (value: boolean, item: Object) => {
         let result = [];
         item.checked = value;
         this.setState({options: this.state.options}, () => {

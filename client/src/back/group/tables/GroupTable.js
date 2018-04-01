@@ -31,6 +31,7 @@ export class GroupTable extends React.Component<Props, States> {
     handleCheck: Function;
     handleRemove: Function;
     handleSearch: Function;
+    initPermission: Function;
 
     filterTimeout: ?TimeoutID = null;
     nextUrl: ?string;
@@ -57,6 +58,7 @@ export class GroupTable extends React.Component<Props, States> {
         this.handleCheck = this.handleCheck.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.initPermission = this.initPermission.bind(this);
     }
 
     componentDidMount() {
@@ -110,7 +112,19 @@ export class GroupTable extends React.Component<Props, States> {
         return result;
     }
 
-
+    initPermission (permissionList: Array<number>, blanPermissionList: Object): Object {
+        for (let contentType in blanPermissionList) {
+            let permissionGroup = blanPermissionList[contentType];
+            for (let permission of permissionGroup) {
+                if (permissionList.indexOf(permission.id) != -1) {
+                    permission.checked = true;
+                } else {
+                    permission.checked = false;
+                }
+            }
+        }
+        return blanPermissionList;
+    }
 
     toggleModal(modalName: string, id: ?number = null): Object {
         // If modalName not defined -> exit here
@@ -127,19 +141,10 @@ export class GroupTable extends React.Component<Props, States> {
                 case 'mainModal':
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
-                            const permissionList = result.data.permissions;
-                            for (let contentType in this.state.permissionList) {
-                                let permissionGroup = this.state.permissionList[contentType];
-                                for (let permission of permissionGroup) {
-                                    if (permissionList.indexOf(permission.id) != -1) {
-                                        permission.checked = true;
-                                    } else {
-                                        permission.checked = false;
-                                    }
-                                }
-                            }
                             state.mainFormData = result.data;
-                            this.setState({permissionList: this.state.permissionList});
+                            this.setState({
+                                permissionList: this.initPermission(result.data.permissions, this.state.permissionList)
+                            });
                         }
                         this.setState(state);
                     });
