@@ -110,15 +110,21 @@ export class GroupTable extends React.Component<Props, States> {
         return result;
     }
 
+
+
     toggleModal(modalName: string, id: ?number = null): Object {
         // If modalName not defined -> exit here
         if (typeof this.state[modalName] == 'undefined') return {};
 
-        const state = {};
-        state[modalName] = !this.state[modalName];
-        switch (modalName) {
-            case 'mainModal':
-                if (id) {
+        const state = {
+            [modalName]: !this.state[modalName],
+            mainFormData: {},
+            mainFormErr: {},
+        };
+
+        if (id) {
+            switch (modalName) {
+                case 'mainModal':
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
                             const permissionList = result.data.permissions;
@@ -132,28 +138,16 @@ export class GroupTable extends React.Component<Props, States> {
                                     }
                                 }
                             }
+                            state.mainFormData = result.data;
                             this.setState({permissionList: this.state.permissionList});
-                            this.setState({mainFormData: result.data});
                         }
                         this.setState(state);
                     });
                     return state;
-                } else {
-                    for (let contentType in this.state.permissionList) {
-                        let permissionGroup = this.state.permissionList[contentType];
-                        for (let permission of permissionGroup) {
-                            permission.checked = false;
-                        }
-                    }
-
-                    this.setState({
-                        mainFormData: {},
-                        mainFormErr: {},
-                    });
-                }
-                break;
+            }
+        } else {
+            this.setState(state);
         }
-        this.setState(state);
         return state;
     }
 
