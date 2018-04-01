@@ -57,7 +57,6 @@ export default class Tools {
                 data[checkbox] = true;
             }
         }
-        console.log(data);
         return data;
     }
 
