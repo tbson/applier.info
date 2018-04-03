@@ -9,59 +9,58 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Category
+from .models import Banner
 from .serializers import (
-    CategoryBaseSerializer,
+    BannerBaseSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.common_classes.base_manage_view import BaseManageView
 
 
 class ListView(ListAPIView):
-    permissions = ['view_category_list']
+    permissions = ['view_banner_list']
     permission_classes = [CustomPermission]
-    queryset = Category.objects.all()
-    serializer_class = CategoryBaseSerializer
-    search_fields = ('uid', 'title',)
-    filter_fields = ('type',)
+    queryset = Banner.objects.all()
+    serializer_class = BannerBaseSerializer
+    search_fields = ('uid', 'value')
 
 
 class DetailView(RetrieveAPIView):
-    permissions = ['view_category_detail']
+    permissions = ['view_banner_detail']
     permission_classes = [CustomPermission]
-    queryset = Category.objects.all()
-    serializer_class = CategoryBaseSerializer
+    queryset = Banner.objects.all()
+    serializer_class = BannerBaseSerializer
 
 
 class CreateView(CreateAPIView):
-    permissions = ['add_category']
+    permissions = ['add_banner']
     permission_classes = [CustomPermission]
-    queryset = Category.objects.all()
-    serializer_class = CategoryBaseSerializer
+    queryset = Banner.objects.all()
+    serializer_class = BannerBaseSerializer
 
 
 class UpdateView(UpdateAPIView):
-    permissions = ['change_category']
+    permissions = ['change_banner']
     permission_classes = [CustomPermission]
-    queryset = Category.objects.all()
-    serializer_class = CategoryBaseSerializer
+    queryset = Banner.objects.all()
+    serializer_class = BannerBaseSerializer
 
 
 class DeleteView(DestroyAPIView):
-    permissions = ['delete_category']
+    permissions = ['delete_banner']
     permission_classes = [CustomPermission]
-    queryset = Category.objects.all()
-    serializer_class = CategoryBaseSerializer
+    queryset = Banner.objects.all()
+    serializer_class = BannerBaseSerializer
 
 
 class BulkDeleteView(APIView):
-    permissions = ['delete_category']
+    permissions = ['delete_banner']
     permission_classes = [CustomPermission]
 
     def get_object(self):
         pk = self.request.query_params.get('ids', '')
         pk = [int(pk)] if pk.isdigit() else map(lambda x: int(x), pk.split(','))
-        result = Category.objects.filter(pk__in=pk)
+        result = Banner.objects.filter(pk__in=pk)
         if result.count():
             return result
         raise Http404

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'permission',
     'group',
     'category',
+    'banner',
 ]
 
 MIDDLEWARE = [
@@ -139,6 +140,7 @@ REST_FRAMEWORK = {
         'django.contrib.auth.models.AnonymousUser'
     ),
     'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],

@@ -185,7 +185,7 @@ export default class Tools {
         let str = [];
         for (let p in obj) {
             var value = obj[p];
-            if (value === null) {
+            if (typeof value == 'undefined' || value === null) {
                 value = '';
             }
             str.push(encodeURIComponent(p) + '=' + encodeURIComponent(value));
