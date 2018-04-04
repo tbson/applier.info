@@ -14,6 +14,7 @@ type Props = {
         single: boolean,
     },
     errorMessages: Object,
+    typeList: Array<Object>,
 };
 type States = {};
 
@@ -21,7 +22,6 @@ export default class CategoryForm extends React.Component<Props, States> {
     resetForm: Function;
     setClassName: Function;
     setErrorMessage: Function;
-    typeList: Array<Object>;
 
     static defaultProps = {
         submitTitle: 'Submit',
@@ -32,20 +32,16 @@ export default class CategoryForm extends React.Component<Props, States> {
             single: false,
         },
         errorMessages: {},
+        typeList: [],
     };
 
     state = {};
-
 
     constructor(props: Props) {
         super(props);
         this.resetForm = this.resetForm.bind(this);
         this.setClassName = this.setClassName.bind(this);
         this.setErrorMessage = this.setErrorMessage.bind(this);
-        this.typeList = [
-            {value: 'article', label: 'Article'},
-            {value: 'banner', label: 'Banner'},
-        ];
     }
 
     resetForm() {
@@ -85,7 +81,7 @@ export default class CategoryForm extends React.Component<Props, States> {
                     <SelectInput
                         defaultValue={this.props.defaultValues.type}
                         name="type"
-                        options={this.typeList}
+                        options={this.props.typeList}
                     />
                     <input type="hidden" />
                     <div className="invalid-feedback">{this.setErrorMessage('type')}</div>
@@ -97,10 +93,12 @@ export default class CategoryForm extends React.Component<Props, States> {
                         name="single"
                         type="checkbox"
                         defaultChecked={this.props.defaultValues.single}
-                        className="form-check-input"/>
-                    <label className="form-check-label" htmlFor="single">Single</label>
+                        className="form-check-input"
+                    />
+                    <label className="form-check-label" htmlFor="single">
+                        Single
+                    </label>
                 </div>
-
 
                 <div className="right">
                     {this.props.children}

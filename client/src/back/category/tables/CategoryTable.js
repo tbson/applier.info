@@ -32,6 +32,7 @@ export class CategoryTable extends React.Component<Props, States> {
     handleCheck: Function;
     handleRemove: Function;
     handleSearch: Function;
+    typeList: Array<Object>;
 
     filterTimeout: ?TimeoutID = null;
     nextUrl: ?string;
@@ -44,6 +45,11 @@ export class CategoryTable extends React.Component<Props, States> {
         mainFormData: {},
         mainFormErr: {},
     };
+
+    typeList = [
+        {value: 'article', label: 'Article'},
+        {value: 'banner', label: 'Banner'},
+    ];
 
     constructor(props: Props) {
         super(props);
@@ -60,7 +66,8 @@ export class CategoryTable extends React.Component<Props, States> {
     }
 
     componentDidMount() {
-        this.list();
+        const {type} = this.props.match.params;
+        this.list({type}, null, true);
     }
 
     componentDidUpdate(prevProps: Props, prevState: States) {
@@ -238,6 +245,7 @@ export class CategoryTable extends React.Component<Props, States> {
     render() {
         if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.state.mainList;
+        const { type } = this.props.match.params;
         return (
             <div>
                 <SearchInput onSearch={this.handleSearch} />
@@ -301,6 +309,7 @@ export class CategoryTable extends React.Component<Props, States> {
                     errorMessages={this.state.mainFormErr}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
+                    typeList={!type ? this.typeList : this.typeList.filter(item => item.value === type)}
                 />
             </div>
         );

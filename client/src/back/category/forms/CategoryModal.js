@@ -9,6 +9,7 @@ type PropTypes = {
     handleSubmit: Function,
     defaultValues: Object,
     errorMessages: Object,
+    typeList: Array<Object>,
 };
 export default class CategoryModal extends React.Component<PropTypes> {
     static defaultProps = {
@@ -25,7 +26,8 @@ export default class CategoryModal extends React.Component<PropTypes> {
                         submitTitle="Update"
                         defaultValues={this.props.defaultValues}
                         errorMessages={this.props.errorMessages}
-                        handleSubmit={this.props.handleSubmit}>
+                        handleSubmit={this.props.handleSubmit}
+                        typeList={this.props.typeList}>
                         <button type="button" onClick={this.props.handleClose} className="btn btn-warning">
                             <span className="oi oi-x" />&nbsp; Cancel
                         </button>
