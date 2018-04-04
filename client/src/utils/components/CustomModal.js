@@ -65,12 +65,13 @@ class CustomModal extends React.Component {
             marginBottom: 10,
         };
         return (
-            <Modal style={customStyles} isOpen={this.props.open} contentLabel="Modal" ariaHideApp={false}>
-                <span
-                    style={closeButtonStyle}
-                    className="fa fa-times non-printable"
-                    onClick={() => this.props.close()}
-                />
+            <Modal
+                style={customStyles}
+                isOpen={this.props.open}
+                contentLabel="Modal"
+                onRequestClose={this.props.close}
+                ariaHideApp={false}>
+                <span style={closeButtonStyle} className="fa fa-times non-printable" onClick={this.props.close} />
                 <h4 className="non-printable" style={headingStyle}>
                     {this.props.title}
                 </h4>
