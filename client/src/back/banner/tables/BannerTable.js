@@ -77,7 +77,9 @@ export class BannerTable extends React.Component<Props, States> {
     }
 
     async list(outerParams: Object = {}, url: ?string = null) {
-        let params = {};
+        let params = {
+            category: this.props.match.params.category_id
+        };
         let result = {};
 
         if (!Tools.emptyObj(outerParams)) {

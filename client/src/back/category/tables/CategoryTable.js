@@ -73,7 +73,6 @@ export class CategoryTable extends React.Component<Props, States> {
     componentDidUpdate(prevProps: Props, prevState: States) {
         const {type} = this.props.match.params;
         if (prevProps.match.params.type != type) {
-            console.log('change', type);
             this.list({type}, null, true);
         }
         return null;
