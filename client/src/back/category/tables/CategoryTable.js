@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import {apiUrls} from '../_data';
 import CategoryForm from '../forms/CategoryForm';
@@ -344,7 +344,11 @@ export class Row extends React.Component<RowPropTypes> {
                         onChange={event => this.props.onCheck(data, event)}
                     />
                 </th>
-                <td className="title">{data.title}</td>
+                <td className="title">
+                    <Link to={`/banner/${data.id}`}>
+                        <span>{data.title}</span>
+                    </Link>
+                </td>
                 <td className="type">{data.type}</td>
                 <td className="single">
                     {data.single ? <span className="oi oi-check green" /> : <span className="oi oi-x red" />}

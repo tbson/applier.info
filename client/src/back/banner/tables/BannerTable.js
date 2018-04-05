@@ -10,7 +10,9 @@ import LoadingLabel from 'src/utils/components/LoadingLabel';
 import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
 import Tools from 'src/utils/helpers/Tools';
 
-type Props = {};
+type Props = {
+    match: Object,
+};
 type States = {
     dataLoaded: boolean,
     mainModal: boolean,
@@ -138,7 +140,8 @@ export class BannerTable extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {category_id: number, title: string, description: ?string, image: Object}) {
+    async handleAdd(params: {category: number, title: string, description: ?string, image: Object}) {
+        params.category = this.props.match.params.category_id;
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
@@ -149,7 +152,6 @@ export class BannerTable extends React.Component<Props, States> {
 
     async handleEdit(params: {
         id: number,
-        category_id: number,
         title: string,
         description: ?string,
         image: Object,
@@ -231,6 +233,7 @@ export class BannerTable extends React.Component<Props, States> {
     render() {
         if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.state.mainList;
+        const categoryId = this.props.match.params.category_id;
         return (
             <div>
                 <SearchInput onSearch={this.handleSearch} />
@@ -243,8 +246,8 @@ export class BannerTable extends React.Component<Props, States> {
                                     onClick={() => this.handleToggleCheckAll()}
                                 />
                             </th>
-                            <th scope="col">Key</th>
-                            <th scope="col">Value</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Category</th>
                             <th scope="col" style={{padding: 8}} className="row80">
                                 <button
                                     className="btn btn-primary btn-sm btn-block add-button"
@@ -326,8 +329,8 @@ export class Row extends React.Component<RowPropTypes> {
                         onChange={event => this.props.onCheck(data, event)}
                     />
                 </th>
-                <td className="category_id">{data.category_id}</td>
                 <td className="title">{data.title}</td>
+                <td className="category_id">{data.category_title}</td>
                 <td className="center">
                     <span
                         className="editBtn oi oi-pencil text-info pointer"

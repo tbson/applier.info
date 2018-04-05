@@ -42,10 +42,7 @@ class App extends React.Component<Props> {
                     <Route path="/group" component={Group} />
                     <Route path="/permission" component={Permission} />
                     <Route path="/category/:type?" component={Category} />
-                    {/*
-                    <Route path="/banner" component={Banner} />
-                    */}
-                    {/*<PrivateRoute path="/hello" component={Home}/>*/}
+                    <Route path="/banner/:category_id" component={Banner} />
                 </Switch>
             </div>
         );

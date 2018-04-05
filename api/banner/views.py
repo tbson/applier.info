@@ -23,6 +23,7 @@ class ListView(ListAPIView):
     queryset = Banner.objects.all()
     serializer_class = BannerBaseSerializer
     search_fields = ('uid', 'value')
+    filter_fields = ('category',)
 
 
 class DetailView(RetrieveAPIView):

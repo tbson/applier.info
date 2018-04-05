@@ -8,8 +8,9 @@ type Props = {
     submitTitle: string,
     defaultValues: {
         id: ?number,
-        uid: ?string,
-        value: ?string,
+        title: ?string,
+        description: ?string,
+        image: ?string,
     },
     errorMessages: Object,
 };
@@ -24,8 +25,9 @@ export default class BannerForm extends React.Component<Props, States> {
         submitTitle: 'Submit',
         defaultValues: {
             id: null,
-            uid: null,
-            value: null,
+            title: null,
+            description: null,
+            image: null,
         },
         errorMessages: {},
     };
@@ -40,7 +42,7 @@ export default class BannerForm extends React.Component<Props, States> {
 
     resetForm() {
         window.document.getElementById(this.props.formId).reset();
-        window.document.querySelector('#' + this.props.formId + ' [name=uid]').focus();
+        window.document.querySelector('#' + this.props.formId + ' [name=title]').focus();
     }
 
     setClassName(name: string) {
@@ -56,32 +58,45 @@ export default class BannerForm extends React.Component<Props, States> {
             <form id={this.props.formId} onSubmit={this.props.handleSubmit}>
                 <input defaultValue={this.props.defaultValues.id} name="id" type="hidden" />
                 <div className="form-group">
-                    <label htmlFor="uid">Key</label>
+                    <label htmlFor="title">Title</label>
                     <input
-                        defaultValue={this.props.defaultValues.uid}
-                        id="uid"
-                        name="uid"
+                        defaultValue={this.props.defaultValues.title}
+                        id="title"
+                        name="title"
                         type="text"
-                        className={this.setClassName('uid')}
+                        className={this.setClassName('title')}
                         required
                         autoFocus
-                        placeholder="Key..."
+                        placeholder="Title..."
                     />
                     <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="value">Value</label>
-                    <input
-                        defaultValue={this.props.defaultValues.value}
-                        id="value"
-                        name="value"
+                    <label htmlFor="description">Description</label>
+                    <textarea
+                        defaultValue={this.props.defaultValues.description}
+                        id="description"
+                        name="description"
                         type="text"
-                        className={this.setClassName('value')}
+                        className={this.setClassName('description')}
+                        placeholder="Description..."
+                    ></textarea>
+                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="image">Image</label>
+                    <input
+                        defaultValue={this.props.defaultValues.image}
+                        id="image"
+                        name="image"
+                        type="file"
+                        className={this.setClassName('image')}
                         required
-                        placeholder="Value..."
+                        placeholder="Image..."
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('value')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
                 </div>
 
                 <div className="right">

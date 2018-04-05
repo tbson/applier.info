@@ -1,7 +1,14 @@
+import uuid
+import os
 from PIL import Image
 from django.db import models
+from utils.helpers.tools import Tools
 from category.models import Category
 
+def image_destination(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('banner', filename)
 
 # Create your models here.
 class Banner(models.Model):
@@ -9,7 +16,7 @@ class Banner(models.Model):
     uid = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='category/')
+    image = models.ImageField(upload_to=image_destination)
 
     def save(self):
 
@@ -18,23 +25,18 @@ class Banner(models.Model):
 
         super(Banner, self).save()
 
-        maxWidth = 1600
-        maxHeight = 800
+        size = (1600, 800)
+        thumbnailSize = (300, 300)
+        Tools.scaleImage(size, self.image.path)
+        Tools.createThumbnail(thumbnailSize, self.image.path)
 
-        image = Image.open(self.image)
-        (width, height) = image.size
-
-        widthFactor = maxWidth / width
-        heightFactor = maxHeight / height
-
-        if widthFactor < 1 or heightFactor < 1:
-            if (widthFactor < heightFactor):
-                size = ( width / widthFactor, height / widthFactor)
-            else:
-                size = ( width / heightFactor, height / heightFactor)
-
-            image.resize(size, Image.ANTIALIAS)
-            image.save(self.image.path)
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.image.path):
+            thumbnail = Tools.getThumbnail(self.image.path)
+            os.remove(self.image.path)
+            if os.path.isfile(thumbnail):
+                os.remove(thumbnail)
+        super(Banner, self).delete(*args,**kwargs)
 
     class Meta:
         db_table = "banners"

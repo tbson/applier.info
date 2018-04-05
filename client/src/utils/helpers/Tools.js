@@ -47,6 +47,7 @@ export default class Tools {
         let data = {};
         for (let pair of formData.entries()) {
             if (typeof data[pair[0]] == 'undefined') {
+                // console.log(pair[1] instanceof Blob);
                 data[pair[0]] = pair[1] === 'null' ? null : pair[1];
             }
         }
@@ -153,15 +154,11 @@ export default class Tools {
         return result;
     }
 
-    static paramsProcessing(data: Object = {}, fileList: ?{[string]: FileList} = null): Object {
+    static paramsProcessing(data: Object = {}): Object {
         try {
-            if (fileList) {
+            if (Object.values(data).filter(item => item instanceof Blob).length) {
                 let formData = new FormData();
                 Object.entries(data).forEach(([key, value]) => {
-                    // $FlowFixMe: Still have no idea why it happen
-                    formData.set(key, value);
-                });
-                Object.entries(fileList).forEach(([key, value]) => {
                     // $FlowFixMe: Still have no idea why it happen
                     formData.set(key, value);
                 });

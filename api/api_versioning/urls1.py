@@ -24,5 +24,9 @@ urlpatterns = [
         'category/',
         include('category.urls', namespace='category'),
     ),
+    path(
+        'banner/',
+        include('banner.urls', namespace='banner'),
+    ),
 ]
 
