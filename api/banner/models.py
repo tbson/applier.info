@@ -24,11 +24,10 @@ class Banner(models.Model):
             return
 
         super(Banner, self).save()
-
-        size = (1600, 800)
-        thumbnailSize = (300, 300)
-        Tools.scaleImage(size, self.image.path)
-        Tools.createThumbnail(thumbnailSize, self.image.path)
+        width = 1200;
+        thumbnailWidth = 300
+        Tools.scaleImage(width, self.image.path)
+        Tools.createThumbnail(thumbnailWidth, self.image.path)
 
     def delete(self, *args, **kwargs):
         if os.path.isfile(self.image.path):

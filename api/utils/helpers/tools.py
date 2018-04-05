@@ -31,27 +31,32 @@ class Tools():
         return '.'.join(pathArr)
 
     @staticmethod
-    def scaleImage (size, path):
-        maxWidth = size[0]
-        maxHeight = size[1]
+    def scaleImage (width, path):
+        height = int(width / 1.618)
 
         image = Image.open(path)
-        (width, height) = image.size
+        (originalWidth, originalHeight) = image.size
 
-        widthFactor = maxWidth / width
-        heightFactor = maxHeight / height
-        if widthFactor < 1 or heightFactor < 1:
-            if (widthFactor < heightFactor):
-                size = ( int(width * widthFactor), int(height * widthFactor))
-            else:
-                size = ( int(width * heightFactor), int(height * heightFactor))
-            image = image.resize(size, Image.ANTIALIAS)
-            image.save(path)
-        else:
-            image.close()
+        widthFactor = width / originalWidth
+        heightFactor = height / originalHeight
+
+        factor = widthFactor
+        if heightFactor > widthFactor:
+            factor = heightFactor
+
+        size = (int(originalWidth * factor), int(originalHeight * factor))
+
+        # Resize to 1 sise fit, 1 side larger than golden rectangle
+        image = image.resize(size, Image.ANTIALIAS)
+        image.save(path)
+
+        # Crop to golden ratio
+        image = image.crop((0, 0, width, height));
+        image.save(path)
 
     @staticmethod
-    def createThumbnail (size, path):
+    def createThumbnail (width, path):
+        size = (width, width)
         image = Image.open(path)
         image.thumbnail(size, Image.ANTIALIAS)
         image.save(Tools.getThumbnail(path))
