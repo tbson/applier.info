@@ -25,6 +25,9 @@ class BannerBaseSerializer(ModelSerializer):
     def get_category_title(self, obj):
         return obj.category.title
 
+
+class BannerCreateSerializer(BannerBaseSerializer):
+
     def create(self, validated_data):
         category = validated_data['category']
         if category.single is True:
@@ -34,3 +37,10 @@ class BannerBaseSerializer(ModelSerializer):
         banner = Banner(**validated_data)
         banner.save()
         return banner
+
+
+class BannerUpdateSerializer(BannerBaseSerializer):
+
+    class Meta(BannerBaseSerializer.Meta):
+        extra_kwargs = {'image': {'required': False}}
+

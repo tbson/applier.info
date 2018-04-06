@@ -20,6 +20,7 @@ export default class BannerForm extends React.Component<Props, States> {
     resetForm: Function;
     setClassName: Function;
     setErrorMessage: Function;
+    renderPreview: Function;
 
     static defaultProps = {
         submitTitle: 'Submit',
@@ -38,6 +39,7 @@ export default class BannerForm extends React.Component<Props, States> {
         this.resetForm = this.resetForm.bind(this);
         this.setClassName = this.setClassName.bind(this);
         this.setErrorMessage = this.setErrorMessage.bind(this);
+        this.renderPreview = this.renderPreview.bind(this);
     }
 
     resetForm() {
@@ -51,6 +53,11 @@ export default class BannerForm extends React.Component<Props, States> {
 
     setErrorMessage(name: string) {
         return this.props.errorMessages[name];
+    }
+
+    renderPreview () {
+        if (!this.props.defaultValues.image) return null;
+        return <img src={this.props.defaultValues.image} width="100%"/>
     }
 
     render() {
@@ -86,14 +93,13 @@ export default class BannerForm extends React.Component<Props, States> {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="image">Image</label>
+                    {this.renderPreview()}
+                    <label htmlFor="image" style={{display: this.props.defaultValues.image?'none':'block'}}>Image</label>
                     <input
-                        defaultValue={this.props.defaultValues.image}
                         id="image"
                         name="image"
                         type="file"
                         className={this.setClassName('image')}
-                        required
                         placeholder="Image..."
                     />
                     <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>

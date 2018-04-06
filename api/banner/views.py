@@ -12,6 +12,8 @@ from rest_framework import status
 from .models import Banner
 from .serializers import (
     BannerBaseSerializer,
+    BannerCreateSerializer,
+    BannerUpdateSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.common_classes.base_manage_view import BaseManageView
@@ -37,14 +39,14 @@ class CreateView(CreateAPIView):
     permissions = ['add_banner']
     permission_classes = [CustomPermission]
     queryset = Banner.objects.all()
-    serializer_class = BannerBaseSerializer
+    serializer_class = BannerCreateSerializer
 
 
 class UpdateView(UpdateAPIView):
     permissions = ['change_banner']
     permission_classes = [CustomPermission]
     queryset = Banner.objects.all()
-    serializer_class = BannerBaseSerializer
+    serializer_class = BannerUpdateSerializer
 
 
 class DeleteView(DestroyAPIView):
