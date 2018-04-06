@@ -1,7 +1,9 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import SerializerMethodField
 from django.utils.text import slugify
 from .models import Banner
+from category.models import Category
 
 
 class BannerBaseSerializer(ModelSerializer):
@@ -24,7 +26,11 @@ class BannerBaseSerializer(ModelSerializer):
         return obj.category.title
 
     def create(self, validated_data):
-        validated_data['uid'] = slugify(validated_data['title']);
+        category = validated_data['category']
+        if category.single is True:
+            if Banner.objects.filter(category_id=category.id).count() >= 1:
+                raise serializers.ValidationError({'detail': 'Can not add more item.'})
+        validated_data['uid'] = slugify(validated_data['title'])
         banner = Banner(**validated_data)
         banner.save()
         return banner
