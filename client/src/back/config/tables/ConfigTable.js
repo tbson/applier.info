@@ -326,15 +326,15 @@ export class Row extends React.Component<RowPropTypes> {
                 <td className="uid">{data.uid}</td>
                 <td className="value">{data.value}</td>
                 <td className="center">
-                    <span
-                        className="editBtn oi oi-pencil text-info pointer"
-                        onClick={() => this.props.toggleModal('mainModal', data.id)}
-                    />
+                    <a onClick={() => this.props.toggleModal('mainModal', data.id)}>
+                        <span className="editBtn oi oi-pencil text-info pointer"/>
+                    </a>
                     <span>&nbsp;&nbsp;&nbsp;</span>
-                    <span
-                        className="removeBtn oi oi-x text-danger pointer"
-                        onClick={() => this.props.handleRemove(String(data.id))}
-                    />
+                    <a onClick={() => this.props.handleRemove(String(data.id))}>
+                        <span
+                            className="removeBtn oi oi-x text-danger pointer" 
+                        />
+                    </a>
                 </td>
             </tr>
         );

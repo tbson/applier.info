@@ -10,6 +10,13 @@ def image_destination(instance, filename):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('banner', filename)
 
+def remove_file(path):
+    if os.path.isfile(path):
+        thumbnail = Tools.getThumbnail(path)
+        os.remove(path)
+        if os.path.isfile(thumbnail):
+            os.remove(thumbnail)
+
 # Create your models here.
 class Banner(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -23,6 +30,11 @@ class Banner(models.Model):
         if not self.id and not self.image:
             return
 
+        if not self._state.adding and self.image:
+            # Update: remove exist image
+            image = Banner.objects.get(pk=self.pk).image
+            remove_file(image.path)
+
         super(Banner, self).save()
         width = 1200;
         thumbnailWidth = 300
@@ -30,11 +42,7 @@ class Banner(models.Model):
         Tools.createThumbnail(thumbnailWidth, self.image.path)
 
     def delete(self, *args, **kwargs):
-        if os.path.isfile(self.image.path):
-            thumbnail = Tools.getThumbnail(self.image.path)
-            os.remove(self.image.path)
-            if os.path.isfile(thumbnail):
-                os.remove(thumbnail)
+        remove_file(self.image.path)
         super(Banner, self).delete(*args,**kwargs)
 
     class Meta:

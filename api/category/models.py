@@ -8,6 +8,11 @@ class Category(models.Model):
     type = models.CharField(max_length=50)
     single = models.BooleanField(default=False)
 
+    def delete(self, *args, **kwargs):
+        for banner in self.banner_set.all():
+            banner.delete()
+        super(Category, self).delete(*args,**kwargs)
+
     class Meta:
         db_table = "categories"
         ordering = ['-id']
