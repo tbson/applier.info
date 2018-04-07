@@ -23,6 +23,7 @@ import Group from './group/Group';
 import Permission from './permission/Permission';
 import Category from './category/Category';
 import Banner from './banner/Banner';
+import Article from './article/Article';
 
 
 type Props = {};
@@ -43,6 +44,7 @@ class App extends React.Component<Props> {
                     <Route path="/permission" component={Permission} />
                     <Route path="/category/:type?" component={Category} />
                     <Route path="/banner/:category_id" component={Banner} />
+                    <Route path="/Article/:category_id" component={Article} />
                 </Switch>
             </div>
         );

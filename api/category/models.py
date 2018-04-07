@@ -9,7 +9,7 @@ class Category(models.Model):
     single = models.BooleanField(default=False)
 
     def delete(self, *args, **kwargs):
-        for banner in self.banner_set.all():
+        for banner in self.banners.all():
             banner.delete()
         super(Category, self).delete(*args,**kwargs)
 

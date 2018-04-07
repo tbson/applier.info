@@ -85,7 +85,13 @@ if (TARGET === 'start' || !TARGET) {
                 ca: fs.readFileSync('/code/ssl/localca.pem'),
             },
         },
-        plugins: [new webpack.NamedModulesPlugin()],
+        plugins: [
+            new webpack.NamedModulesPlugin(),
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
+            })
+        ],
     });
 }
 
@@ -129,6 +135,10 @@ if (['build-back', 'build-front'].indexOf(TARGET) !== -1) {
                 threshold: 10240,
                 minRatio: 0,
             }),
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
+            })
             /*
             new BundleAnalyzerPlugin({
                 analyzerMode: 'server',

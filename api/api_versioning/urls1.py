@@ -28,5 +28,9 @@ urlpatterns = [
         'banner/',
         include('banner.urls', namespace='banner'),
     ),
+    path(
+        'article/',
+        include('article.urls', namespace='article'),
+    ),
 ]
 

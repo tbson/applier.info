@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {withRouter, Link} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import {apiUrls} from '../_data';
-import CategoryForm from '../forms/CategoryForm';
-import CategoryModal from '../forms/CategoryModal';
+import ArticleForm from '../forms/ArticleForm';
+import ArticleModal from '../forms/ArticleModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
 import Tools from 'src/utils/helpers/Tools';
@@ -21,7 +21,7 @@ type States = {
     mainFormErr: Object,
 };
 
-export class CategoryTable extends React.Component<Props, States> {
+export class ArticleTable extends React.Component<Props, States> {
     list: Function;
     setInitData: Function;
     toggleModal: Function;
@@ -32,7 +32,6 @@ export class CategoryTable extends React.Component<Props, States> {
     handleCheck: Function;
     handleRemove: Function;
     handleSearch: Function;
-    typeList: Array<Object>;
 
     filterTimeout: ?TimeoutID = null;
     nextUrl: ?string;
@@ -45,11 +44,6 @@ export class CategoryTable extends React.Component<Props, States> {
         mainFormData: {},
         mainFormErr: {},
     };
-
-    typeList = [
-        {value: 'article', label: 'Article'},
-        {value: 'banner', label: 'Banner'},
-    ];
 
     constructor(props: Props) {
         super(props);
@@ -66,16 +60,7 @@ export class CategoryTable extends React.Component<Props, States> {
     }
 
     componentDidMount() {
-        const {type} = this.props.match.params;
-        this.list({type}, null, true);
-    }
-
-    componentDidUpdate(prevProps: Props, prevState: States) {
-        const {type} = this.props.match.params;
-        if (prevProps.match.params.type != type) {
-            this.list({type}, null, true);
-        }
-        return null;
+        this.list();
     }
 
     setInitData(initData: Object) {
@@ -91,18 +76,17 @@ export class CategoryTable extends React.Component<Props, States> {
         });
     }
 
-    async list(outerParams: Object = {}, url: ?string = null, isQueryString: boolean = false) {
-        let params = {};
+    async list(outerParams: Object = {}, url: ?string = null) {
+        let params = {
+            category: this.props.match.params.category_id
+        };
         let result = {};
 
         if (!Tools.emptyObj(outerParams)) {
             params = {...params, ...outerParams};
         }
 
-        result = await Tools.apiCall(
-            (url ? url : apiUrls.crud) + (isQueryString ? '?' + Tools.urlDataEncode(params) : ''),
-            'GET',
-            isQueryString ? {} : params);
+        result = await Tools.apiCall(url ? url : apiUrls.crud, 'GET', params);
         if (result.success) {
             this.setInitData(result.data);
             return result;
@@ -140,7 +124,8 @@ export class CategoryTable extends React.Component<Props, States> {
     async handleSubmit(event: Object): Promise<boolean> {
         event.preventDefault();
         let error: ?Object = null;
-        const params = Tools.formDataToObj(new FormData(event.target), ['single']);
+        const params = Tools.formDataToObj(new FormData(event.target));
+        params.category = this.props.match.params.category_id;
         if (!params.id) {
             error = await this.handleAdd(params);
         } else {
@@ -158,7 +143,7 @@ export class CategoryTable extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {title: string, type: string, single: boolean}) {
+    async handleAdd(params: {category: number, title: string, description: ?string, image: Object}) {
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
@@ -167,7 +152,14 @@ export class CategoryTable extends React.Component<Props, States> {
         return result.data;
     }
 
-    async handleEdit(params: {id: number, title: string, type: string, single: boolean, checked: boolean}) {
+    async handleEdit(params: {
+        id: number,
+        category: number,
+        title: string,
+        description: ?string,
+        image: Object,
+        checked: boolean,
+    }) {
         const id = String(params.id);
         const result = await Tools.apiCall(apiUrls.crud + id, 'PUT', params);
         if (result.success) {
@@ -244,7 +236,7 @@ export class CategoryTable extends React.Component<Props, States> {
     render() {
         if (!this.state.dataLoaded) return <LoadingLabel />;
         const list = this.state.mainList;
-        const { type } = this.props.match.params;
+        const categoryId = this.props.match.params.category_id;
         return (
             <div>
                 <SearchInput onSearch={this.handleSearch} />
@@ -258,8 +250,7 @@ export class CategoryTable extends React.Component<Props, States> {
                                 />
                             </th>
                             <th scope="col">Title</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Single</th>
+                            <th scope="col">Category</th>
                             <th scope="col" style={{padding: 8}} className="row80">
                                 <button
                                     className="btn btn-primary btn-sm btn-block add-button"
@@ -302,25 +293,23 @@ export class CategoryTable extends React.Component<Props, States> {
                         </tr>
                     </tfoot>
                 </table>
-                <CategoryModal
+                <ArticleModal
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
                     errorMessages={this.state.mainFormErr}
                     handleClose={() => this.setState({mainModal: false})}
                     handleSubmit={this.handleSubmit}
-                    typeList={!type ? this.typeList : this.typeList.filter(item => item.value === type)}
                 />
             </div>
         );
     }
 }
-export default withRouter(CategoryTable);
+export default withRouter(ArticleTable);
 
 type DataType = {
     id: number,
+    category_title: string,
     title: string,
-    type: string,
-    single: boolean,
     checked: ?boolean,
 };
 type RowPropTypes = {
@@ -343,15 +332,8 @@ export class Row extends React.Component<RowPropTypes> {
                         onChange={event => this.props.onCheck(data, event)}
                     />
                 </th>
-                <td className="title">
-                    <Link to={`/${data.type}/${data.id}`}>
-                        <span>{data.title}</span>
-                    </Link>
-                </td>
-                <td className="type">{data.type}</td>
-                <td className="single">
-                    {data.single ? <span className="oi oi-check green" /> : <span className="oi oi-x red" />}
-                </td>
+                <td className="title">{data.title}</td>
+                <td className="category_id">{data.category_title}</td>
                 <td className="center">
                     <a onClick={() => this.props.toggleModal('mainModal', data.id)}>
                         <span className="editBtn oi oi-pencil text-info pointer"/>

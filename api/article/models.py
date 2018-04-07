@@ -8,7 +8,7 @@ from category.models import Category
 def image_destination(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('banner', filename)
+    return os.path.join('article', filename)
 
 def remove_file(path):
     if os.path.isfile(path):
@@ -18,12 +18,13 @@ def remove_file(path):
             os.remove(thumbnail)
 
 # Create your models here.
-class Banner(models.Model):
-    category = models.ForeignKey(Category, related_name="banners", on_delete=models.CASCADE)
+class Article(models.Model):
+    category = models.ForeignKey(Category, related_name="articles", on_delete=models.CASCADE)
     uid = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_destination)
+    content = models.TextField(blank=True)
 
     def save(self):
 
@@ -32,10 +33,10 @@ class Banner(models.Model):
 
         if not self._state.adding and self.image:
             # Update: remove exist image
-            image = Banner.objects.get(pk=self.pk).image
+            image = Article.objects.get(pk=self.pk).image
             remove_file(image.path)
 
-        super(Banner, self).save()
+        super(Article, self).save()
         width = 1200;
         thumbnailWidth = 300
         Tools.scaleImage(width, self.image.path)
@@ -43,12 +44,12 @@ class Banner(models.Model):
 
     def delete(self, *args, **kwargs):
         remove_file(self.image.path)
-        super(Banner, self).delete(*args,**kwargs)
+        super(Article, self).delete(*args,**kwargs)
 
     class Meta:
-        db_table = "banners"
+        db_table = "articles"
         ordering = ['-id']
         permissions = (
-            ("view_banner_list", "Can view banner list"),
-            ("view_banner_detail", "Can view banner detail"),
+            ("view_article_list", "Can view article list"),
+            ("view_article_detail", "Can view article detail"),
         )

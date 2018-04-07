@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'group',
     'category',
     'banner',
+    'article',
 ]
 
 MIDDLEWARE = [
