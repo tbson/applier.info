@@ -1737,6 +1737,10 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+codemirror@^5.26.0:
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.36.0.tgz#1172ad9dc298056c06e0b34e5ccd23825ca15b40"
+
 collection-visit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/collection-visit/-/collection-visit-1.0.0.tgz#4bc0373c164bc3291b4d368c829cf1a80a59dca0"
@@ -4362,6 +4366,10 @@ jest@^22.4.3:
     import-local "^1.0.0"
     jest-cli "^22.4.3"
 
+jquery@^3.0.0:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
+
 js-base64@^2.1.9:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.3.tgz#2e545ec2b0f2957f41356510205214e98fad6582"
@@ -5500,6 +5508,10 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
+popper.js@^1.12.9:
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.3.tgz#1438f98d046acf7b4d78cd502bf418ac64d4f095"
+
 portfinder@^1.0.9:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"
@@ -6063,6 +6075,14 @@ react-select@^1.2.1:
     classnames "^2.2.4"
     prop-types "^15.5.8"
     react-input-autosize "^2.1.2"
+
+react-summernote@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-summernote/-/react-summernote-2.0.0.tgz#075bf882fcc6b77b9ab9d50099addbcbb229ab7a"
+  dependencies:
+    codemirror "^5.26.0"
+    prop-types "^15.5.10"
+    summernote "^0.8.3"
 
 react-test-renderer@^16.0.0-0:
   version "16.3.0"
@@ -6979,6 +6999,10 @@ stylus@0.54.5:
     mkdirp "0.5.x"
     sax "0.5.x"
     source-map "0.1.x"
+
+summernote@^0.8.3:
+  version "0.8.10"
+  resolved "https://registry.yarnpkg.com/summernote/-/summernote-0.8.10.tgz#21a5d7f18a3b07500b58b60d5907417a54897520"
 
 supports-color@^2.0.0:
   version "2.0.0"
