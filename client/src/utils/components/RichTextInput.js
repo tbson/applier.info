@@ -44,22 +44,26 @@ class RichTextInput extends React.Component<Props, States> {
         }
         const ReactSummernote = this.state.ReactSummernote.default;
         return (
-            <ReactSummernote
-                value={this.state.value}
-                options={{
-                    maxHeight: 300,
-                    dialogsInBody: true,
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview']],
-                    ],
-                }}
-            />
+            <div>
+                <input type="hidden" name={this.props.name} defaultValue={this.state.value} />
+                <ReactSummernote
+                    value={this.state.value}
+                    options={{
+                        maxHeight: 300,
+                        dialogsInBody: true,
+                        toolbar: [
+                            ['style', ['style']],
+                            ['font', ['bold', 'underline', 'clear']],
+                            ['fontname', ['fontname']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['table', ['table']],
+                            ['insert', ['link', 'picture', 'video']],
+                            ['view', ['fullscreen', 'codeview']],
+                        ],
+                    }}
+                    onChange={value => this.setState({value})}
+                />
+            </div>
         );
     }
 }

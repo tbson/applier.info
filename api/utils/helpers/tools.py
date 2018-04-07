@@ -32,34 +32,40 @@ class Tools():
 
     @staticmethod
     def scaleImage (width, path):
-        height = int(width / 1.618)
+        try:
+            height = int(width / 1.618)
 
-        image = Image.open(path)
-        (originalWidth, originalHeight) = image.size
+            image = Image.open(path)
+            (originalWidth, originalHeight) = image.size
 
-        widthFactor = width / originalWidth
-        heightFactor = height / originalHeight
+            widthFactor = width / originalWidth
+            heightFactor = height / originalHeight
 
-        factor = widthFactor
-        if heightFactor > widthFactor:
-            factor = heightFactor
+            factor = widthFactor
+            if heightFactor > widthFactor:
+                factor = heightFactor
 
-        size = (int(originalWidth * factor), int(originalHeight * factor))
+            size = (int(originalWidth * factor), int(originalHeight * factor))
 
-        # Resize to 1 sise fit, 1 side larger than golden rectangle
-        image = image.resize(size, Image.ANTIALIAS)
-        image.save(path)
+            # Resize to 1 sise fit, 1 side larger than golden rectangle
+            image = image.resize(size, Image.ANTIALIAS)
+            image.save(path)
 
-        # Crop to golden ratio
-        image = image.crop((0, 0, width, height));
-        image.save(path)
+            # Crop to golden ratio
+            image = image.crop((0, 0, width, height));
+            image.save(path)
+        except:
+            pass
 
     @staticmethod
     def createThumbnail (width, path):
-        size = (width, width)
-        image = Image.open(path)
-        image.thumbnail(size, Image.ANTIALIAS)
-        image.save(Tools.getThumbnail(path))
+        try:
+            size = (width, width)
+            image = Image.open(path)
+            image.thumbnail(size, Image.ANTIALIAS)
+            image.save(Tools.getThumbnail(path))
+        except:
+            pass
 
     @staticmethod
     def sendEmail (subject, body, to):

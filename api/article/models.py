@@ -32,9 +32,10 @@ class Article(models.Model):
             return
 
         if not self._state.adding and self.image:
-            # Update: remove exist image
-            image = Article.objects.get(pk=self.pk).image
-            remove_file(image.path)
+            item = Article.objects.get(pk=self.pk)
+            if item.image != self.image:
+                # Update: remove exist image
+                remove_file(item.image.path)
 
         super(Article, self).save()
         width = 1200;
