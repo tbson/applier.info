@@ -5,6 +5,7 @@ import RichTextInput from 'src/utils/components/RichTextInput';
 type Props = {
     handleSubmit: Function,
     children?: React.Node,
+    uuid: string,
     formId: string,
     submitTitle: string,
     defaultValues: {
@@ -79,7 +80,7 @@ export default class ArticleForm extends React.Component<Props, States> {
                         autoFocus
                         placeholder="Title..."
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('title')}</div>
                 </div>
 
                 <div className="form-group">
@@ -92,16 +93,18 @@ export default class ArticleForm extends React.Component<Props, States> {
                         className={this.setClassName('description')}
                         placeholder="Description..."
                     ></textarea>
-                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('description')}</div>
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="content">Content</label>
                     <RichTextInput
+                        parent_uuid={this.props.uuid}
+                        parent_table="articles"
                         defaultValue={this.props.defaultValues.content}
                         name="content"
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('content')}</div>
                 </div>
 
                 <div className="form-group">
@@ -114,7 +117,7 @@ export default class ArticleForm extends React.Component<Props, States> {
                         className={this.setClassName('image')}
                         placeholder="Image..."
                     />
-                    <div className="invalid-feedback">{this.setErrorMessage('uid')}</div>
+                    <div className="invalid-feedback">{this.setErrorMessage('image')}</div>
                 </div>
 
                 <div className="right">

@@ -68,6 +68,15 @@ class Tools():
             pass
 
     @staticmethod
+    def removeFile(path, removeThumb=False):
+        if os.path.isfile(path):
+            os.remove(path)
+            if removeThumb is True:
+                thumbnail = Tools.getThumbnail(path)
+                if os.path.isfile(thumbnail):
+                    os.remove(thumbnail)
+
+    @staticmethod
     def sendEmail (subject, body, to):
         try:
             if settings.EMAIL_ENABLE is not True:

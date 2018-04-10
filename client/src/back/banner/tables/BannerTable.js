@@ -37,6 +37,8 @@ export class BannerTable extends React.Component<Props, States> {
     nextUrl: ?string;
     prevUrl: ?string;
 
+    uuid: string;
+
     state = {
         dataLoaded: false,
         mainModal: false,
@@ -111,11 +113,13 @@ export class BannerTable extends React.Component<Props, States> {
                         if (result.success) {
                             state.mainFormData = result.data;
                         }
+                        this.uuid = result.data.uuid;
                         this.setState(state);
                     });
                     return state;
             }
         } else {
+            this.uuid = Tools.uuid4();
             this.setState(state);
         }
         return state;
@@ -143,7 +147,8 @@ export class BannerTable extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {category: number, title: string, description: ?string, image: Object}) {
+    async handleAdd(params: {uuid: string, category: number, title: string, description: ?string, image: Object}) {
+        params.uuid = this.uuid;
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
@@ -294,6 +299,7 @@ export class BannerTable extends React.Component<Props, States> {
                     </tfoot>
                 </table>
                 <BannerModal
+                    uuid={this.uuid}
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
                     errorMessages={this.state.mainFormErr}

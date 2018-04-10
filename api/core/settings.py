@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'category',
     'banner',
     'article',
+    'attach',
 ]
 
 MIDDLEWARE = [

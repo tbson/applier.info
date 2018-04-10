@@ -32,5 +32,9 @@ urlpatterns = [
         'article/',
         include('article.urls', namespace='article'),
     ),
+    path(
+        'attach/',
+        include('attach.urls', namespace='attach'),
+    ),
 ]
 

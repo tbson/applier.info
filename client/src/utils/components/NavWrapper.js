@@ -100,13 +100,23 @@ class App extends React.Component<Props, State> {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink exact to="/category/banner">
+                            <NavLink
+                                exact
+                                to="/category/banner"
+                                className={
+                                    Tools.matchPrefix('/banners/', this.props.location.pathname) ? ' active' : ''
+                                }>
                                 <span className="oi oi-image" />&nbsp;&nbsp;
                                 <span>Banner</span>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink exact to="/category/article">
+                            <NavLink
+                                exact
+                                to="/category/article"
+                                className={
+                                    Tools.matchPrefix('/articles/', this.props.location.pathname) ? ' active' : ''
+                                }>
                                 <span className="oi oi-document" />&nbsp;&nbsp;
                                 <span>Article</span>
                             </NavLink>
@@ -121,7 +131,10 @@ class App extends React.Component<Props, State> {
                         </span>
                         <span>Tran Bac Son</span>
                         &nbsp;&nbsp;
-                        <span className="oi oi-account-logout pointer" onClick={() => Tools.logout(this.props.history)} />
+                        <span
+                            className="oi oi-account-logout pointer"
+                            onClick={() => Tools.logout(this.props.history)}
+                        />
                     </div>
 
                     <div className="container-fluid">{this.props.children}</div>

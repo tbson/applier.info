@@ -87,3 +87,7 @@ input:invalid {
     min-width: 80px;
     width: 80px;
 }
+
+.md-block-image-inner-container img {
+    width: 100%;
+}

@@ -24,6 +24,7 @@ import Permission from './permission/Permission';
 import Category from './category/Category';
 import Banner from './banner/Banner';
 import Article from './article/Article';
+import ArticleEdit from './article/ArticleEdit';
 
 
 type Props = {};
@@ -43,8 +44,9 @@ class App extends React.Component<Props> {
                     <Route path="/group" component={Group} />
                     <Route path="/permission" component={Permission} />
                     <Route path="/category/:type?" component={Category} />
-                    <Route path="/banner/:category_id" component={Banner} />
-                    <Route path="/Article/:category_id" component={Article} />
+                    <Route path="/banners/:category_id" component={Banner} />
+                    <Route path="/articles/:category_id" component={Article} />
+                    <Route path="/article/:category_id/:id?" component={ArticleEdit} />
                 </Switch>
             </div>
         );

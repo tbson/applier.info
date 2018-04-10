@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 import CustomModal from 'src/utils/components/CustomModal';
 import {apiUrls} from '../_data';
 import ArticleForm from '../forms/ArticleForm';
@@ -9,7 +9,7 @@ import ArticleModal from '../forms/ArticleModal';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
 import {Pagination, SearchInput} from 'src/utils/components/TableUtils';
 import Tools from 'src/utils/helpers/Tools';
-
+console.log(apiUrls);
 type Props = {
     match: Object,
 };
@@ -36,6 +36,8 @@ export class ArticleTable extends React.Component<Props, States> {
     filterTimeout: ?TimeoutID = null;
     nextUrl: ?string;
     prevUrl: ?string;
+
+    uuid: string;
 
     state = {
         dataLoaded: false,
@@ -110,12 +112,14 @@ export class ArticleTable extends React.Component<Props, States> {
                     Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                         if (result.success) {
                             state.mainFormData = result.data;
+                            this.uuid = result.data.uuid;
                         }
                         this.setState(state);
                     });
                     return state;
             }
         } else {
+            this.uuid = Tools.uuid4();
             this.setState(state);
         }
         return state;
@@ -252,11 +256,11 @@ export class ArticleTable extends React.Component<Props, States> {
                             <th scope="col">Title</th>
                             <th scope="col">Category</th>
                             <th scope="col" style={{padding: 8}} className="row80">
-                                <button
+                                <Link
                                     className="btn btn-primary btn-sm btn-block add-button"
-                                    onClick={() => this.toggleModal('mainModal')}>
+                                    to={`/article/${categoryId}/`}>
                                     <span className="oi oi-plus" />&nbsp; Add
-                                </button>
+                                </Link>
                             </th>
                         </tr>
                     </thead>
@@ -294,6 +298,7 @@ export class ArticleTable extends React.Component<Props, States> {
                     </tfoot>
                 </table>
                 <ArticleModal
+                    uuid={this.uuid}
                     open={this.state.mainModal}
                     defaultValues={this.state.mainFormData}
                     errorMessages={this.state.mainFormErr}

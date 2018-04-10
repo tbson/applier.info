@@ -10,15 +10,7 @@ class ArticleBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Article
-        fields = (
-            'id',
-            'category',
-            'category_title',
-            'title',
-            'description',
-            'image',
-            'content',
-        )
+        exclude = ()
         read_only_fields = ('id',)
 
     category_title = SerializerMethodField()
@@ -28,6 +20,11 @@ class ArticleBaseSerializer(ModelSerializer):
 
 
 class ArticleCreateSerializer(ArticleBaseSerializer):
+
+    class Meta(ArticleBaseSerializer.Meta):
+        extra_kwargs = {
+            'uid': {'required': False},
+        }
 
     def create(self, validated_data):
         category = validated_data['category']
@@ -43,5 +40,9 @@ class ArticleCreateSerializer(ArticleBaseSerializer):
 class ArticleUpdateSerializer(ArticleBaseSerializer):
 
     class Meta(ArticleBaseSerializer.Meta):
-        extra_kwargs = {'image': {'required': False}}
+        extra_kwargs = {
+            'uid': {'required': False},
+            'image': {'required': False},
+        }
+        exclude = ('uuid',)
 

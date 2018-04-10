@@ -127,7 +127,7 @@ export default class Tools {
         return PROTOCOL + DOMAIN + API_PREFIX;
     }
 
-    static getApiUrls(rawApiUrls: Object): Object {
+    static getApiUrls(rawApiUrls: Array<Object>): Object {
         let result = {};
         const API_BASE_URL = this.getApiBaseUrl();
         Object.entries(rawApiUrls).forEach(([index, apiUrl]) => {
@@ -138,8 +138,7 @@ export default class Tools {
                     // $FlowFixMe: Still have no idea why it happen
                     parseInt(index) === 0 ? key : camelCase(apiUrl.controller) + this.cap(key)
                     // $FlowFixMe: Still have no idea why it happen
-                ] =
-                    API_BASE_URL + kebabCase(apiUrl.controller) + '/' + url + (url ? '/' : '');
+                ] = API_BASE_URL + kebabCase(apiUrl.controller) + '/' + url + (url ? '/' : '');
             });
         });
         return result;
@@ -337,5 +336,35 @@ export default class Tools {
     static getCheckedId(listItem: Array<Object>): string {
         const result = listItem.filter(item => !!item.checked).map(item => item.id);
         return result.join(',');
+    }
+
+    static matchPrefix(prefix: string, url: string): boolean {
+        if (!prefix || !url) {
+            return false;
+        }
+        if (url.indexOf(prefix) === 0) {
+            return true;
+        }
+        return false;
+    }
+
+    static activeWhen(prefix: string): string {
+        const url = window.location.href;
+        console.log(url);
+        if (!prefix || !url) {
+            return '';
+        }
+        if (url.indexOf(prefix) === 0) {
+            return 'active';
+        }
+        return '';
+    }
+
+    static uuid4(): string {
+        let cryptoObj = window.crypto || window.msCrypto;
+        // $FlowFixMe: allow bitwise operations
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ (cryptoObj.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16),
+        );
     }
 }

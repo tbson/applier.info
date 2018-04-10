@@ -10,14 +10,7 @@ class BannerBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Banner
-        fields = (
-            'id',
-            'category',
-            'category_title',
-            'title',
-            'description',
-            'image',
-        )
+        exclude = ()
         read_only_fields = ('id',)
 
     category_title = SerializerMethodField()
@@ -27,6 +20,11 @@ class BannerBaseSerializer(ModelSerializer):
 
 
 class BannerCreateSerializer(BannerBaseSerializer):
+
+    class Meta(BannerBaseSerializer.Meta):
+        extra_kwargs = {
+            'uid': {'required': False},
+        }
 
     def create(self, validated_data):
         category = validated_data['category']
@@ -42,5 +40,9 @@ class BannerCreateSerializer(BannerBaseSerializer):
 class BannerUpdateSerializer(BannerBaseSerializer):
 
     class Meta(BannerBaseSerializer.Meta):
-        extra_kwargs = {'image': {'required': False}}
+        extra_kwargs = {
+            'uid': {'required': False},
+            'image': {'required': False},
+        }
+        exclude = ('uuid',)
 

@@ -344,7 +344,7 @@ export class Row extends React.Component<RowPropTypes> {
                     />
                 </th>
                 <td className="title">
-                    <Link to={`/${data.type}/${data.id}`}>
+                    <Link to={`/${data.type}s/${data.id}`}>
                         <span>{data.title}</span>
                     </Link>
                 </td>
