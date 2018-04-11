@@ -19,7 +19,7 @@ class Banner(models.Model):
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_destination)
 
-    def save(self):
+    def save(self, *args, **kwargs):
 
         if not self.id and not self.image:
             return
@@ -30,7 +30,7 @@ class Banner(models.Model):
                 # Update: remove exist image
                 Tools.removeFile(item.image.path, True)
 
-        super(Banner, self).save()
+        super(Banner, self).save(*args, **kwargs)
         width = 1200;
         thumbnailWidth = 300
         Tools.scaleImage(width, self.image.path)

@@ -2,17 +2,21 @@
 import * as React from 'react';
 // $FlowFixMe: do not complain about importing node_modules
 import {withRouter} from 'react-router-dom';
-import {actions, apiUrls} from './_data';
+import {apiUrls} from './_data';
 import NavWrapper from 'src/utils/components/NavWrapper';
+import LoadingLabel from 'src/utils/components/LoadingLabel';
 import ArticleForm from './forms/ArticleForm';
 import Tools from 'src/utils/helpers/Tools';
 
 type Props = {
+    history: Object,
     match: Object,
 };
 type States = {
+    dataLoaded: boolean,
     mainFormData: Object,
     mainFormErr: Object,
+    uuid: string,
 };
 
 class ArticleEdit extends React.Component<Props, States> {
@@ -20,11 +24,11 @@ class ArticleEdit extends React.Component<Props, States> {
     handleAdd: Function;
     handleEdit: Function;
 
-    uuid: string;
-
     state = {
+        dataLoaded: false,
         mainFormData: {},
         mainFormErr: {},
+        uuid: Tools.uuid4(),
     };
 
     constructor(props: Props) {
@@ -32,6 +36,23 @@ class ArticleEdit extends React.Component<Props, States> {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    componentDidMount () {
+        const id = this.props.match.params.id;
+        if (!id) {
+            this.setState({dataLoaded: true})
+        } else {
+            Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
+                if (result.success) {
+                    console.log(result.data);
+                    this.setState({
+                        mainFormData: result.data,
+                        dataLoaded: true,
+                    });
+                }
+            });
+        }
     }
 
     async handleSubmit(event: Object): Promise<boolean> {
@@ -56,10 +77,12 @@ class ArticleEdit extends React.Component<Props, States> {
         }
     }
 
-    async handleAdd(params: {category: number, title: string, description: ?string, image: Object}) {
+    async handleAdd(params: {category: number, uuid: string, title: string, description: ?string, image: Object}) {
+        params.uuid = this.state.uuid;
         const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
         if (result.success) {
             // Go back
+            Tools.navigateTo(this.props.history, '/articles', [this.props.match.params.category_id]);
             return null;
         }
         return result.data;
@@ -77,23 +100,30 @@ class ArticleEdit extends React.Component<Props, States> {
         const result = await Tools.apiCall(apiUrls.crud + id, 'PUT', params);
         if (result.success) {
             // Go back
+            Tools.navigateTo(this.props.history, '/articles', [this.props.match.params.category_id]);
             return null;
         }
         return result.data;
     }
 
     render() {
-        this.uuid = Tools.uuid4();
+        if (!this.state.dataLoaded) return (
+            <NavWrapper>
+                <LoadingLabel />
+            </NavWrapper>
+        );
         return (
             <NavWrapper>
                 <ArticleForm
-                    uuid={this.uuid}
+                    uuid={this.state.uuid}
                     formId="articleForm"
                     submitTitle="Update"
                     defaultValues={this.state.mainFormData}
                     errorMessages={this.state.mainFormErr}
                     handleSubmit={this.handleSubmit}>
-                    <button type="button" onClick={()=>{}} className="btn btn-warning">
+                    <button type="button" onClick={()=>{
+                        Tools.navigateTo(this.props.history, '/articles', [this.props.match.params.category_id]);
+                    }} className="btn btn-warning">
                         <span className="oi oi-x" />&nbsp; Cancel
                     </button>
                 </ArticleForm>

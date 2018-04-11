@@ -23,18 +23,20 @@ class Article(models.Model):
     image = models.ImageField(upload_to=image_destination)
     content = models.TextField(blank=True)
 
-    def save(self):
+    def save(self, *args, **kwargs):
 
         if not self.id and not self.image:
             return
 
+        item = Article.objects.get(pk=self.pk)
+        if self.content == "":
+            self.content = item.content
         if not self._state.adding and self.image:
-            item = Article.objects.get(pk=self.pk)
             if item.image != self.image:
                 # Update: remove exist image
                 Tools.removeFile(item.image.path, True)
 
-        super(Article, self).save()
+        super(Article, self).save(*args, **kwargs)
         width = 1200;
         thumbnailWidth = 300
         Tools.scaleImage(width, self.image.path)

@@ -24,10 +24,6 @@ type States = {
 export class ArticleTable extends React.Component<Props, States> {
     list: Function;
     setInitData: Function;
-    toggleModal: Function;
-    handleSubmit: Function;
-    handleAdd: Function;
-    handleEdit: Function;
     handleToggleCheckAll: Function;
     handleCheck: Function;
     handleRemove: Function;
@@ -49,12 +45,8 @@ export class ArticleTable extends React.Component<Props, States> {
 
     constructor(props: Props) {
         super(props);
-        this.toggleModal = this.toggleModal.bind(this);
         this.list = this.list.bind(this);
         this.setInitData = this.setInitData.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleAdd = this.handleAdd.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
         this.handleToggleCheckAll = this.handleToggleCheckAll.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
@@ -94,86 +86,6 @@ export class ArticleTable extends React.Component<Props, States> {
             return result;
         }
         return result;
-    }
-
-    toggleModal(modalName: string, id: ?number = null): Object {
-        // If modalName not defined -> exit here
-        if (typeof this.state[modalName] == 'undefined') return {};
-
-        const state = {
-            [modalName]: !this.state[modalName],
-            mainFormData: {},
-            mainFormErr: {},
-        };
-
-        if (id) {
-            switch (modalName) {
-                case 'mainModal':
-                    Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
-                        if (result.success) {
-                            state.mainFormData = result.data;
-                            this.uuid = result.data.uuid;
-                        }
-                        this.setState(state);
-                    });
-                    return state;
-            }
-        } else {
-            this.uuid = Tools.uuid4();
-            this.setState(state);
-        }
-        return state;
-    }
-
-    async handleSubmit(event: Object): Promise<boolean> {
-        event.preventDefault();
-        let error: ?Object = null;
-        const params = Tools.formDataToObj(new FormData(event.target));
-        params.category = this.props.match.params.category_id;
-        if (!params.id) {
-            error = await this.handleAdd(params);
-        } else {
-            error = await this.handleEdit(params);
-        }
-
-        if (!error) {
-            // No error -> close current modal
-            this.toggleModal('mainModal');
-            return true;
-        } else {
-            // Have error -> update err object
-            this.setState({mainFormErr: error});
-            return false;
-        }
-    }
-
-    async handleAdd(params: {category: number, title: string, description: ?string, image: Object}) {
-        const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
-        if (result.success) {
-            this.setState({mainList: [{...result.data, checked: false}, ...this.state.mainList]});
-            return null;
-        }
-        return result.data;
-    }
-
-    async handleEdit(params: {
-        id: number,
-        category: number,
-        title: string,
-        description: ?string,
-        image: Object,
-        checked: boolean,
-    }) {
-        const id = String(params.id);
-        const result = await Tools.apiCall(apiUrls.crud + id, 'PUT', params);
-        if (result.success) {
-            const index = this.state.mainList.findIndex(item => item.id === parseInt(id));
-            const {checked} = this.state.mainList[index];
-            this.state.mainList[index] = {...result.data, checked};
-            this.setState({mainList: this.state.mainList});
-            return null;
-        }
-        return result.data;
     }
 
     handleToggleCheckAll() {
@@ -269,10 +181,10 @@ export class ArticleTable extends React.Component<Props, States> {
                         {list.map((data, key) => (
                             <Row
                                 className="table-row"
+                                match={this.props.match}
                                 data={data}
                                 key={key}
                                 _key={key}
-                                toggleModal={this.toggleModal}
                                 handleRemove={this.handleRemove}
                                 onCheck={this.handleCheck}
                             />
@@ -297,14 +209,6 @@ export class ArticleTable extends React.Component<Props, States> {
                         </tr>
                     </tfoot>
                 </table>
-                <ArticleModal
-                    uuid={this.uuid}
-                    open={this.state.mainModal}
-                    defaultValues={this.state.mainFormData}
-                    errorMessages={this.state.mainFormErr}
-                    handleClose={() => this.setState({mainModal: false})}
-                    handleSubmit={this.handleSubmit}
-                />
             </div>
         );
     }
@@ -318,15 +222,16 @@ type DataType = {
     checked: ?boolean,
 };
 type RowPropTypes = {
+    match: Object,
     data: DataType,
     _key: number,
-    toggleModal: Function,
     handleRemove: Function,
     onCheck: Function,
 };
 export class Row extends React.Component<RowPropTypes> {
     render() {
         const data = this.props.data;
+        const categoryId = this.props.match.params.category_id;
         return (
             <tr key={this.props._key}>
                 <th className="row25">
@@ -340,9 +245,9 @@ export class Row extends React.Component<RowPropTypes> {
                 <td className="title">{data.title}</td>
                 <td className="category_id">{data.category_title}</td>
                 <td className="center">
-                    <a onClick={() => this.props.toggleModal('mainModal', data.id)}>
+                    <Link to={`/article/${categoryId}/${data.id}`}>
                         <span className="editBtn oi oi-pencil text-info pointer"/>
-                    </a>
+                    </Link>
                     <span>&nbsp;&nbsp;&nbsp;</span>
                     <a onClick={() => this.props.handleRemove(String(data.id))}>
                         <span
@@ -354,3 +259,4 @@ export class Row extends React.Component<RowPropTypes> {
         );
     }
 }
+
