@@ -3,19 +3,26 @@ import os
 from PIL import Image
 from django.db import models
 from utils.helpers.tools import Tools
-from article.models import Article
+
 
 def file_destination(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('attach', filename)
 
+class AttachManager(models.Manager):
+    def removeByUUID(self, parent_uuid):
+        listItem = self.filter(parent_uuid=parent_uuid)
+        for item in listItem:
+            item.delete()
+
 # Create your models here.
 class Attach(models.Model):
     parent_uuid = models.CharField(max_length=36)
-    parent_table = models.CharField(max_length=64)
     title = models.CharField(max_length=256)
     attachment = models.FileField(upload_to=file_destination)
+
+    objects = AttachManager()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.attachment:
@@ -31,8 +38,8 @@ class Attach(models.Model):
         super(Attach, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        remove_file(self.attachment.path)
-        super(Attach, self).delete(*args,**kwargs)
+        Tools.removeFile(self.attachment.path)
+        super(Attach, self).delete(*args, **kwargs)
 
     class Meta:
         db_table = "attaches"

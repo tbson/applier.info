@@ -100,7 +100,6 @@ export default class ArticleForm extends React.Component<Props, States> {
                     <label htmlFor="content">Content</label>
                     <RichTextInput
                         parent_uuid={this.props.uuid}
-                        parent_table="articles"
                         defaultValue={this.props.defaultValues.content}
                         name="content"
                     />

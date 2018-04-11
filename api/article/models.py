@@ -5,6 +5,7 @@ from django.db import models
 from utils.helpers.tools import Tools
 from category.models import Category
 from banner.models import Banner
+from attach.models import Attach
 
 def image_destination(instance, filename):
     ext = filename.split('.')[-1]
@@ -28,13 +29,14 @@ class Article(models.Model):
         if not self.id and not self.image:
             return
 
-        item = Article.objects.get(pk=self.pk)
-        if self.content == "":
-            self.content = item.content
-        if not self._state.adding and self.image:
-            if item.image != self.image:
-                # Update: remove exist image
-                Tools.removeFile(item.image.path, True)
+        if not self._state.adding:
+            item = Article.objects.get(pk=self.pk)
+            if self.content == "":
+                self.content = item.content
+            if self.image:
+                if item.image != self.image:
+                    # Update: remove exist image
+                    Tools.removeFile(item.image.path, True)
 
         super(Article, self).save(*args, **kwargs)
         width = 1200;
@@ -43,8 +45,9 @@ class Article(models.Model):
         Tools.createThumbnail(thumbnailWidth, self.image.path)
 
     def delete(self, *args, **kwargs):
-        Tools.removeFile(self.image.path)
-        super(Article, self).delete(*args,**kwargs)
+        Attach.objects.removeByUUID(self.uuid)
+        Tools.removeFile(self.image.path, True)
+        super(Article, self).delete(*args, **kwargs)
 
     class Meta:
         db_table = "articles"

@@ -37,7 +37,7 @@ class Banner(models.Model):
         Tools.createThumbnail(thumbnailWidth, self.image.path)
 
     def delete(self, *args, **kwargs):
-        Tools.removeFile(self.image.path)
+        Tools.removeFile(self.image.path, True)
         super(Banner, self).delete(*args,**kwargs)
 
     class Meta:
