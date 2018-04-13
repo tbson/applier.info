@@ -12,18 +12,26 @@ from rest_framework import status
 from .models import Attach
 from .serializers import (
     AttachBaseSerializer,
+    AttachCreateSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.common_classes.base_manage_view import BaseManageView
+from utils.helpers.tools import Tools
 
 
 class ListView(ListAPIView):
+    def get_queryset(self):
+        query = self.request.GET.dict()
+        if 'richtext_image' in query:
+            query['richtext_image'] = Tools.stringToBool(query['richtext_image'])
+        return Attach.objects.filter(**query)
+
     permissions = ['view_attach_list']
     permission_classes = [CustomPermission]
-    queryset = Attach.objects.all()
+    queryset = get_queryset
     serializer_class = AttachBaseSerializer
-    search_fields = ('uid', 'value')
-    filter_fields = ('category',)
+    search_fields = ('title',)
+    filter_fields = ('parent_uuid', 'richtext_image',)
 
 
 class DetailView(RetrieveAPIView):
@@ -37,7 +45,7 @@ class CreateView(CreateAPIView):
     permissions = ['add_attach']
     permission_classes = [CustomPermission]
     queryset = Attach.objects.all()
-    serializer_class = AttachBaseSerializer
+    serializer_class = AttachCreateSerializer
 
 
 class DeleteView(DestroyAPIView):

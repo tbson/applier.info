@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ValidationError
 from rest_framework.serializers import SerializerMethodField
-from django.utils.text import slugify
+from utils.helpers.tools import Tools
 from .models import Attach
-from category.models import Category
 
 
 class AttachBaseSerializer(ModelSerializer):
@@ -16,3 +16,13 @@ class AttachBaseSerializer(ModelSerializer):
             'title': {'required': False},
         }
 
+class AttachCreateSerializer(AttachBaseSerializer):
+
+    def create(self, validated_data):
+        print(validated_data)
+        validated_data['filetype'] = Tools.checkMime(validated_data['attachment'])
+        if validated_data['filetype'] == '':
+            raise ValidationError({'detail': 'File type not supported'})
+        attach = Attach(**validated_data)
+        attach.save()
+        return attach

@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+import magic
 from PIL import Image
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -19,6 +20,13 @@ class Tools():
         if settings.ENV == 'LOCAL':
             print(result)
             return result
+
+    @staticmethod
+    def stringToBool(input):
+        input = input.lower().strip()
+        if input == '' or input == 'false':
+            return False
+        return true
 
     @staticmethod
     def getUuid ():
@@ -75,6 +83,62 @@ class Tools():
                 thumbnail = Tools.getThumbnail(path)
                 if os.path.isfile(thumbnail):
                     os.remove(thumbnail)
+
+    @staticmethod
+    def checkMime (fileBuffer):
+        mimeType = magic.from_buffer(fileBuffer.read(), mime=True)
+        mimeSource = {
+            'image': [
+                'image/gif',
+                'image/jpeg',
+                'image/png',
+                'image/psd',
+                'image/bmp',
+                'image/tiff',
+                'image/tiff',
+                'image/jp2',
+                'image/iff',
+                'image/vnd.wap.wbmp',
+                'image/xbm',
+                'image/vnd.microsoft.icon',
+            ],
+            'pdf': [
+                'application/pdf',
+            ],
+            'text': [
+                'text/plain',
+            ],
+            'document': [
+                'application/msword',
+                'application/octet-stream',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-word.document.macroenabled.12',
+            ],
+            'spreadsheet': [
+                'application/excel',
+                'application/vnd.ms-excel',
+                'application/x-excel',
+                'application/x-msexcel',
+                'application/vnd.ms-excel.sheet.binary.macroenabled.12',
+                'application/vnd.ms-excel.sheet.macroenabled.12',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ],
+            'archive': [
+                'application/x-rar-compressed',
+                'application/x-rar',
+                'application/zip',
+                'application/x-tar',
+                'application/x-7z-compressed',
+                'application/gzip',
+                'application/tar',
+                'application/tar+gzip',
+                'application/x-gzip',
+            ]
+        }
+        for filetype, listMimeType in mimeSource.items():
+            if mimeType in listMimeType:
+                return filetype
+        return ''
 
     @staticmethod
     def sendEmail (subject, body, to):

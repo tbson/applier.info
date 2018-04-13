@@ -1,6 +1,7 @@
 import uuid
 import os
 from PIL import Image
+# from django.db.models.signals import post_save
 from django.db import models
 from utils.helpers.tools import Tools
 
@@ -19,23 +20,28 @@ class AttachManager(models.Manager):
 # Create your models here.
 class Attach(models.Model):
     parent_uuid = models.CharField(max_length=36)
+    richtext_image = models.BooleanField(default=True)
     title = models.CharField(max_length=256)
+    filetype = models.CharField(max_length=32, default='image')
     attachment = models.FileField(upload_to=file_destination)
 
     objects = AttachManager()
 
     def save(self, *args, **kwargs):
-        if not self.id and not self.attachment:
-            return
+
         if not self.title:
             self.title = self.attachment.path.split("/")[-1]
+
         if not self._state.adding and self.attachment:
             item = Attach.objects.get(pk=self.pk)
+            if not self.richtext_image:
+                self.richtext_image = item.richtext_image
             if item.attachment != self.attachment:
                 # Update: remove exist attachment
                 Tools.removeFile(item.attachment.path)
 
         super(Attach, self).save(*args, **kwargs)
+
 
     def delete(self, *args, **kwargs):
         Tools.removeFile(self.attachment.path)
@@ -48,3 +54,11 @@ class Attach(models.Model):
             ("view_attach_list", "Can view attach list"),
             ("view_attach_detail", "Can view attach detail"),
         )
+
+'''
+def after_save(sender, instance, **kwargs):
+    instance.mime = Tools.getMime(instance.attachment.path).split('/')[0]
+    instance.save()
+
+post_save.connect(after_save, sender=Attach)
+'''

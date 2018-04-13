@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import {apiUrls} from './_data';
 import NavWrapper from 'src/utils/components/NavWrapper';
 import LoadingLabel from 'src/utils/components/LoadingLabel';
+import AttachTable from 'src/back/attach/tables/AttachTable';
 import ArticleForm from './forms/ArticleForm';
 import Tools from 'src/utils/helpers/Tools';
 
@@ -45,9 +46,9 @@ class ArticleEdit extends React.Component<Props, States> {
         } else {
             Tools.apiCall(apiUrls.crud + id.toString(), 'GET').then(result => {
                 if (result.success) {
-                    console.log(result.data);
                     this.setState({
                         mainFormData: result.data,
+                        uuid: result.data.uuid,
                         dataLoaded: true,
                     });
                 }
@@ -127,6 +128,8 @@ class ArticleEdit extends React.Component<Props, States> {
                         <span className="oi oi-x" />&nbsp; Cancel
                     </button>
                 </ArticleForm>
+                <hr/>
+                <AttachTable parent_uuid={this.state.uuid}/>
             </NavWrapper>
         );
     }
