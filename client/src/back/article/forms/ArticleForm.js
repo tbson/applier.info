@@ -61,7 +61,13 @@ export default class ArticleForm extends React.Component<Props, States> {
 
     renderPreview () {
         if (!this.props.defaultValues.image) return null;
-        return <img src={this.props.defaultValues.image} width="100%"/>
+        return (
+            <div className="row">
+                <div className="col col-lg-4">
+                    <img src={this.props.defaultValues.image} width="100%"/>
+                </div>
+            </div>
+        );
     }
 
     render() {

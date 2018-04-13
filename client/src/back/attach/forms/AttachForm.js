@@ -64,7 +64,13 @@ export default class AttachForm extends React.Component<Props, States> {
         if (filetype != 'image') return (
             <a href={attachment} target="_blank">{title}</a>
         );
-        return <img src={attachment} width="100%" />;
+        return (
+            <div className="row">
+                <div className="col col-lg-4">
+                    <img src={attachment} width="100%"/>
+                </div>
+            </div>
+        );
     }
 
     render() {
