@@ -97,6 +97,7 @@ class CustomImageSideButton extends ImageSideButton {
             const params = {
                 attachment: file,
                 parent_uuid: this.props.parent_uuid,
+                richtext_image: true,
             };
             const result = await Tools.apiCall(apiUrls.crud, 'POST', params);
             if (result.success) {

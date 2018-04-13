@@ -5,7 +5,7 @@ import RichTextInput from 'src/utils/components/RichTextInput';
 type Props = {
     handleSubmit: Function,
     children?: React.Node,
-    uuid: string,
+    parent_uuid: string,
     formId: string,
     submitTitle: string,
     defaultValues: {
@@ -99,7 +99,7 @@ export default class ArticleForm extends React.Component<Props, States> {
                 <div className="form-group">
                     <label htmlFor="content">Content</label>
                     <RichTextInput
-                        parent_uuid={this.props.uuid}
+                        parent_uuid={this.props.parent_uuid}
                         defaultValue={this.props.defaultValues.content}
                         name="content"
                     />

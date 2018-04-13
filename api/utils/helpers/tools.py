@@ -39,13 +39,15 @@ class Tools():
         return '.'.join(pathArr)
 
     @staticmethod
-    def scaleImage (width, path):
+    def scaleImage (maxWidth, path):
         try:
-            height = int(width / 1.618)
-
             image = Image.open(path)
             (originalWidth, originalHeight) = image.size
+            width = maxWidth
+            if originalWidth < maxWidth:
+                width = originalWidth
 
+            height = int(width / 1.618)
             widthFactor = width / originalWidth
             heightFactor = height / originalHeight
 
@@ -55,9 +57,10 @@ class Tools():
 
             size = (int(originalWidth * factor), int(originalHeight * factor))
 
-            # Resize to 1 sise fit, 1 side larger than golden rectangle
-            image = image.resize(size, Image.ANTIALIAS)
-            image.save(path)
+            if originalWidth > maxWidth:
+                # Resize to 1 sise fit, 1 side larger than golden rectangle
+                image = image.resize(size, Image.ANTIALIAS)
+                image.save(path)
 
             # Crop to golden ratio
             image = image.crop((0, 0, width, height));
@@ -76,10 +79,10 @@ class Tools():
             pass
 
     @staticmethod
-    def removeFile(path, removeThumb=False):
+    def removeFile(path, removeThumbnail=False):
         if os.path.isfile(path):
             os.remove(path)
-            if removeThumb is True:
+            if removeThumbnail is True:
                 thumbnail = Tools.getThumbnail(path)
                 if os.path.isfile(thumbnail):
                     os.remove(thumbnail)

@@ -11,6 +11,8 @@ class Category(models.Model):
     def delete(self, *args, **kwargs):
         for banner in self.banners.all():
             banner.delete()
+        for article in self.articles.all():
+            article.delete()
         super(Category, self).delete(*args,**kwargs)
 
     class Meta:

@@ -116,7 +116,7 @@ class ArticleEdit extends React.Component<Props, States> {
         return (
             <NavWrapper>
                 <ArticleForm
-                    uuid={this.state.uuid}
+                    parent_uuid={this.state.uuid}
                     formId="articleForm"
                     submitTitle="Update"
                     defaultValues={this.state.mainFormData}

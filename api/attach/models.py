@@ -41,10 +41,18 @@ class Attach(models.Model):
                 Tools.removeFile(item.attachment.path)
 
         super(Attach, self).save(*args, **kwargs)
+        if self.filetype == 'image':
+            maxWidth = 1200;
+            thumbnailWidth = 300
+            Tools.scaleImage(maxWidth, self.attachment.path)
+            Tools.createThumbnail(thumbnailWidth, self.attachment.path)
 
 
     def delete(self, *args, **kwargs):
-        Tools.removeFile(self.attachment.path)
+        removeThumbnail = False
+        if self.filetype == 'image':
+            removeThumbnail = True
+        Tools.removeFile(self.attachment.path, removeThumbnail)
         super(Attach, self).delete(*args, **kwargs)
 
     class Meta:

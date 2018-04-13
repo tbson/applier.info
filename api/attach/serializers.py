@@ -19,7 +19,6 @@ class AttachBaseSerializer(ModelSerializer):
 class AttachCreateSerializer(AttachBaseSerializer):
 
     def create(self, validated_data):
-        print(validated_data)
         validated_data['filetype'] = Tools.checkMime(validated_data['attachment'])
         if validated_data['filetype'] == '':
             raise ValidationError({'detail': 'File type not supported'})
