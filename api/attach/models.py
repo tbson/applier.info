@@ -38,7 +38,10 @@ class Attach(models.Model):
                 self.richtext_image = item.richtext_image
             if item.attachment != self.attachment:
                 # Update: remove exist attachment
-                Tools.removeFile(item.attachment.path)
+                removeThumbnail = False
+                if item.filetype == 'image':
+                    removeThumbnail = True
+                Tools.removeFile(item.attachment.path, removeThumbnail)
 
         super(Attach, self).save(*args, **kwargs)
         if self.filetype == 'image':

@@ -13,6 +13,7 @@ from .models import Attach
 from .serializers import (
     AttachBaseSerializer,
     AttachCreateSerializer,
+    AttachUpdateSerializer,
 )
 from utils.common_classes.custom_permission import CustomPermission
 from utils.common_classes.base_manage_view import BaseManageView
@@ -46,6 +47,13 @@ class CreateView(CreateAPIView):
     permission_classes = [CustomPermission]
     queryset = Attach.objects.all()
     serializer_class = AttachCreateSerializer
+
+
+class UpdateView(UpdateAPIView):
+    permissions = ['change_attach']
+    permission_classes = [CustomPermission]
+    queryset = Attach.objects.all()
+    serializer_class = AttachUpdateSerializer
 
 
 class DeleteView(DestroyAPIView):
@@ -84,5 +92,6 @@ class BaseEndPoint(BaseManageView):
 class PKEndPoint(BaseManageView):
     VIEWS_BY_METHOD = {
         'GET': DetailView.as_view,
+        'PUT': UpdateView.as_view,
         'DELETE': DeleteView.as_view,
     }
