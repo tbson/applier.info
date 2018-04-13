@@ -265,11 +265,13 @@ export default class Tools {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'JWT ' + this.getToken(),
                     fingerprint: await this.getFingerPrint(),
                 },
                 credentials: 'same-origin',
             };
+            if (this.getToken()) {
+                requestConfig.headers.Authorization = 'JWT ' + this.getToken()
+            }
             if (['POST', 'PUT'].indexOf(method) !== -1) {
                 // Have payload
                 params = this.paramsProcessing(params);
