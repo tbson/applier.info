@@ -55,7 +55,7 @@
         "webpack-merge": "4.1.0"
     },
     "dependencies": {
-        "bootstrap": "4.0.0",
+        "bootstrap": "4.3.1",
         "draft-convert": "^2.0.1",
         "draft-js": "^0.10.5",
         "fbemitter": "3.0.0-alpha.1",
